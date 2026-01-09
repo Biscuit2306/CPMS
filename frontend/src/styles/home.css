@@ -1,0 +1,102 @@
+/* HERO SECTION */
+.home-hero {
+  text-align: center;
+  padding: 100px 20px 80px;
+  background: linear-gradient(to bottom, #f8fafc, #eef2ff);
+}
+
+.hero-badge {
+  display: inline-block;
+  background-color: #e0e7ff;
+  color: #1e40af;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+
+.home-hero h1 {
+  font-size: 44px;
+  line-height: 1.2;
+  margin-bottom: 18px;
+  color: #0f172a;
+}
+
+.home-hero p {
+  max-width: 760px;
+  margin: 0 auto 32px;
+  font-size: 17px;
+  color: #475569;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* STATS SECTION */
+.home-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 60px 20px;
+  background-color: #ffffff;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  background: #f8fafc;
+  width: 220px;
+  padding: 28px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+}
+
+.stat-card h3 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  color: #2563eb;
+}
+
+.stat-card p {
+  font-size: 14px;
+  color: #475569;
+}
+
+/* FEATURES SECTION */
+.home-features {
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.home-features h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.section-subtitle {
+  color: #64748b;
+  margin-bottom: 40px;
+  font-size: 15px;
+}
+
+.feature-grid {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.feature-card {
+  background: white;
+  width: 260px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  font-weight: 500;
+  color: #1f2937;
+}
