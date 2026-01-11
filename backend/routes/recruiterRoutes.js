@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Recruiter = require("../models/Recruiter");
+const Recruiter = require("../models/recruiter");
 
 // Register a new recruiter
 router.post("/register", async (req, res) => {
