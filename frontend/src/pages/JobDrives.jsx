@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Bell, Calendar, Briefcase, User, LogOut, Menu, X,
   Search, Filter, MapPin, DollarSign, Users, Clock,
-  ChevronRight, Building2
+  ChevronRight, Building2, TrendingUp, Award, Settings, FileText
 } from 'lucide-react';
 import { Link } from "react-router-dom";
 import '../styles/jobdrives.css';
@@ -124,32 +124,47 @@ export default function JobDrives() {
       <Navbar />
 
       <div className="job-drives__layout">
-        {/* Sidebar */}
+        {/* Enhanced Sidebar */}
         <aside className={`job-drives__sidebar ${sidebarOpen ? 'job-drives__sidebar--open' : ''}`}>
+          <div className="job-drives__sidebar-header">
+            <div className="job-drives__user-profile">
+              <div className="job-drives__avatar">JD</div>
+              <div className="job-drives__user-details">
+                <h4>John Doe</h4>
+                <p>B.Tech CSE</p>
+              </div>
+            </div>
+          </div>
+
           <div className="job-drives__sidebar-content">
             <nav className="job-drives__nav">
-
               <Link to="/student" className="job-drives__nav-item">
-                <Briefcase size={20} />
+                <TrendingUp size={20} />
                 <span>Dashboard</span>
               </Link>
 
               <Link
-                to="/jobdrives"
+                to="/job-drives"
                 className="job-drives__nav-item job-drives__nav-item--active"
               >
                 <Building2 size={20} />
                 <span>Job Drives</span>
+                <div className="job-drives__nav-indicator"></div>
               </Link>
 
               <Link to="/applications" className="job-drives__nav-item">
-                <Calendar size={20} />
+                <FileText size={20} />
                 <span>Applications</span>
               </Link>
 
               <Link to="/schedule" className="job-drives__nav-item">
-                <Clock size={20} />
+                <Calendar size={20} />
                 <span>Schedule</span>
+              </Link>
+
+              <Link to="/achievements" className="job-drives__nav-item">
+                <Award size={20} />
+                <span>Achievements</span>
               </Link>
 
               <Link to="/profile" className="job-drives__nav-item">
@@ -157,21 +172,51 @@ export default function JobDrives() {
                 <span>Profile</span>
               </Link>
 
+              <Link to="/settings" className="job-drives__nav-item">
+                <Settings size={20} />
+                <span>Settings</span>
+              </Link>
             </nav>
+          </div>
+
+          <div className="job-drives__sidebar-footer">
+            <button className="job-drives__logout-btn">
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
           </div>
         </aside>
 
         {/* Main Content */}
         <main className="job-drives__main">
           <div className="job-drives__content">
-
             {/* Header */}
             <div className="job-drives__header">
-              <div>
-                <h2 className="job-drives__title">Placement Drives</h2>
+              <div className="job-drives__header-text">
+                <h2 className="job-drives__title">
+                  Placement <span className="highlight-text">Drives</span>
+                </h2>
                 <p className="job-drives__subtitle">
                   Browse and apply to campus recruitment drives
                 </p>
+              </div>
+              <div className="job-drives__stats-summary">
+                <div className="job-drives__stat-item">
+                  <Building2 size={20} className="job-drives__stat-item-icon" />
+                  <div>
+                    <p className="job-drives__stat-item-value">{jobDrives.length}</p>
+                    <p className="job-drives__stat-item-label">Total Drives</p>
+                  </div>
+                </div>
+                <div className="job-drives__stat-item">
+                  <Users size={20} className="job-drives__stat-item-icon" />
+                  <div>
+                    <p className="job-drives__stat-item-value">
+                      {jobDrives.reduce((sum, drive) => sum + drive.openings, 0)}
+                    </p>
+                    <p className="job-drives__stat-item-label">Total Openings</p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -189,26 +234,98 @@ export default function JobDrives() {
               </div>
 
               <div className="job-drives__filters">
-                <button onClick={() => setSelectedFilter('all')}>All</button>
-                <button onClick={() => setSelectedFilter('open')}>Open</button>
-                <button onClick={() => setSelectedFilter('closing-soon')}>Closing Soon</button>
-                <button onClick={() => setSelectedFilter('closed')}>Closed</button>
+                <button
+                  className={`job-drives__filter-btn ${selectedFilter === 'all' ? 'job-drives__filter-btn--active' : ''}`}
+                  onClick={() => setSelectedFilter('all')}
+                >
+                  All
+                </button>
+                <button
+                  className={`job-drives__filter-btn ${selectedFilter === 'open' ? 'job-drives__filter-btn--active' : ''}`}
+                  onClick={() => setSelectedFilter('open')}
+                >
+                  Open
+                </button>
+                <button
+                  className={`job-drives__filter-btn ${selectedFilter === 'closing-soon' ? 'job-drives__filter-btn--active' : ''}`}
+                  onClick={() => setSelectedFilter('closing-soon')}
+                >
+                  Closing Soon
+                </button>
+                <button
+                  className={`job-drives__filter-btn ${selectedFilter === 'closed' ? 'job-drives__filter-btn--active' : ''}`}
+                  onClick={() => setSelectedFilter('closed')}
+                >
+                  Closed
+                </button>
               </div>
             </div>
 
-            {/* Cards */}
+            {/* Job Cards Grid */}
             <div className="job-drives__grid">
               {filteredDrives.map((drive) => (
                 <div key={drive.id} className="job-drives__card">
-                  <h3>{drive.company}</h3>
-                  <p>{drive.role}</p>
-                  <button disabled={drive.status === "Closed"}>
-                    Apply Now <ChevronRight size={16} />
-                  </button>
+                  <div className="job-drives__card-header">
+                    <div className="job-drives__company-info">
+                      <span className="job-drives__company-logo">{drive.logo}</span>
+                      <div>
+                        <h3 className="job-drives__company-name">{drive.company}</h3>
+                        <p className="job-drives__role-title">{drive.role}</p>
+                      </div>
+                    </div>
+                    <span className={`job-drives__status-badge job-drives__status-badge--${drive.status.toLowerCase().replace(' ', '-')}`}>
+                      {drive.status}
+                    </span>
+                  </div>
+
+                  <p className="job-drives__description">{drive.description}</p>
+
+                  <div className="job-drives__details-grid">
+                    <div className="job-drives__detail-item">
+                      <MapPin size={16} />
+                      <span>{drive.location}</span>
+                    </div>
+                    <div className="job-drives__detail-item">
+                      <DollarSign size={16} />
+                      <span>{drive.package}</span>
+                    </div>
+                    <div className="job-drives__detail-item">
+                      <Users size={16} />
+                      <span>{drive.openings} openings</span>
+                    </div>
+                    <div className="job-drives__detail-item">
+                      <Clock size={16} />
+                      <span>{drive.deadline}</span>
+                    </div>
+                  </div>
+
+                  <div className="job-drives__eligibility">
+                    <strong>Eligibility:</strong> {drive.eligibility}
+                  </div>
+
+                  <div className="job-drives__card-footer">
+                    <span className="job-drives__registered">
+                      <Users size={14} />
+                      {drive.registeredStudents} registered
+                    </span>
+                    <button
+                      className="job-drives__apply-btn"
+                      disabled={drive.status === 'Closed'}
+                    >
+                      {drive.status === 'Closed' ? 'Closed' : 'Apply Now'}
+                      {drive.status !== 'Closed' && <ChevronRight size={18} />}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
 
+            {filteredDrives.length === 0 && (
+              <div className="job-drives__no-results">
+                <Briefcase size={48} />
+                <p>No job drives found matching your search</p>
+              </div>
+            )}
           </div>
         </main>
       </div>

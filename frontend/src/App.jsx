@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 
 import StudentDashboard from "./pages/StudentDashboard";
 import JobDrives from "./pages/JobDrives";
+import Applications from "./pages/Applications";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Unauthorized from "./pages/Unauthorized";
@@ -43,6 +44,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Application for Students */}
+        <Route
+          path="/applications"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <Applications />
+            </ProtectedRoute>
+          }
+        />  
 
         {/* Recruiter Dashboard */}
         <Route
