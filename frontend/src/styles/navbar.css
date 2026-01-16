@@ -5,6 +5,31 @@
   justify-content: space-between;
   align-items: center;
 }
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-decoration: none;
+}
+
+/* Logo image (matches your previous logo CSS) */
+.logo {
+  height: 3rem;
+  padding: 0.25rem;
+  will-change: filter;
+  transition: filter 300ms ease;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 1.5em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 1.5em #61dafbaa);
+}
 
 .navbar-logo {
   color: white;

@@ -9,10 +9,12 @@ import StudentDashboard from "./pages/StudentDashboard";
 import JobDrives from "./pages/JobDrives";
 import Applications from "./pages/Applications";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
+import JobPosting from "./pages/JobPosting";
 import AdminDashboard from "./pages/AdminDashboard";
 import Unauthorized from "./pages/Unauthorized";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
+import SchedulePage from "./pages/SchedulePage";
 
 function App() {
   return (
@@ -53,14 +55,34 @@ function App() {
               <Applications />
             </ProtectedRoute>
           }
-        />  
+        /> 
 
+        {/* Schedule for Students */}
+        <Route
+          path="/schedulepage"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <SchedulePage />
+            </ProtectedRoute>
+          } 
+        />
+        
         {/* Recruiter Dashboard */}
         <Route
           path="/recruiter"
           element={
             <ProtectedRoute allowedRoles={["recruiter"]}>
               <RecruiterDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Job Posting for recruiter*/}
+        <Route
+          path="/JobPosting"
+          element={
+            <ProtectedRoute allowedRoles={["recruiter"]}>
+              <JobPosting />
             </ProtectedRoute>
           }
         />

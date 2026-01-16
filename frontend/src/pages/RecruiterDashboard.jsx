@@ -3,6 +3,7 @@ import { Bell, Calendar, Briefcase, FileText, User, LogOut, Menu, X, TrendingUp,
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import '../styles/recruiterdashboard.css';
+import { Link } from "react-router-dom";
 
 const RecruiterDashboardPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -79,10 +80,14 @@ const RecruiterDashboardPage = () => {
                 <div className="recruiter-dashboard__nav-indicator"></div>
               </a>
 
-              <a href="#" className="recruiter-dashboard__nav-item">
+              <Link
+                to="/JobPosting"
+                className="recruiter-dashboard__nav-item"
+                onClick={() => setSidebarOpen(false)}
+              >
                 <Briefcase size={20} />
-                <span>Job Postings</span>
-              </a>
+                <span>JobPosting</span>
+              </Link>
 
               <a href="#" className="recruiter-dashboard__nav-item">
                 <Users size={20} />

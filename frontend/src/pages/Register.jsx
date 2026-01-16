@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase"; // Make sure firebase.js is set up
+import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/register.css";
 
 function Register() {
+  const navigate = useNavigate();
+
   const [selectedRole, setSelectedRole] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -65,7 +68,7 @@ function Register() {
       if (!res.ok) throw new Error(data.error || "Registration failed");
 
       alert("User registered successfully in Firebase and MongoDB!");
-      // TODO: redirect to login page if needed, e.g., navigate("/login")
+      navigate("/login"); // ✅ redirect to login page
     } catch (err) {
       console.error(err);
       alert(err.message);

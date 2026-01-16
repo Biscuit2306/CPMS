@@ -55,21 +55,30 @@ export default function StudentDashboard() {
                 <span>Job Drives</span>
               </Link>
 
-              <a href="#" className="student-dashboard__nav-item">
-                <FileText size={20} />
+              <Link
+                to="/applications"
+                className="student-dashboard__nav-item"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <Briefcase size={20} />
                 <span>Applications</span>
-              </a>
-              
-              <a href="#" className="student-dashboard__nav-item">
-                <Calendar size={20} />
+              </Link>
+
+              <Link
+                to="schedulepage"
+                className="student-dashboard__nav-item"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <Briefcase size={20} />
                 <span>Schedule</span>
-              </a>
-              
+              </Link>
+
+
               <a href="#" className="student-dashboard__nav-item">
                 <Award size={20} />
                 <span>Achievements</span>
               </a>
-              
+
               <a href="#" className="student-dashboard__nav-item">
                 <User size={20} />
                 <span>Profile</span>
@@ -220,7 +229,7 @@ export default function StudentDashboard() {
                         {app.status}
                       </p>
                       <div className="student-dashboard__progress-bar">
-                        <div 
+                        <div
                           className="student-dashboard__progress-fill"
                           style={{ width: `${app.progress}%` }}
                         ></div>

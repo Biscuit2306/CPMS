@@ -157,7 +157,7 @@ export default function JobDrives() {
                 <span>Applications</span>
               </Link>
 
-              <Link to="/schedule" className="job-drives__nav-item">
+              <Link to="/schedulepage" className="job-drives__nav-item">
                 <Calendar size={20} />
                 <span>Schedule</span>
               </Link>

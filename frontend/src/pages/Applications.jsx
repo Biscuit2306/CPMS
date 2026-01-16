@@ -146,7 +146,7 @@ export default function Applications() {
                 <span>Dashboard</span>
               </Link>
 
-              <Link to="/job-drives" className="applications__nav-item">
+              <Link to="/pages/jobdrives" className="applications__nav-item">
                 <Building2 size={20} />
                 <span>Job Drives</span>
               </Link>
@@ -160,7 +160,7 @@ export default function Applications() {
                 <div className="applications__nav-indicator"></div>
               </Link>
 
-              <Link to="/schedule" className="applications__nav-item">
+              <Link to="/schedulepage" className="applications__nav-item">
                 <Calendar size={20} />
                 <span>Schedule</span>
               </Link>
