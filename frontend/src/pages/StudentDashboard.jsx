@@ -1,7 +1,22 @@
-// StudentDashboard.jsx
-import React, { useState } from 'react';
-import { Bell, Calendar, Briefcase, FileText, User, LogOut, Menu, X, TrendingUp, Users, CheckCircle, Home, Settings, Award, Clock } from 'lucide-react';
-import '../styles/studentdashboard.css';
+import React, { useState } from "react";
+import {
+  Bell,
+  Calendar,
+  Briefcase,
+  FileText,
+  User,
+  LogOut,
+  Menu,
+  X,
+  TrendingUp,
+  Users,
+  CheckCircle,
+  Home,
+  Settings,
+  Award,
+  Clock,
+} from "lucide-react";
+import "../styles/studentdashboard.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
@@ -10,15 +25,38 @@ export default function StudentDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const upcomingDrives = [
-    { company: 'Google', date: 'Jan 15, 2026', role: 'Software Engineer', status: 'Applied', logo: '🔵' },
-    { company: 'Microsoft', date: 'Jan 18, 2026', role: 'Data Analyst', status: 'Shortlisted', logo: '🟦' },
-    { company: 'Amazon', date: 'Jan 22, 2026', role: 'Full Stack Developer', status: 'Not Applied', logo: '🟠' }
+    {
+      company: "Google",
+      date: "Jan 15, 2026",
+      role: "Software Engineer",
+      status: "Applied",
+      logo: "🔵",
+    },
+    {
+      company: "Microsoft",
+      date: "Jan 18, 2026",
+      role: "Data Analyst",
+      status: "Shortlisted",
+      logo: "🟦",
+    },
+    {
+      company: "Amazon",
+      date: "Jan 22, 2026",
+      role: "Full Stack Developer",
+      status: "Not Applied",
+      logo: "🟠",
+    },
   ];
 
   const recentApplications = [
-    { company: 'TCS', status: 'Under Review', date: 'Jan 5', progress: 60 },
-    { company: 'Infosys', status: 'Interview Scheduled', date: 'Jan 3', progress: 80 },
-    { company: 'Wipro', status: 'Rejected', date: 'Dec 28', progress: 100 }
+    { company: "TCS", status: "Under Review", date: "Jan 5", progress: 60 },
+    {
+      company: "Infosys",
+      status: "Interview Scheduled",
+      date: "Jan 3",
+      progress: 80,
+    },
+    { company: "Wipro", status: "Rejected", date: "Dec 28", progress: 100 },
   ];
 
   return (
@@ -27,7 +65,9 @@ export default function StudentDashboard() {
 
       <div className="student-dashboard__layout">
         {/* Enhanced Sidebar */}
-        <aside className={`student-dashboard__sidebar ${sidebarOpen ? 'student-dashboard__sidebar--open' : ''}`}>
+        <aside
+          className={`student-dashboard__sidebar ${sidebarOpen ? "student-dashboard__sidebar--open" : ""}`}
+        >
           <div className="student-dashboard__sidebar-header">
             <div className="student-dashboard__user-profile">
               <div className="student-dashboard__avatar">JD</div>
@@ -40,7 +80,10 @@ export default function StudentDashboard() {
 
           <div className="student-dashboard__sidebar-content">
             <nav className="student-dashboard__nav">
-              <a href="#" className="student-dashboard__nav-item student-dashboard__nav-item--active">
+              <a
+                href="#"
+                className="student-dashboard__nav-item student-dashboard__nav-item--active"
+              >
                 <TrendingUp size={20} />
                 <span>Dashboard</span>
                 <div className="student-dashboard__nav-indicator"></div>
@@ -63,26 +106,20 @@ export default function StudentDashboard() {
                 <Briefcase size={20} />
                 <span>Applications</span>
               </Link>
-
-              <Link
-                to="schedulepage"
-                className="student-dashboard__nav-item"
-                onClick={() => setSidebarOpen(false)}
-              >
-                <Briefcase size={20} />
+              <Link to="/schedulepage" className="student-dashboard__nav-item">
+                <Calendar size={20} />
                 <span>Schedule</span>
               </Link>
 
-
-              <a href="#" className="student-dashboard__nav-item">
-                <Award size={20} />
+              <Link to="/achievements" className="student-dashboard__nav-item">
+                <Calendar size={20} />
                 <span>Achievements</span>
-              </a>
+              </Link>
 
-              <a href="#" className="student-dashboard__nav-item">
-                <User size={20} />
-                <span>Profile</span>
-              </a>
+              <Link to="/profile" className="applications__nav-item">
+                              <User size={20} />
+                              <span>Profile</span>
+                            </Link>
 
               <a href="#" className="student-dashboard__nav-item">
                 <Settings size={20} />
@@ -115,7 +152,9 @@ export default function StudentDashboard() {
               <div className="student-dashboard__quick-actions">
                 <button className="student-dashboard__action-btn">
                   <Bell size={18} />
-                  <span className="student-dashboard__notification-badge">3</span>
+                  <span className="student-dashboard__notification-badge">
+                    3
+                  </span>
                 </button>
               </div>
             </div>
@@ -127,9 +166,13 @@ export default function StudentDashboard() {
                   <FileText size={24} />
                 </div>
                 <div className="student-dashboard__stat-info">
-                  <p className="student-dashboard__stat-label">Total Applications</p>
+                  <p className="student-dashboard__stat-label">
+                    Total Applications
+                  </p>
                   <p className="student-dashboard__stat-value">12</p>
-                  <span className="student-dashboard__stat-change positive">+2 this week</span>
+                  <span className="student-dashboard__stat-change positive">
+                    +2 this week
+                  </span>
                 </div>
               </div>
 
@@ -140,7 +183,9 @@ export default function StudentDashboard() {
                 <div className="student-dashboard__stat-info">
                   <p className="student-dashboard__stat-label">Shortlisted</p>
                   <p className="student-dashboard__stat-value">5</p>
-                  <span className="student-dashboard__stat-change positive">+1 this week</span>
+                  <span className="student-dashboard__stat-change positive">
+                    +1 this week
+                  </span>
                 </div>
               </div>
 
@@ -151,7 +196,9 @@ export default function StudentDashboard() {
                 <div className="student-dashboard__stat-info">
                   <p className="student-dashboard__stat-label">Interviews</p>
                   <p className="student-dashboard__stat-value">3</p>
-                  <span className="student-dashboard__stat-change">Upcoming</span>
+                  <span className="student-dashboard__stat-change">
+                    Upcoming
+                  </span>
                 </div>
               </div>
 
@@ -162,7 +209,9 @@ export default function StudentDashboard() {
                 <div className="student-dashboard__stat-info">
                   <p className="student-dashboard__stat-label">Offers</p>
                   <p className="student-dashboard__stat-value">1</p>
-                  <span className="student-dashboard__stat-change positive">Congratulations!</span>
+                  <span className="student-dashboard__stat-change positive">
+                    Congratulations!
+                  </span>
                 </div>
               </div>
             </div>
@@ -173,28 +222,39 @@ export default function StudentDashboard() {
               <div className="student-dashboard__card student-dashboard__card--wide">
                 <div className="student-dashboard__card-header">
                   <h3 className="student-dashboard__card-title">
-                    <Calendar className="student-dashboard__title-icon" size={24} />
+                    <Calendar
+                      className="student-dashboard__title-icon"
+                      size={24}
+                    />
                     Upcoming Placement Drives
                   </h3>
-                  <button className="student-dashboard__view-all-btn">View All</button>
+                  <button className="student-dashboard__view-all-btn">
+                    View All
+                  </button>
                 </div>
 
                 <div className="student-dashboard__drives-list">
                   {upcomingDrives.map((drive, idx) => (
                     <div key={idx} className="student-dashboard__drive-item">
-                      <div className="student-dashboard__drive-logo">{drive.logo}</div>
+                      <div className="student-dashboard__drive-logo">
+                        {drive.logo}
+                      </div>
                       <div className="student-dashboard__drive-details">
                         <div className="student-dashboard__drive-header">
-                          <h4 className="student-dashboard__drive-company">{drive.company}</h4>
+                          <h4 className="student-dashboard__drive-company">
+                            {drive.company}
+                          </h4>
                           <span
                             className={`student-dashboard__status-badge student-dashboard__status-badge--${drive.status
                               .toLowerCase()
-                              .replace(' ', '-')}`}
+                              .replace(" ", "-")}`}
                           >
                             {drive.status}
                           </span>
                         </div>
-                        <p className="student-dashboard__drive-role">{drive.role}</p>
+                        <p className="student-dashboard__drive-role">
+                          {drive.role}
+                        </p>
                         <p className="student-dashboard__drive-date">
                           <Clock size={14} />
                           {drive.date}
@@ -209,7 +269,10 @@ export default function StudentDashboard() {
               <div className="student-dashboard__card">
                 <div className="student-dashboard__card-header">
                   <h3 className="student-dashboard__card-title">
-                    <FileText className="student-dashboard__title-icon" size={24} />
+                    <FileText
+                      className="student-dashboard__title-icon"
+                      size={24}
+                    />
                     Recent Activity
                   </h3>
                 </div>
@@ -218,13 +281,17 @@ export default function StudentDashboard() {
                   {recentApplications.map((app, idx) => (
                     <div key={idx} className="student-dashboard__activity-item">
                       <div className="student-dashboard__activity-header">
-                        <p className="student-dashboard__activity-company">{app.company}</p>
-                        <p className="student-dashboard__activity-date">{app.date}</p>
+                        <p className="student-dashboard__activity-company">
+                          {app.company}
+                        </p>
+                        <p className="student-dashboard__activity-date">
+                          {app.date}
+                        </p>
                       </div>
                       <p
                         className={`student-dashboard__activity-status student-dashboard__activity-status--${app.status
                           .toLowerCase()
-                          .replace(' ', '-')}`}
+                          .replace(" ", "-")}`}
                       >
                         {app.status}
                       </p>

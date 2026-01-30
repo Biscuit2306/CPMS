@@ -119,6 +119,7 @@ export default function SchedulePage() {
                                 <Briefcase size={20} />
                                 <span>Job Drives</span>
                             </Link>
+
                             <Link
                                 to="/applications"
                                 className="student-dashboard__nav-item"
@@ -127,19 +128,23 @@ export default function SchedulePage() {
                                 <Briefcase size={20} />
                                 <span>Applications</span>
                             </Link>
+
                             <button className="schedule-page__nav-item schedule-page__nav-item--active">
                                 <Calendar size={20} />
                                 <span>Schedule</span>
                                 <div className="schedule-page__nav-indicator"></div>
                             </button>
-                            <button className="schedule-page__nav-item">
+
+                            <Link to="/achievements" className="job-drives__nav-item">
                                 <Award size={20} />
                                 <span>Achievements</span>
-                            </button>
+                            </Link>
+
                             <button className="schedule-page__nav-item">
                                 <User size={20} />
                                 <span>Profile</span>
                             </button>
+
                             <button className="schedule-page__nav-item">
                                 <Settings size={20} />
                                 <span>Settings</span>
