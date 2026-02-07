@@ -12,3 +12,4 @@ backend/.env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+backend/cpms-auth-firebase-adminsdk-fbsvc-9dadb39c72.json
