@@ -17,12 +17,22 @@ router.post("/register", async (req, res) => {
 // Get recruiter dashboard
 router.get("/dashboard/:uid", async (req, res) => {
   try {
-    const recruiter = await Recruiter.findOne({
+    let recruiter = await Recruiter.findOne({
       firebaseUid: req.params.uid,
     });
 
+    // If recruiter doesn't exist, create a default one
     if (!recruiter) {
-      return res.status(404).json({ error: "Recruiter not found" });
+      recruiter = await Recruiter.create({
+        firebaseUid: req.params.uid,
+        fullName: "",
+        email: "",
+        phone: "",
+        companyName: "",
+        designation: "",
+        companyWebsite: "",
+        companySize: ""
+      });
     }
 
     res.json(recruiter);
@@ -42,6 +52,23 @@ router.get("/profile/:uid", async (req, res) => {
       return res.status(404).json({ error: "Recruiter not found" });
     }
 
+    res.json({ success: true, data: recruiter });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update recruiter profile
+router.put("/profile/:uid", async (req, res) => {
+  try {
+    const recruiter = await Recruiter.findOneAndUpdate(
+      { firebaseUid: req.params.uid },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!recruiter) {
+      return res.status(404).json({ error: "Recruiter not found" });
+    }
     res.json({ success: true, data: recruiter });
   } catch (err) {
     res.status(500).json({ error: err.message });

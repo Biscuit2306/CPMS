@@ -9,15 +9,15 @@ const adminSchema = new mongoose.Schema(
       index: true,
     },
 
-    // REQUIRED FOR AUTH
+    // ✅ Email from Firebase OAuth (sparse allows unique null values)
     email: {
       type: String,
-      required: true,
+      sparse: true,
       unique: true,
     },
 
-    // OPTIONAL AT REGISTRATION
-    name: {
+    // ✅ Name from Firebase OAuth
+    fullName: {
       type: String,
       default: "",
     },

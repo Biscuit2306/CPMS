@@ -8,6 +8,8 @@ import UnifiedRegister from "./pages/UnifiedRegister";
 import VerifyEmail from "./pages/VerifyEmail";
 
 import { StudentProvider } from "./context/StudentContext";
+import { AdminProvider } from "./context/AdminContext";
+import { RecruiterProvider } from "./context/RecruiterContext";
 
 /* ================= STUDENT ================= */
 import StudentDashboard from "./pages/student/StudentDashboard";
@@ -18,7 +20,12 @@ import StudentAchievements from "./pages/student/StudentAchievements";
 import StudentProfile from "./pages/student/StudentProfile";
 
 /* ================= RECRUITER ================= */
-import RecruiterDashboard from "./pages/RecruiterDashboard";
+import RecruiterDashboard from "./pages/Recruiter/RecruiterDashboard";
+import RecruiterCandidates from "./pages/Recruiter/RecruiterCandidates";
+import RecruiterSchedule from "./pages/Recruiter/RecruiterSchedule";
+import RecruiterProfile from "./pages/Recruiter/RecruiterProfile";
+import RecruiterDrives from "./pages/Recruiter/RecruiterDrives";
+import RecruiterCompanies from "./pages/Recruiter/RecruiterCompanies";
 
 /* ================= ADMIN ================= */
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -57,17 +64,22 @@ function App() {
         <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
 
         {/* RECRUITER */}
-        <Route path="/recruiter" element={<RecruiterDashboard />} />
+        <Route path="/recruiter" element={<RecruiterProvider><RecruiterDashboard /></RecruiterProvider>} />
+        <Route path="/recruiter/candidates" element={<RecruiterProvider><RecruiterCandidates /></RecruiterProvider>} />
+        <Route path="/recruiter/schedule" element={<RecruiterProvider><RecruiterSchedule /></RecruiterProvider>} />
+        <Route path="/recruiter/profile" element={<RecruiterProvider><RecruiterProfile /></RecruiterProvider>} />
+        <Route path="/recruiter/drives" element={<RecruiterProvider><RecruiterDrives /></RecruiterProvider>} />
+        <Route path="/recruiter/companies" element={<RecruiterProvider><RecruiterCompanies /></RecruiterProvider>} />
 
         {/* ADMIN */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/students" element={<AdminStudents />} />
-        <Route path="/admin/recruiters" element={<AdminRecruiters />} />
-        <Route path="/admin/companies" element={<AdminCompanies />} />
-        <Route path="/admin/drives" element={<AdminPlacementDrives />} />
-        <Route path="/admin/logs" element={<AdminSystemLogs />} />
-        <Route path="/admin/profile" element={<AdminProfile />} />
+        <Route path="/admin" element={<AdminProvider><AdminDashboard /></AdminProvider>} />
+        <Route path="/admin/dashboard" element={<AdminProvider><AdminDashboard /></AdminProvider>} />
+        <Route path="/admin/students" element={<AdminProvider><AdminStudents /></AdminProvider>} />
+        <Route path="/admin/recruiters" element={<AdminProvider><AdminRecruiters /></AdminProvider>} />
+        <Route path="/admin/companies" element={<AdminProvider><AdminCompanies /></AdminProvider>} />
+        <Route path="/admin/drives" element={<AdminProvider><AdminPlacementDrives /></AdminProvider>} />
+        <Route path="/admin/logs" element={<AdminProvider><AdminSystemLogs /></AdminProvider>} />
+        <Route path="/admin/profile" element={<AdminProvider><AdminProfile /></AdminProvider>} />
 
         {/* CATCH ALL */}
         <Route path="*" element={<Navigate to="/" replace />} />

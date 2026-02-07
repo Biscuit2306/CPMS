@@ -1,9 +1,14 @@
 import React from 'react';
 import { Shield, Users, UserCheck, Building2, TrendingUp, CheckCircle, Activity, AlertCircle, BarChart3, Target, Zap, Award, UserPlus, FileText } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
+import { useAdmin } from '../../context/AdminContext';
 import '../../styles/admin-css/admindashboard.css';
 
 const AdminDashboard = () => {
+  const { admin } = useAdmin();
+  
+  const adminName = admin?.fullName || 'Admin';
+  const adminRole = admin?.adminRole || 'System Administrator';
   const systemStats = [
     { icon: Users, label: 'Total Students', value: '2,847', color: '#0ea5e9' },
     { icon: UserCheck, label: 'Active Recruiters', value: '12', color: '#10b981' },
@@ -25,7 +30,7 @@ const AdminDashboard = () => {
         <div className="dashboard-hero-banner">
           <div className="dashboard-hero-content">
             <div className="dashboard-hero-text">
-              <h1>Welcome back, Dr. Patel!</h1>
+              <h1>Welcome back, {adminName}!</h1>
               <p>Manage and oversee the entire campus placement system</p>
             </div>
             <div className="dashboard-hero-icon">

@@ -1,0 +1,81 @@
+/* Main Shared Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.recruiter-dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f4f8;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Main Content */
+.recruiter-main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.recruiter-content-expanded {
+  margin-left: 270px;
+}
+
+.recruiter-content-full {
+  margin-left: 80px;
+}
+
+/* Dashboard Content */
+.recruiter-dashboard-content {
+  padding: 2rem;
+  flex: 1;
+}
+
+/* Page Header */
+.recruiter-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.recruiter-page-header h1 {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.recruiter-page-header p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.recruiter-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .recruiter-main-content {
+    margin-left: 0 !important;
+  }
+
+  .recruiter-dashboard-content {
+    padding: 1rem;
+  }
+
+  .recruiter-page-header h1 {
+    font-size: 1.6rem;
+  }
+}

@@ -4,59 +4,50 @@ import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const StudentContext = createContext(null);
+const RecruiterContext = createContext(null);
 
 /* =========================
    PROVIDER
 ========================= */
-export function StudentProvider({ children }) {
-  const [student, setStudent] = useState(null);
+export function RecruiterProvider({ children }) {
+  const [recruiter, setRecruiter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        setStudent(null);
+        setRecruiter(null);
         setLoading(false);
         return;
       }
 
       try {
         const res = await axios.get(
-          `${API_BASE}/api/students/dashboard/${user.uid}`
+          `${API_BASE}/api/recruiter/dashboard/${user.uid}`
         );
-        const studentData = res.data;
+        const recruiterData = res.data;
         
         // Use Firebase displayName if database fullName is empty
-        if (!studentData.fullName && user.displayName) {
-          studentData.fullName = user.displayName;
+        if (!recruiterData.fullName && user.displayName) {
+          recruiterData.fullName = user.displayName;
         }
         
-        setStudent(studentData);
+        setRecruiter(recruiterData);
         setError(null);
       } catch (err) {
-        console.error("Failed to fetch student", err);
+        console.error("Failed to fetch recruiter", err);
         
-        // Create student object with Firebase displayName as fallback
-        setStudent({
+        // Create recruiter object with Firebase displayName as fallback
+        setRecruiter({
           firebaseUid: user.uid,
-          fullName: user.displayName || user.email?.split('@')[0] || "Student",
+          fullName: user.displayName || user.email?.split('@')[0] || "Recruiter",
           email: user.email || "",
           phone: "",
-          branch: "",
-          rollNo: "",
-          dob: "",
-          address: "",
-          linkedin: "",
-          github: "",
-          portfolio: "",
-          resume: "",
-          year: "",
-          cgpa: "",
-          skills: [],
-          projects: [],
-          certifications: []
+          companyName: "",
+          designation: "",
+          companyWebsite: "",
+          companySize: ""
         });
         setError(null);
       } finally {
@@ -67,7 +58,7 @@ export function StudentProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  const updateStudent = async (updatedData) => {
+  const updateRecruiter = async (updatedData) => {
     try {
       setLoading(true);
       setError(null);
@@ -77,14 +68,16 @@ export function StudentProvider({ children }) {
       }
 
       const res = await axios.put(
-        `${API_BASE}/api/students/profile/${user.uid}`,
+        `${API_BASE}/api/recruiter/profile/${user.uid}`,
         updatedData
       );
-      setStudent(res.data);
-      return res.data;
+      // Handle response format: { success: true, data: recruiter }
+      const recruiterData = res.data.data || res.data;
+      setRecruiter(recruiterData);
+      return recruiterData;
     } catch (err) {
       setError(err.response?.data?.message || err.message);
-      console.error("Failed to update student", err);
+      console.error("Failed to update recruiter", err);
       throw err;
     } finally {
       setLoading(false);
@@ -92,19 +85,19 @@ export function StudentProvider({ children }) {
   };
 
   return (
-    <StudentContext.Provider value={{ student, loading, error, updateStudent }}>
+    <RecruiterContext.Provider value={{ recruiter, loading, error, updateRecruiter }}>
       {children}
-    </StudentContext.Provider>
+    </RecruiterContext.Provider>
   );
 }
 
 /* =========================
    HOOK
 ========================= */
-export const useStudent = () => {
-  const context = useContext(StudentContext);
+export const useRecruiter = () => {
+  const context = useContext(RecruiterContext);
   if (!context) {
-    throw new Error("useStudent must be used inside StudentProvider");
+    throw new Error("useRecruiter must be used inside RecruiterProvider");
   }
   return context;
 };

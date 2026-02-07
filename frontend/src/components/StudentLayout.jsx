@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, LayoutDashboard, FileText, Calendar, Bell, LogOut, Search, Briefcase, Menu, X, TrendingUp, Users } from 'lucide-react';
 import '../styles/student-css/studentlayout.css';
-import { auth } from '../firebase'; // make sure this points to your firebase config
+import { auth } from '../firebase';
+import { useStudent } from '../context/StudentContext';
 
 const StudentLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
-  const navigate = useNavigate(); // to redirect after logout
+  const navigate = useNavigate();
+  const { student } = useStudent();
 
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/student/dashboard' },
@@ -23,7 +25,7 @@ const StudentLayout = ({ children }) => {
   const handleLogout = async () => {
     try {
       await auth.signOut(); // sign out from Firebase
-      navigate('/login/student'); // redirect to login
+      navigate('/'); // redirect to home
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -79,10 +81,13 @@ const StudentLayout = ({ children }) => {
               <span className="student-notification-badge">3</span>
             </button>
             <div className="student-user-profile">
-              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" alt="John Doe" />
+              <img 
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student?.fullName || 'User'}`} 
+                alt={student?.fullName || 'User'} 
+              />
               <div className="student-user-info">
-                <span className="student-user-name">John Doe</span>
-                <span className="student-user-year">Final Year - CSE</span>
+                <span className="student-user-name">{student?.fullName || 'Student'}</span>
+                <span className="student-user-year">{student?.year || 'N/A'} - {student?.branch || 'N/A'}</span>
               </div>
             </div>
           </div>

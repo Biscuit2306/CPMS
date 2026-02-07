@@ -59,10 +59,62 @@ router.get("/recruiters", async (req, res) => {
   }
 });
 
+// Get admin dashboard (for context - returns full admin data)
+router.get("/dashboard/:uid", async (req, res) => {
+  try {
+    let admin = await Admin.findOne({ firebaseUid: req.params.uid });
+    
+    // If admin doesn't exist, create a default one
+    if (!admin) {
+      admin = await Admin.create({
+        firebaseUid: req.params.uid,
+        fullName: "",
+        email: "",
+        phone: "",
+        collegeName: "",
+        employeeId: "",
+        adminRole: "",
+        department: ""
+      });
+    }
+    res.json(admin);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get admin profile
 router.get("/profile/:uid", async (req, res) => {
   try {
-    const admin = await Admin.findOne({ firebaseUid: req.params.uid });
+    let admin = await Admin.findOne({ firebaseUid: req.params.uid });
+    
+    // If admin doesn't exist, create a default one
+    if (!admin) {
+      admin = await Admin.create({
+        firebaseUid: req.params.uid,
+        fullName: "",
+        email: "",
+        phone: "",
+        collegeName: "",
+        employeeId: "",
+        adminRole: "",
+        department: ""
+      });
+    }
+    res.json({ success: true, data: admin });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update admin profile
+router.put("/profile/:uid", async (req, res) => {
+  try {
+    const admin = await Admin.findOneAndUpdate(
+      { firebaseUid: req.params.uid },
+      req.body,
+      { new: true, runValidators: true }
+    );
     if (!admin) {
       return res.status(404).json({ error: "Admin not found" });
     }

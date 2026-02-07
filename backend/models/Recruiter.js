@@ -5,44 +5,48 @@ const recruiterSchema = new mongoose.Schema(
     firebaseUid: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
+      index: true,
     },
 
-    name: {
+    // ✅ From Firebase OAuth
+    fullName: {
       type: String,
-      required: true
+      default: "",
     },
 
+    // ✅ Email from Firebase OAuth (sparse allows unique null values)
     email: {
       type: String,
-      required: true,
-      unique: true
+      sparse: true,
+      unique: true,
     },
 
+    // ✅ Optional - can be filled in recruiter profile
     phone: {
       type: String,
-      required: true
+      default: "",
     },
 
     companyName: {
       type: String,
-      required: true
+      default: "",
     },
 
     designation: {
       type: String,
-      required: true
+      default: "",
     },
 
     companyWebsite: {
       type: String,
-      required: true
+      default: "",
     },
 
     companySize: {
       type: String,
-      required: true
-    }
+      default: "",
+    },
   },
   { timestamps: true }
 );

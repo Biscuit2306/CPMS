@@ -64,7 +64,12 @@ router.post("/register", async (req, res) => {
     res.status(201).json({ role, user });
 
   } catch (err) {
-    console.error("REGISTER ERROR FULL:", err);
+    console.error("REGISTER ERROR FULL:", {
+      message: err.message,
+      name: err.name,
+      code: err.code,
+      stack: err.stack,
+    });
 
     // 🔥 Mongoose validation error
     if (err.name === "ValidationError") {
@@ -81,7 +86,7 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error: " + err.message });
   }
 });
 
@@ -146,7 +151,16 @@ router.post("/google-login", async (req, res) => {
 
     if (requestedRole === "student") {
       user = await Student.findOne({ firebaseUid });
-      if (!user) user = await Student.create(safeProfile);
+      if (!user) {
+        user = await Student.create(safeProfile);
+      } else if (!user.fullName && safeProfile.fullName) {
+        // Update with name from Google if empty
+        user = await Student.findOneAndUpdate(
+          { firebaseUid },
+          { fullName: safeProfile.fullName },
+          { new: true }
+        );
+      }
 
     } else if (requestedRole === "recruiter") {
       user = await Recruiter.findOne({ firebaseUid });
@@ -158,6 +172,13 @@ router.post("/google-login", async (req, res) => {
           companyWebsite: profile.companyWebsite || "",
           companySize: profile.companySize || "",
         });
+      } else if (!user.fullName && safeProfile.fullName) {
+        // Update with name from Google if empty
+        user = await Recruiter.findOneAndUpdate(
+          { firebaseUid },
+          { fullName: safeProfile.fullName },
+          { new: true }
+        );
       }
 
     } else if (requestedRole === "admin") {
@@ -170,6 +191,13 @@ router.post("/google-login", async (req, res) => {
           adminRole: profile.adminRole || "",
           department: profile.department || "",
         });
+      } else if (!user.fullName && safeProfile.fullName) {
+        // Update with name from Google if empty
+        user = await Admin.findOneAndUpdate(
+          { firebaseUid },
+          { fullName: safeProfile.fullName },
+          { new: true }
+        );
       }
 
     } else {
@@ -179,8 +207,29 @@ router.post("/google-login", async (req, res) => {
     res.json({ role: requestedRole, user });
 
   } catch (err) {
-    console.error("GOOGLE LOGIN ERROR:", err);
-    res.status(500).json({ error: "Server error" });
+    console.error("GOOGLE LOGIN ERROR DETAILS:", {
+      message: err.message,
+      name: err.name,
+      code: err.code,
+      stack: err.stack,
+    });
+
+    // Validation error
+    if (err.name === "ValidationError") {
+      return res.status(400).json({
+        error: "Validation error",
+        details: err.message,
+      });
+    }
+
+    // Duplicate key error
+    if (err.code === 11000) {
+      return res.status(409).json({
+        error: "User already exists",
+      });
+    }
+
+    res.status(500).json({ error: "Server error: " + err.message });
   }
 });
 

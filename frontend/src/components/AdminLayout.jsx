@@ -1,12 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Shield, LayoutDashboard, Users, UserCheck, Building2, Briefcase, Activity, Settings, LogOut, Search, Menu, X, Mail } from 'lucide-react';
 import '../styles/admin-css/adminlayout.css';
+import { auth } from '../firebase';
+import { useAdmin } from '../context/AdminContext';
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [adminName, setAdminName] = useState('Admin');
   const navigate = useNavigate();
   const location = useLocation();
+  const { admin } = useAdmin();
+
+  useEffect(() => {
+    if (admin && admin.fullName) {
+      setAdminName(admin.fullName);
+    } else {
+      const user = auth.currentUser;
+      if (user) {
+        setAdminName(user.displayName || user.email?.split('@')[0] || 'Admin');
+      }
+    }
+  }, [admin]);
 
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
@@ -20,6 +35,15 @@ const AdminLayout = ({ children }) => {
 
   const isActive = (path) => {
     return location.pathname === path;
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigate('/');
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -47,7 +71,7 @@ const AdminLayout = ({ children }) => {
             ))}
           </nav>
 
-          <button className="admin-logout-btn">
+          <button className="admin-logout-btn" onClick={handleLogout}>
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
           </button>
@@ -72,10 +96,12 @@ const AdminLayout = ({ children }) => {
               <span className="admin-notification-badge">3</span>
             </button>
             <div className="admin-user-profile">
-              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Suresh" alt="Dr. Suresh Patel" />
+              <img 
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${adminName}`} 
+                alt={adminName} 
+              />
               <div className="admin-user-info">
-                <span className="admin-user-name">Dr. Suresh Patel</span>
-                <span className="admin-user-role">System Admin</span>
+                <span className="admin-user-name">{adminName}</span>
               </div>
             </div>
           </div>

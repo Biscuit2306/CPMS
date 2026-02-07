@@ -1,0 +1,323 @@
+/* Candidates Page Styles */
+
+.recruiter-export-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.6rem;
+  background: white;
+  color: #4F1C51;
+  border: 2px solid #4F1C51;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.recruiter-export-btn:hover {
+  background: #faf5fb;
+  transform: scale(1.05);
+}
+
+/* Candidates Grid */
+.recruiter-candidates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.recruiter-candidate-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.9rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.recruiter-candidate-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(79, 28, 81, 0.2);
+}
+
+.recruiter-candidate-header {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.recruiter-candidate-avatar-large {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #4F1C51, #6b2870);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.recruiter-candidate-info h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.3rem;
+}
+
+.recruiter-candidate-info p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.recruiter-cgpa-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.recruiter-candidate-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-bottom: 1.6rem;
+}
+
+.recruiter-candidate-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.recruiter-candidate-row svg {
+  color: #4F1C51;
+  flex-shrink: 0;
+}
+
+.recruiter-label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.recruiter-candidate-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.recruiter-view-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  background: #faf5fb;
+  color: #4F1C51;
+  border: 2px solid #4F1C51;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.recruiter-view-profile-btn:hover {
+  background: white;
+}
+
+.recruiter-action-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  background: #4F1C51;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.recruiter-action-menu-btn:hover {
+  background: #3d1640;
+  transform: scale(1.02);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .recruiter-candidates-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .recruiter-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .recruiter-header-actions {
+    width: 100%;
+  }
+
+  .recruiter-export-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .recruiter-candidates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recruiter-candidate-card {
+    padding: 1.5rem;
+  }
+
+  .recruiter-candidate-header {
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .recruiter-candidate-avatar-large {
+    width: 56px;
+    height: 56px;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .recruiter-candidate-info h3 {
+    font-size: 1.1rem;
+  }
+
+  .recruiter-candidate-info p {
+    font-size: 0.8rem;
+  }
+
+  .recruiter-candidate-details {
+    gap: 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .recruiter-candidate-row {
+    gap: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .recruiter-candidate-actions {
+    flex-direction: row;
+    gap: 0.6rem;
+  }
+
+  .recruiter-view-profile-btn,
+  .recruiter-action-menu-btn {
+    flex: 1;
+    padding: 0.7rem;
+    font-size: 0.85rem;
+    gap: 0.4rem;
+  }
+
+  .recruiter-page-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .recruiter-page-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .recruiter-export-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .recruiter-candidates-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .recruiter-candidate-card {
+    padding: 1rem;
+  }
+
+  .recruiter-candidate-header {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .recruiter-candidate-avatar-large {
+    width: 48px;
+    height: 48px;
+    font-size: 1rem;
+  }
+
+  .recruiter-candidate-info h3 {
+    font-size: 0.95rem;
+  }
+
+  .recruiter-candidate-info p {
+    font-size: 0.75rem;
+  }
+
+  .recruiter-cgpa-badge {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+  }
+
+  .recruiter-candidate-details {
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .recruiter-candidate-row {
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .recruiter-candidate-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .recruiter-view-profile-btn,
+  .recruiter-action-menu-btn {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.75rem;
+    gap: 0.3rem;
+  }
+
+  .recruiter-page-header {
+    gap: 0.75rem;
+  }
+
+  .recruiter-page-header h1 {
+    font-size: 1.1rem;
+  }
+
+  .recruiter-page-header p {
+    font-size: 0.8rem;
+  }
+
+  .recruiter-export-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.85rem;
+  }
+}

@@ -5,8 +5,10 @@ import StudentLayout from '../../components/StudentLayout';
 import InterviewFeature from '../InterviewFeature';
 import ProjectEvaluator from '../ProjectEvaluator';
 import '../../styles/student-css/studentdashboard.css';
+import { useStudent } from '../../context/StudentContext';
 
 const StudentDashboard = () => {
+  const { student } = useStudent();
   const placementStats = [
     { icon: Building2, label: 'Companies Registered', value: '45', color: '#7c3aed' },
     { icon: Users, label: 'Students Placed', value: '320', color: '#06b6d4' },
@@ -31,7 +33,7 @@ const StudentDashboard = () => {
       <div className="student-welcome-banner">
         <div className="student-welcome-content">
           <div className="student-welcome-text">
-            <h1>Welcome back, John!</h1>
+            <h1>Welcome back, {student?.fullName || 'Student'}!</h1>
             <p>Track your placement journey and upcoming opportunities</p>
           </div>
           <div className="student-welcome-illustration">

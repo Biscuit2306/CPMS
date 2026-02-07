@@ -1,0 +1,355 @@
+/* Drives Page Styles */
+
+/* Filter Section */
+.recruiter-filter-section {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.recruiter-filter-btn {
+  padding: 0.7rem 1.4rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.recruiter-filter-btn:hover {
+  border-color: #4F1C51;
+  color: #4F1C51;
+}
+
+.recruiter-filter-btn.active {
+  background: #4F1C51;
+  border-color: #4F1C51;
+  color: white;
+}
+
+.recruiter-add-drive-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.6rem;
+  background: #4F1C51;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.recruiter-add-drive-btn:hover {
+  background: #3d1640;
+  transform: scale(1.05);
+}
+
+/* Drives Grid */
+.recruiter-drives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.recruiter-drive-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.9rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.recruiter-drive-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(79, 28, 81, 0.2);
+  border-color: #4F1C51;
+}
+
+.recruiter-drive-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin-bottom: 1.1rem;
+}
+
+.recruiter-company-logo-large {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #4F1C51, #6b2870);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.recruiter-drive-title h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.3rem;
+}
+
+.recruiter-drive-status-badge {
+  padding: 0.3rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.recruiter-drive-status-badge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.recruiter-drive-status-badge.scheduled {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.recruiter-drive-status-badge.completed {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.recruiter-job-role {
+  font-size: 1.05rem;
+  color: #64748b;
+  margin-bottom: 1.1rem;
+}
+
+.recruiter-drive-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.6rem;
+}
+
+.recruiter-drive-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.recruiter-drive-detail-item svg {
+  color: #4F1C51;
+}
+
+.recruiter-drive-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.recruiter-view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  background: #faf5fb;
+  color: #4F1C51;
+  border: 2px solid #4F1C51;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.recruiter-view-btn:hover {
+  background: white;
+}
+
+.recruiter-manage-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  background: #4F1C51;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.recruiter-manage-action-btn:hover {
+  background: #3d1640;
+  transform: scale(1.02);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .recruiter-drives-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .recruiter-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .recruiter-header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .recruiter-filter-section {
+    width: 100%;
+  }
+
+  .recruiter-add-drive-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .recruiter-drives-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recruiter-drive-card {
+    padding: 1.2rem;
+  }
+
+  .recruiter-filter-btn {
+    padding: 0.6rem 1.1rem;
+    font-size: 0.85rem;
+  }
+
+  .recruiter-add-drive-btn {
+    padding: 0.8rem 1.4rem;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  .recruiter-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .recruiter-header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .recruiter-filter-section {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .recruiter-drive-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .recruiter-drive-actions {
+    flex-direction: column;
+  }
+
+  .recruiter-view-btn,
+  .recruiter-manage-action-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .recruiter-drives-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .recruiter-drive-card {
+    padding: 0.9rem;
+  }
+
+  .recruiter-drive-card-header {
+    gap: 0.6rem;
+  }
+
+  .recruiter-company-logo-large {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .recruiter-drive-title {
+    gap: 0.4rem;
+  }
+
+  .recruiter-drive-title h3 {
+    font-size: 1rem;
+  }
+
+  .recruiter-job-role {
+    font-size: 0.9rem;
+    margin: 0.6rem 0;
+  }
+
+  .recruiter-drive-details {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .recruiter-drive-detail-item {
+    gap: 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .recruiter-drive-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .recruiter-view-btn,
+  .recruiter-manage-action-btn {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .recruiter-filter-section {
+    gap: 0.5rem;
+  }
+
+  .recruiter-filter-btn {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.75rem;
+  }
+
+  .recruiter-add-drive-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  .recruiter-page-header {
+    gap: 0.75rem;
+  }
+
+  .recruiter-page-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .recruiter-page-header p {
+    font-size: 0.85rem;
+  }
+}
