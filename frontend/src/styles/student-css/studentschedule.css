@@ -1,0 +1,135 @@
+/* StudentSchedule.css - Schedule page specific styles */
+
+/* ==================== PAGE HEADER ==================== */
+.student-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.student-page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.student-page-header p {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* ==================== SCHEDULE GRID ==================== */
+.student-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.student-schedule-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border-left: 4px solid #7c3aed;
+}
+
+.student-schedule-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.15);
+}
+
+.student-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.student-schedule-company {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.student-company-logo-small {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.student-schedule-company h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.student-schedule-type {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.student-schedule-status {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.student-schedule-upcoming {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.student-schedule-completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.student-schedule-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.student-schedule-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.student-schedule-info svg {
+  color: #7c3aed;
+}
+
+.student-schedule-btn {
+  width: 100%;
+  padding: 0.875rem;
+  background: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.student-schedule-btn:hover {
+  background: #6d28d9;
+  transform: scale(1.02);
+}

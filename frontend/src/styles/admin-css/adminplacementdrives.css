@@ -1,0 +1,116 @@
+/* PlacementDrives.css */
+@import './AdminShared.css';
+
+.admin-drives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-drive-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.9rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.admin-drive-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(33, 15, 55, 0.2);
+  border-color: #210F37;
+}
+
+.admin-drive-header {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin-bottom: 1.1rem;
+}
+
+.admin-company-logo-large {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #210F37, #3a1a5c);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.admin-drive-title h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.3rem;
+}
+
+.admin-drive-status-badge {
+  padding: 0.3rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-drive-status-badge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.admin-drive-status-badge.scheduled {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.admin-drive-status-badge.completed {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.admin-job-role {
+  font-size: 1.05rem;
+  color: #64748b;
+  margin-bottom: 1.1rem;
+}
+
+.admin-drive-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.6rem;
+}
+
+.admin-drive-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.admin-drive-detail-item svg {
+  color: #210F37;
+  flex-shrink: 0;
+}
+
+.admin-drive-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+@media (max-width: 1024px) {
+  .admin-drives-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-drive-actions {
+    grid-template-columns: 1fr;
+  }
+}

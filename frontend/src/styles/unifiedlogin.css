@@ -1,0 +1,526 @@
+/* ===========================
+   BASE STYLES - SHARED
+   =========================== */
+
+/* Container */
+.unified-login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Card */
+.unified-login-card {
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  min-height: 600px;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Left Side - Login Form */
+.unified-login-left {
+  flex: 1;
+  padding: 60px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unified-login-form-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.unified-login-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.unified-login-subtitle {
+  font-size: 14px;
+  margin-bottom: 40px;
+}
+
+/* Form */
+.unified-login-form {
+  width: 100%;
+}
+
+.unified-form-group {
+  margin-bottom: 24px;
+}
+
+.unified-form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.unified-form-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.unified-form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.unified-forgot-password {
+  text-align: right;
+  margin-bottom: 24px;
+}
+
+.unified-forgot-link {
+  font-size: 13px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.unified-login-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.unified-login-btn:hover {
+  transform: translateY(-2px);
+}
+
+.unified-login-btn:active {
+  transform: translateY(0);
+}
+
+.unified-signup-link {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+}
+
+.unified-signup-text {
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+/* Right Side - Welcome Section */
+.unified-login-right {
+  flex: 1;
+  padding: 60px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.unified-welcome-content {
+  text-align: center;
+  color: white;
+}
+
+/* Password Input Wrapper */
+.unified-password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.unified-password-input-wrapper .unified-form-input {
+  padding-right: 45px;
+}
+
+.unified-password-toggle {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+  border-radius: 0 8px 8px 0;
+}
+
+.unified-password-toggle:focus {
+  outline: none;
+}
+
+.unified-password-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ===========================
+   STUDENT ROLE STYLES
+   =========================== */
+
+.unified-login-container-student {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.unified-login-left-student {
+  background-color: #2d3748;
+}
+
+.unified-login-title-student {
+  color: white;
+}
+
+.unified-login-subtitle-student {
+  color: #a0aec0;
+}
+
+.unified-form-label-student {
+  color: #e2e8f0;
+}
+
+.unified-form-input-student {
+  border: 1px solid #4a5568;
+  background-color: #1a202c;
+  color: white;
+}
+
+.unified-form-input-student:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.unified-form-input-student::placeholder {
+  color: #718096;
+}
+
+.unified-forgot-link-student {
+  color: #8b5cf6;
+}
+
+.unified-forgot-link-student:hover {
+  color: #a78bfa;
+}
+
+.unified-login-btn-student {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+}
+
+.unified-login-btn-student:hover {
+  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+}
+
+.unified-signup-link-student {
+  color: #a0aec0;
+}
+
+.unified-signup-text-student {
+  color: #8b5cf6;
+}
+
+.unified-signup-text-student:hover {
+  color: #a78bfa;
+}
+
+.unified-login-right-student {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+}
+
+.unified-password-toggle-student {
+  color: #718096;
+}
+
+.unified-password-toggle-student:hover {
+  color: #a78bfa;
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+.unified-password-toggle-student:focus {
+  color: #8b5cf6;
+}
+
+/* ===========================
+   ADMIN ROLE STYLES
+   =========================== */
+
+.unified-login-container-admin {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.unified-login-left-admin {
+  background-color: #1a1a2e;
+}
+
+.unified-login-title-admin {
+  color: white;
+}
+
+.unified-login-subtitle-admin {
+  color: #94a3b8;
+}
+
+.unified-form-label-admin {
+  color: #e2e8f0;
+}
+
+.unified-form-input-admin {
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: white;
+}
+
+.unified-form-input-admin:focus {
+  border-color: #f5576c;
+  box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+}
+
+.unified-form-input-admin::placeholder {
+  color: #64748b;
+}
+
+.unified-forgot-link-admin {
+  color: #f5576c;
+}
+
+.unified-forgot-link-admin:hover {
+  color: #f093fb;
+}
+
+.unified-login-btn-admin {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.unified-login-btn-admin:hover {
+  box-shadow: 0 10px 20px rgba(245, 87, 108, 0.3);
+}
+
+.unified-signup-link-admin {
+  color: #94a3b8;
+}
+
+.unified-signup-text-admin {
+  color: #f5576c;
+}
+
+.unified-signup-text-admin:hover {
+  color: #f093fb;
+}
+
+.unified-login-right-admin {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.unified-password-toggle-admin {
+  color: #64748b;
+}
+
+.unified-password-toggle-admin:hover {
+  color: #f093fb;
+  background-color: rgba(245, 87, 108, 0.1);
+}
+
+.unified-password-toggle-admin:focus {
+  color: #f5576c;
+}
+
+/* ===========================
+   RECRUITER ROLE STYLES
+   =========================== */
+
+.unified-login-container-recruiter {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.unified-login-left-recruiter {
+  background-color: #1e293b;
+}
+
+.unified-login-title-recruiter {
+  color: white;
+}
+
+.unified-login-subtitle-recruiter {
+  color: #94a3b8;
+}
+
+.unified-form-label-recruiter {
+  color: #e2e8f0;
+}
+
+.unified-form-input-recruiter {
+  border: 1px solid #475569;
+  background-color: #0f172a;
+  color: white;
+}
+
+.unified-form-input-recruiter:focus {
+  border-color: #4facfe;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.unified-form-input-recruiter::placeholder {
+  color: #64748b;
+}
+
+.unified-forgot-link-recruiter {
+  color: #4facfe;
+}
+
+.unified-forgot-link-recruiter:hover {
+  color: #00f2fe;
+}
+
+.unified-login-btn-recruiter {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.unified-login-btn-recruiter:hover {
+  box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+}
+
+.unified-signup-link-recruiter {
+  color: #94a3b8;
+}
+
+.unified-signup-text-recruiter {
+  color: #4facfe;
+}
+
+.unified-signup-text-recruiter:hover {
+  color: #00f2fe;
+}
+
+.unified-login-right-recruiter {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.unified-password-toggle-recruiter {
+  color: #64748b;
+}
+
+.unified-password-toggle-recruiter:hover {
+  color: #00f2fe;
+  background-color: rgba(79, 172, 254, 0.1);
+}
+
+.unified-password-toggle-recruiter:focus {
+  color: #4facfe;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 768px) {
+  .unified-login-card {
+    flex-direction: column;
+    max-width: 500px;
+  }
+
+  .unified-login-left,
+  .unified-login-right {
+    padding: 40px 30px;
+  }
+
+  .unified-login-title {
+    font-size: 28px;
+  }
+
+  .unified-login-subtitle {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .unified-login-container {
+    padding: 10px;
+  }
+
+  .unified-login-left,
+  .unified-login-right {
+    padding: 30px 20px;
+  }
+
+  .unified-login-title {
+    font-size: 24px;
+  }
+
+  .unified-form-input {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .unified-login-btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+
+  /* ===========================
+   GOOGLE LOGIN BUTTON
+   =========================== */
+
+.unified-google-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.unified-google-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Student */
+.unified-google-btn-student {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.unified-google-btn-student:hover {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+/* Recruiter */
+.unified-google-btn-recruiter {
+  border-color: #4facfe;
+  color: #4facfe;
+}
+
+.unified-google-btn-recruiter:hover {
+  background: rgba(79, 172, 254, 0.1);
+}
+
+/* Admin */
+.unified-google-btn-admin {
+  border-color: #f5576c;
+  color: #f5576c;
+}
+
+.unified-google-btn-admin:hover {
+  background: rgba(245, 87, 108, 0.1);
+}
+
+}

@@ -1,78 +1,61 @@
-import { Link, useNavigate } from "react-router-dom";
-import "../styles/navbar.css";
-import { signOut, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { Menu, X, Sparkles, ArrowRight } from 'lucide-react';
+import '../styles/navbar.css';
 
-function Navbar() {
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [name, setName] = useState("");
+const Navbar = ({ onGetStartedClick }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!firebaseUser) {
-        setUser(null);
-        setName("");
-        return;
-      }
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
 
-      setUser(firebaseUser);
-
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/users/${firebaseUser.uid}`
-        );
-
-        if (res.ok) {
-          const data = await res.json();
-          setName(data.name || "User");
-        } else {
-          setName("User");
-        }
-      } catch (err) {
-        console.error("Failed to fetch user:", err);
-        setName("User");
-      }
-    });
-
-    return () => unsubscribe();
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate("/login");
-    } catch (err) {
-      console.error("Logout failed:", err);
+  const handleGetStarted = () => {
+    if (onGetStartedClick) {
+      onGetStartedClick();
     }
+    setIsMenuOpen(false);
   };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-logo">Campus Placement</div>
+    <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
+      <div className="navbar-container">
+        <div className="navbar-logo">
+          <div className="navbar-logo-icon">
+            <Sparkles size={24} />
+          </div>
+          <span className="navbar-logo-text">PlacementHub</span>
+        </div>
 
-      <ul className="navbar-links">
-        {!user && (
-          <>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/about">About</Link></li>
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/register">Register</Link></li>
-          </>
-        )}
+        <div className={`navbar-menu ${isMenuOpen ? 'navbar-menu-open' : ''}`}>
+          <a href="#home" className="navbar-link" onClick={() => setIsMenuOpen(false)}>
+            Home
+          </a>
+          <a href="#about" className="navbar-link" onClick={() => setIsMenuOpen(false)}>
+            About
+          </a>
+          <button className="navbar-btn navbar-btn-desktop" onClick={handleGetStarted}>
+            Sign In <ArrowRight size={18} />
+          </button>
 
-        {user && (
-          <>
-            <li className="navbar-username">Hello, {name}</li>
-            <li className="navbar-logout" onClick={handleLogout}>
-              Logout
-            </li>
-          </>
-        )}
-      </ul>
+        </div>
+
+
+        <button
+          className="navbar-menu-toggle"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+      </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

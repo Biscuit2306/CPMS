@@ -1,0 +1,172 @@
+/* =========================================================
+   ADMIN SHARED STYLES – SCOPED ONLY
+   Wrap admin pages with: <div class="admin-scope">
+   ========================================================= */
+
+/* ---------- SAFE BASE ---------- */
+.admin-scope {
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ==================== PAGE HEADER ==================== */
+.admin-scope .admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-scope .admin-page-header h1 {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.admin-scope .admin-page-header p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.admin-scope .admin-header-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ==================== PRIMARY BUTTONS ==================== */
+.admin-scope .admin-add-btn,
+.admin-scope .admin-manage-btn,
+.admin-scope .admin-action-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.6rem;
+  background: #210F37;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.admin-scope .admin-add-btn:hover,
+.admin-scope .admin-manage-btn:hover,
+.admin-scope .admin-action-menu-btn:hover {
+  background: #1a0b2e;
+}
+
+.admin-scope .admin-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.6rem;
+  background: white;
+  color: #210F37;
+  border: 2px solid #210F37;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* ==================== STATUS BADGES ==================== */
+.admin-scope .admin-status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-scope .admin-status-placed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.admin-scope .admin-status-active {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.admin-scope .admin-status-inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* ==================== ACTION BUTTONS ==================== */
+.admin-scope .admin-view-btn,
+.admin-scope .admin-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background: #faf5fb;
+  color: #210F37;
+  border: 2px solid #210F37;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.admin-scope .admin-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border: 2px solid #fca5a5;
+  border-radius: 10px;
+}
+
+/* ==================== CARDS ==================== */
+.admin-scope .admin-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.9rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+}
+
+.admin-scope .admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.6rem;
+}
+
+.admin-scope .admin-card-header h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.admin-scope .admin-see-all {
+  color: #210F37;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ==================== FILTERS ==================== */
+.admin-scope .admin-filter-section {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.admin-scope .admin-filter-btn {
+  padding: 0.7rem 1.4rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-scope .admin-filter-btn.active {
+  background: #210F37;
+  border-color: #210F37;
+  color: white;
+}

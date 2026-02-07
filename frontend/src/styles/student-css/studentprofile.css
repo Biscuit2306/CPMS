@@ -1,0 +1,566 @@
+/* StudentProfile.css - Profile page specific styles */
+
+/* ==================== PAGE HEADER ==================== */
+.student-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.student-page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.student-page-header p {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.student-edit-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.student-edit-profile-btn:hover {
+  background: #6d28d9;
+  transform: scale(1.05);
+}
+
+/* ==================== PROFILE TABS ==================== */
+.student-profile-tabs-container {
+  background: white;
+  border-radius: 14px;
+  padding: 0.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+}
+
+.student-profile-tab-btn {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  background: transparent;
+  color: #6b7280;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.student-profile-tab-btn:hover {
+  background: #f3f4f6;
+}
+
+.student-profile-tab-active {
+  background: #7c3aed !important;
+  color: white !important;
+}
+
+.student-profile-tab-active:hover {
+  background: #7c3aed !important;
+}
+
+/* ==================== PROFILE CONTAINER ==================== */
+.student-profile-container {
+  max-width: 100%;
+}
+
+.student-profile-card {
+  background: white;
+  border-radius: 14px;
+  padding: 2.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.student-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.student-profile-avatar {
+  position: relative;
+}
+
+.student-profile-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #7c3aed;
+}
+
+.student-avatar-upload {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  background: #7c3aed;
+  border: 3px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.student-avatar-upload:hover {
+  background: #6d28d9;
+  transform: scale(1.1);
+}
+
+.student-profile-basic h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.student-profile-basic p {
+  color: #6b7280;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.student-profile-roll {
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+/* ==================== PROFILE SECTIONS ==================== */
+.student-profile-section {
+  margin-bottom: 2.5rem;
+}
+
+.student-profile-section:last-child {
+  margin-bottom: 0;
+}
+
+.student-profile-section h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+.student-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.student-profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.student-profile-field label {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.student-profile-field span,
+.student-profile-field input {
+  color: #1f2937;
+  font-size: 1rem;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 2px solid transparent;
+}
+
+.student-profile-field input {
+  border-color: #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.student-profile-field input:focus {
+  outline: none;
+  border-color: #7c3aed;
+  background: white;
+}
+
+.student-profile-value {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.student-profile-value svg {
+  color: #7c3aed;
+}
+
+.student-profile-value input {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.student-resume-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.student-resume-upload svg {
+  color: #7c3aed;
+}
+
+.student-upload-btn {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  background: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.student-upload-btn:hover {
+  background: #6d28d9;
+}
+
+/* ==================== SEMESTER PERFORMANCE ==================== */
+.student-semester-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.student-semester-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 10px;
+  align-items: center;
+}
+
+.student-semester-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-semester-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.25rem 0;
+}
+
+.student-semester-credits {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.student-semester-sgpa {
+  background: #7c3aed;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+/* ==================== PREVIOUS EDUCATION ==================== */
+.student-education-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.student-education-card {
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 10px;
+}
+
+.student-education-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.student-education-detail {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
+}
+
+/* ==================== SKILLS ==================== */
+.student-skills-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.student-skills-heading {
+  margin: 0;
+}
+
+.student-skills-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.student-skill-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-skill-category {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #7c3aed;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.student-skill-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.student-skill-tag {
+  padding: 0.625rem 1.25rem;
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.student-skill-remove-icon {
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.student-skill-remove-icon:hover {
+  opacity: 1;
+}
+
+/* ==================== PROJECTS ==================== */
+.student-projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.student-projects-heading {
+  margin: 0;
+}
+
+.student-projects-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.student-project-card {
+  padding: 1.75rem;
+  background: #f9fafb;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.student-project-card:hover {
+  border-color: #7c3aed;
+  background: #faf5ff;
+}
+
+.student-project-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.student-project-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.student-project-details {
+  flex: 1;
+}
+
+.student-project-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.student-project-tech-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.student-project-description {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+}
+
+.student-project-link {
+  color: #7c3aed;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.student-project-link:hover {
+  color: #6d28d9;
+  text-decoration: underline;
+}
+
+/* ==================== CERTIFICATIONS ==================== */
+.student-certifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.student-certifications-heading {
+  margin: 0;
+}
+
+.student-certifications-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.student-certification-card {
+  padding: 1.75rem;
+  background: #f9fafb;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.student-certification-card:hover {
+  border-color: #7c3aed;
+  background: #faf5ff;
+}
+
+.student-certification-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.student-certification-details {
+  flex: 1;
+}
+
+.student-certification-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.student-certification-organization {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.student-certification-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.student-certification-date {
+  color: #7c3aed;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.student-certification-id {
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.student-certification-meta-icon {
+  display: inline;
+}

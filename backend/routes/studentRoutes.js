@@ -3,24 +3,130 @@ const router = express.Router();
 const Student = require("../models/Student");
 
 /* =========================
-   REGISTER STUDENT
+   DASHBOARD DATA (AUTO-CREATE STUDENT)
 ========================= */
-router.post("/register", async (req, res) => {
+router.get("/dashboard/:uid", async (req, res) => {
   try {
-    const student = new Student(req.body);
-    await student.save();
-    res.status(201).json(student);
+    let student = await Student.findOne({
+      firebaseUid: req.params.uid,
+    });
+
+    // ✅ AUTO-CREATE STUDENT IF NOT FOUND
+    if (!student) {
+      student = await Student.create({
+        firebaseUid: req.params.uid,
+        fullName: "New Student",
+        branch: "",
+        rollNo: "",
+        email: "",
+        phone: "",
+        dob: "",
+        address: "",
+        linkedin: "",
+        github: "",
+        portfolio: "",
+        resume: "",
+        year: "",
+        cgpa: "",
+        skills: [],
+        projects: [],
+        certifications: [],
+        upcomingDrives: [],
+        applications: [],
+        notices: [],
+      });
+    }
+
+    res.json(student);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
 /* =========================
-   GET STUDENT PROFILE
+   ADD APPLICATION
 ========================= */
-router.get("/profile/:email", async (req, res) => {
+router.post("/applications/:uid", async (req, res) => {
   try {
-    const student = await Student.findOne({ email: req.params.email });
+    const student = await Student.findOneAndUpdate(
+      { firebaseUid: req.params.uid },
+      { $push: { applications: req.body } },
+      { new: true }
+    );
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    res.json(student.applications);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* =========================
+   UPDATE APPLICATION STATUS
+========================= */
+router.put("/applications/:uid/:appId", async (req, res) => {
+  try {
+    const student = await Student.findOneAndUpdate(
+      {
+        firebaseUid: req.params.uid,
+        "applications._id": req.params.appId,
+      },
+      {
+        $set: {
+          "applications.$.status": req.body.status,
+        },
+      },
+      { new: true }
+    );
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    res.json(student.applications);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* =========================
+   DELETE APPLICATION
+========================= */
+router.delete("/applications/:uid/:appId", async (req, res) => {
+  try {
+    const student = await Student.findOneAndUpdate(
+      { firebaseUid: req.params.uid },
+      {
+        $pull: {
+          applications: { _id: req.params.appId },
+        },
+      },
+      { new: true }
+    );
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    res.json(student.applications);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* =========================
+   UPDATE STUDENT PROFILE
+========================= */
+router.put("/profile/:uid", async (req, res) => {
+  try {
+    const student = await Student.findOneAndUpdate(
+      { firebaseUid: req.params.uid },
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
 
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
@@ -33,18 +139,13 @@ router.get("/profile/:email", async (req, res) => {
 });
 
 /* =========================
-   UPDATE STUDENT PROFILE
+   GET STUDENT PROFILE
 ========================= */
-router.put("/profile/:email", async (req, res) => {
+router.get("/profile/:uid", async (req, res) => {
   try {
-    // prevent password overwrite accidentally
-    const { password, ...safeData } = req.body;
-
-    const student = await Student.findOneAndUpdate(
-      { email: req.params.email },
-      safeData,
-      { new: true }
-    );
+    const student = await Student.findOne({
+      firebaseUid: req.params.uid,
+    });
 
     if (!student) {
       return res.status(404).json({ error: "Student not found" });

@@ -1,244 +1,178 @@
-import "../styles/home.css";
-import { Users, Building2, TrendingUp, Award, CheckCircle, ArrowRight } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import React, { useState, useEffect } from 'react';
+import { Sparkles, Target, BarChart3, Lock, BookOpen } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import PortalModal from '../components/PortalModal';
+import '../styles/home.css';
 
-function Home() {
+const Home = () => {
+  const [isPortalModalOpen, setIsPortalModalOpen] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  const stats = [
+    { number: '500+', label: 'Companies' },
+    { number: '50+', label: 'Colleges' },
+    { number: '10K+', label: 'Students' },
+    { number: '95%', label: 'Success Rate' }
+  ];
+
+  const features = [
+    {
+      id: 1,
+      title: 'Smart Matching',
+      description: 'AI-powered job matching based on skills, interests, and career goals',
+      icon: Target
+    },
+    {
+      id: 2,
+      title: 'Real-time Tracking',
+      description: 'Track your application status and get instant updates on opportunities',
+      icon: BarChart3
+    },
+    {
+      id: 3,
+      title: 'Secure Platform',
+      description: 'Enterprise-grade security to protect your data and privacy',
+      icon: Lock
+    },
+    {
+      id: 4,
+      title: 'Career Resources',
+      description: 'Access resume templates, interview tips, and career guidance',
+      icon: BookOpen
+    }
+  ];
+
   return (
     <div className="home-page">
-      < Navbar />
-      {/* HERO SECTION */}
+      {/* Animated Background */}
+      <div className="home-bg-wrapper">
+        <div className="home-gradient-orb home-orb-1"></div>
+        <div className="home-gradient-orb home-orb-2"></div>
+        <div className="home-gradient-orb home-orb-3"></div>
+        <div 
+          className="home-mouse-follower"
+          style={{
+            left: `${mousePosition.x}%`,
+            top: `${mousePosition.y}%`
+          }}
+        ></div>
+      </div>
+
+      {/* Navigation */}
+      <Navbar onGetStartedClick={() => setIsPortalModalOpen(true)} />
+
+      {/* Hero Section */}
       <section className="home-hero">
-        <span className="hero-badge">Campus Recruitment Platform</span>
-
-        <h1>
-          College Campus <br /> Placement Management System
-        </h1>
-
-        <p>
-          A centralized digital platform that streamlines student placements,
-          recruiter coordination, and campus hiring processes efficiently.
-        </p>
-
-        <div className="hero-actions">
-          <button className="primary-btn">Get Started</button>
-          <button className="secondary-btn">Learn More</button>
-        </div>
-
-        {/* Hero Illustration */}
-        <div className="hero-illustration">
-          <div className="illustration-card illustration-card-1">
-            <Users size={40} />
-            <p>Students</p>
-          </div>
-          <div className="illustration-card illustration-card-2">
-            <Building2 size={40} />
-            <p>Companies</p>
-          </div>
-          <div className="illustration-card illustration-card-3">
-            <TrendingUp size={40} />
-            <p>Success</p>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS SECTION */}
-      <section className="home-stats">
-        <div className="stat-card">
-          <h3>500+</h3>
-          <p>Students Placed</p>
-        </div>
-        <div className="stat-card">
-          <h3>120+</h3>
-          <p>Recruiting Companies</p>
-        </div>
-        <div className="stat-card">
-          <h3>95%</h3>
-          <p>Placement Rate</p>
-        </div>
-      </section>
-
-      {/* FEATURES SECTION */}
-      <section className="home-features">
-        <h2>Platform Capabilities</h2>
-        <p className="section-subtitle">
-          Designed to simplify and digitize the entire campus placement process
-        </p>
-
-        <div className="feature-grid">
-          <div className="feature-card">
-            <div className="feature-icon">📋</div>
-            <h3>Student Profile & Resume Management</h3>
-            <p>Create comprehensive profiles and manage multiple resume versions</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">💼</div>
-            <h3>Company Job & Internship Listings</h3>
-            <p>Browse opportunities from top recruiting companies</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">📊</div>
-            <h3>Placement Tracking & Reports</h3>
-            <p>Real-time analytics and detailed placement reports</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">🔔</div>
-            <h3>Real-Time Notifications & Updates</h3>
-            <p>Stay informed about deadlines and opportunities</p>
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS SECTION */}
-      <section className="home-how-it-works">
-        <h2>How It Works</h2>
-        <p className="section-subtitle">
-          Simple steps to kickstart your placement journey
-        </p>
-
-        <div className="steps-container">
-          <div className="step-card">
-            <div className="step-number">1</div>
-            <div className="step-content">
-              <h3>Create Your Profile</h3>
-              <p>Sign up and build your academic and professional profile with all necessary details</p>
+        <div className="home-container">
+          <div className="home-hero-content">
+            <div className="home-badge">
+              <Sparkles size={16} />
+              <span>Welcome to Campus Placement Portal</span>
             </div>
-          </div>
-
-          <div className="step-card">
-            <div className="step-number">2</div>
-            <div className="step-content">
-              <h3>Browse Opportunities</h3>
-              <p>Explore job drives, internships, and placement opportunities from top companies</p>
-            </div>
-          </div>
-
-          <div className="step-card">
-            <div className="step-number">3</div>
-            <div className="step-content">
-              <h3>Apply & Track</h3>
-              <p>Submit applications and track your progress through each recruitment stage</p>
-            </div>
-          </div>
-
-          <div className="step-card">
-            <div className="step-number">4</div>
-            <div className="step-content">
-              <h3>Get Placed</h3>
-              <p>Receive offers and start your professional career with leading organizations</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* BENEFITS SECTION */}
-      <section className="home-benefits">
-        <div className="benefits-container">
-          <div className="benefits-text">
-            <h2>Why Choose Our Platform?</h2>
-            <p className="benefits-intro">
-              Experience a seamless placement process with features designed for success
+            
+            <h1 className="home-hero-title">
+              Connect Your
+              <span className="home-gradient-text"> Future</span>
+            </h1>
+            
+            <p className="home-hero-subtitle">
+              Bridging the gap between talent and opportunity. 
+              Your journey to a successful career starts here.
             </p>
 
-            <div className="benefits-list">
-              <div className="benefit-item">
-                <CheckCircle className="benefit-icon" />
-                <div>
-                  <h4>Centralized Dashboard</h4>
-                  <p>Access all placement activities from one unified interface</p>
-                </div>
-              </div>
+            <button 
+              className="home-cta-button"
+              onClick={() => setIsPortalModalOpen(true)}
+            >
+              Get Started Now
+            </button>
 
-              <div className="benefit-item">
-                <CheckCircle className="benefit-icon" />
-                <div>
-                  <h4>Smart Matching</h4>
-                  <p>Get matched with opportunities that align with your skills and preferences</p>
+            {/* Stats */}
+            <div className="home-stats-grid">
+              {stats.map((stat, index) => (
+                <div key={index} className="home-stat-card">
+                  <div className="home-stat-number">{stat.number}</div>
+                  <div className="home-stat-label">{stat.label}</div>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
 
-              <div className="benefit-item">
-                <CheckCircle className="benefit-icon" />
-                <div>
-                  <h4>Automated Workflows</h4>
-                  <p>Reduce manual tasks with automated application and scheduling processes</p>
-                </div>
-              </div>
+          {/* Features Section */}
+          <div className="home-features-section">
+            <h2 className="home-section-title">Why Choose Us?</h2>
+            <div className="home-features-grid">
+              {features.map((feature, index) => {
+                const IconComponent = feature.icon;
+                return (
+                  <div 
+                    key={feature.id} 
+                    className="home-feature-card"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className="home-feature-icon">
+                      <IconComponent size={48} strokeWidth={1.5} />
+                    </div>
+                    <h3 className="home-feature-title">{feature.title}</h3>
+                    <p className="home-feature-description">{feature.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
-              <div className="benefit-item">
-                <CheckCircle className="benefit-icon" />
-                <div>
-                  <h4>Data Security</h4>
-                  <p>Your personal and academic information is protected with enterprise-grade security</p>
-                </div>
+          {/* How It Works Section */}
+          <div className="home-process-section">
+            <h2 className="home-section-title">How It Works</h2>
+            <div className="home-process-grid">
+              <div className="home-process-step">
+                <div className="home-step-number">1</div>
+                <h3 className="home-step-title">Create Your Profile</h3>
+                <p className="home-step-description">Sign up and build your comprehensive profile with your skills, education, and career preferences</p>
+              </div>
+              <div className="home-process-arrow">→</div>
+              <div className="home-process-step">
+                <div className="home-step-number">2</div>
+                <h3 className="home-step-title">Get Matched</h3>
+                <p className="home-step-description">Our AI algorithm matches you with the best opportunities based on your profile and aspirations</p>
+              </div>
+              <div className="home-process-arrow">→</div>
+              <div className="home-process-step">
+                <div className="home-step-number">3</div>
+                <h3 className="home-step-title">Apply & Succeed</h3>
+                <p className="home-step-description">Apply to positions, track your applications, and land your dream job with our support</p>
               </div>
             </div>
           </div>
-
-          <div className="benefits-visual">
-            <div className="visual-card visual-card-1">
-              <Award size={48} />
-              <h3>Top Recruiters</h3>
-              <p>Access to 120+ leading companies</p>
-            </div>
-            <div className="visual-card visual-card-2">
-              <TrendingUp size={48} />
-              <h3>High Success Rate</h3>
-              <p>95% placement achievement</p>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* TESTIMONIALS SECTION */}
-      <section className="home-testimonials">
-        <h2>Student Success Stories</h2>
-        <p className="section-subtitle">
-          Hear from students who landed their dream jobs through our platform
-        </p>
+      {/* Footer */}
+      <Footer />
 
-        <div className="testimonials-grid">
-          <div className="testimonial-card">
-            <div className="testimonial-avatar">RS</div>
-            <p className="testimonial-text">
-              "The platform made my placement journey so smooth! I got placed at Google within 3 weeks of registration."
-            </p>
-            <h4>Rahul Sharma</h4>
-            <p className="testimonial-role">Software Engineer at Google</p>
-          </div>
-
-          <div className="testimonial-card">
-            <div className="testimonial-avatar">PK</div>
-            <p className="testimonial-text">
-              "Real-time notifications kept me updated about every opportunity. Highly recommended for all students!"
-            </p>
-            <h4>Priya Kapoor</h4>
-            <p className="testimonial-role">Data Analyst at Microsoft</p>
-          </div>
-
-          <div className="testimonial-card">
-            <div className="testimonial-avatar">AM</div>
-            <p className="testimonial-text">
-              "The best part was tracking all my applications in one place. It reduced my stress during placement season."
-            </p>
-            <h4>Amit Mehta</h4>
-            <p className="testimonial-role">Full Stack Developer at Amazon</p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA SECTION */}
-      <section className="home-cta">
-        <h2>Ready to Start Your Placement Journey?</h2>
-        <p>Join thousands of students who have successfully landed their dream jobs</p>
-        <button className="cta-button">
-          Get Started Today <ArrowRight size={20} />
-        </button>
-      </section>
-    <Footer />
+      {/* Portal Selection Modal */}
+      <PortalModal 
+        isOpen={isPortalModalOpen}
+        onClose={() => setIsPortalModalOpen(false)}
+      />
     </div>
   );
-}
+};
 
 export default Home;
-

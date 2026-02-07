@@ -1,0 +1,102 @@
+/* Students.css */
+@import './AdminShared.css';
+
+.admin-students-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-student-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.9rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.admin-student-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(33, 15, 55, 0.2);
+}
+
+.admin-student-header {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.admin-student-avatar {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #210F37, #3a1a5c);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.admin-student-info h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.3rem;
+}
+
+.admin-student-info p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-cgpa-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-student-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-bottom: 1.6rem;
+}
+
+.admin-student-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.admin-student-row svg {
+  color: #210F37;
+  flex-shrink: 0;
+}
+
+.admin-student-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .admin-students-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-student-actions {
+    grid-template-columns: 1fr;
+  }
+}

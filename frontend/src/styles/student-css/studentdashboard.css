@@ -1,0 +1,413 @@
+/* studentdashboard.css - Dashboard Page Styling */
+
+/* ==================== WELCOME BANNER ==================== */
+.student-welcome-banner {
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
+}
+
+.student-welcome-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.student-welcome-text h1 {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.student-welcome-text p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.student-welcome-illustration {
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==================== STATS GRID ==================== */
+.student-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.student-stat-card {
+  background: white;
+  padding: 1.75rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.student-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.student-stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.student-stat-content h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.student-stat-content p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* ==================== CONTENT GRID ==================== */
+.student-content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* ==================== CARDS ==================== */
+.student-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.student-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.student-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.student-card-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.student-see-all {
+  color: #7c3aed;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.student-see-all:hover {
+  color: #6d28d9;
+}
+
+/* ==================== DRIVES LIST ==================== */
+.student-drives-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.student-drive-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.student-drive-item:hover {
+  background: #f3f4f6;
+  transform: translateX(4px);
+}
+
+.student-drive-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.student-drive-info {
+  flex: 1;
+}
+
+.student-drive-info h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.student-drive-role {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.student-drive-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.student-drive-date {
+  color: #6b7280;
+}
+
+.student-drive-package {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.student-apply-btn {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.student-apply-btn:hover {
+  background: #6d28d9;
+  transform: scale(1.05);
+}
+
+/* ==================== APPLICATIONS LIST ==================== */
+.student-applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.student-application-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.student-application-item:hover {
+  background: #f3f4f6;
+}
+
+.student-app-company {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.student-company-logo {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.student-app-details h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.student-app-date {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.student-status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.student-status-interview-scheduled {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.student-status-applied {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.student-status-test-cleared {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ==================== NOTICES LIST ==================== */
+.student-notices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.student-notice-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border-left: 4px solid #7c3aed;
+  transition: all 0.3s ease;
+}
+
+.student-notice-item:hover {
+  background: #f3f4f6;
+  transform: translateX(4px);
+}
+
+.student-notice-icon {
+  width: 44px;
+  height: 44px;
+  background: #ede9fe;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c3aed;
+  flex-shrink: 0;
+}
+
+.student-notice-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.student-notice-content p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.student-notice-time {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .student-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-welcome-banner {
+    padding: 2rem;
+  }
+
+  .student-welcome-text h1 {
+    font-size: 1.75rem;
+  }
+
+  .student-welcome-text p {
+    font-size: 0.95rem;
+  }
+
+  .student-welcome-illustration {
+    display: none;
+  }
+
+  .student-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-drive-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .student-apply-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-welcome-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .student-stat-card {
+    padding: 1.25rem;
+  }
+
+  .student-stat-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .student-stat-content h3 {
+    font-size: 1.5rem;
+  }
+
+  .student-card {
+    padding: 1.25rem;
+  }
+
+  .student-drive-meta {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

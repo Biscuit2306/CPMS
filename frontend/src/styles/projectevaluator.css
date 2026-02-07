@@ -1,0 +1,588 @@
+/* Project Evaluator Feature Styles */
+
+/* Floating Button */
+.project-eval-floating-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 6rem;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+.project-eval-floating-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5);
+}
+
+.project-eval-floating-btn:active {
+  transform: scale(0.95);
+}
+
+/* Modal Overlay */
+.project-eval-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Modal Container */
+.project-eval-modal {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+/* Close Button */
+.project-eval-close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 10px;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.project-eval-close-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+/* Modal Content */
+.project-eval-modal-content {
+  padding: 3rem;
+}
+
+/* Form Section */
+.project-eval-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.project-eval-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.project-eval-header-icon {
+  color: #10b981;
+  margin-bottom: 1rem;
+}
+
+.project-eval-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.project-eval-header p {
+  color: #6b7280;
+  font-size: 1.05rem;
+}
+
+/* Form */
+.project-eval-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.project-eval-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.project-eval-form-group label {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.project-eval-input,
+.project-eval-textarea {
+  padding: 0.875rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #1f2937;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.project-eval-input:focus,
+.project-eval-textarea:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.project-eval-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Error Message */
+.project-eval-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+/* Button Group */
+.project-eval-button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.project-eval-submit-btn,
+.project-eval-history-btn,
+.project-eval-new-btn {
+  flex: 1;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.project-eval-submit-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+.project-eval-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4);
+}
+
+.project-eval-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.project-eval-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.project-eval-history-btn {
+  background: #f3f4f6;
+  color: #1f2937;
+  border: 2px solid #e5e7eb;
+}
+
+.project-eval-history-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.project-eval-new-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+.project-eval-new-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4);
+}
+
+.project-eval-new-btn:active {
+  transform: translateY(0);
+}
+
+/* Spinner Animation */
+.project-eval-spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Result Section */
+.project-eval-result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.project-eval-result-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.project-eval-score-circle {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+}
+
+.project-eval-score {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+.project-eval-result-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.project-eval-result-header p {
+  color: #6b7280;
+  font-size: 1.05rem;
+}
+
+/* Feedback Sections */
+.project-eval-feedback-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.project-eval-feedback-card {
+  padding: 1.75rem;
+  border-radius: 14px;
+  border-left: 4px solid;
+}
+
+.project-eval-feedback-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.project-eval-feedback-card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.project-eval-feedback-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.project-eval-feedback-card ul li {
+  padding-left: 1.5rem;
+  position: relative;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.project-eval-feedback-card ul li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+/* Strengths Card */
+.project-eval-strengths {
+  background: #d1fae5;
+  border-left-color: #10b981;
+}
+
+.project-eval-strengths .project-eval-feedback-card-header {
+  color: #065f46;
+}
+
+.project-eval-strengths ul li::before {
+  color: #10b981;
+}
+
+/* Improvements Card */
+.project-eval-improvements {
+  background: #fef3c7;
+  border-left-color: #f59e0b;
+}
+
+.project-eval-improvements .project-eval-feedback-card-header {
+  color: #92400e;
+}
+
+.project-eval-improvements ul li::before {
+  color: #f59e0b;
+}
+
+/* Readiness Card */
+.project-eval-readiness {
+  background: #dbeafe;
+  border-left-color: #06b6d4;
+}
+
+.project-eval-readiness .project-eval-feedback-card-header {
+  color: #0c4a6e;
+}
+
+.project-eval-readiness-text {
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.project-eval-readiness-text::before {
+  content: '💡';
+  position: absolute;
+  left: 0;
+}
+
+/* History Section */
+.project-eval-history-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.project-eval-history-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.project-eval-history-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.project-eval-history-header p {
+  color: #6b7280;
+  font-size: 1.05rem;
+}
+
+/* Empty State */
+.project-eval-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.project-eval-empty-icon {
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.project-eval-empty-state p {
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* History Grid */
+.project-eval-history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.project-eval-history-card {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.project-eval-history-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+  border-color: #10b981;
+}
+
+.project-eval-history-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.project-eval-history-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.project-eval-history-score-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.project-eval-history-card h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.project-eval-history-domain {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.project-eval-history-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.project-eval-delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.project-eval-delete-btn:hover {
+  background: #fecaca;
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .project-eval-modal-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .project-eval-floating-btn {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+  }
+
+  .project-eval-header h2,
+  .project-eval-result-header h2,
+  .project-eval-history-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .project-eval-button-group {
+    flex-direction: column;
+  }
+
+  .project-eval-history-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-eval-score-circle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .project-eval-score {
+    font-size: 1.5rem;
+  }
+}
+
+/* Scrollbar Styling */
+.project-eval-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.project-eval-modal::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 10px;
+}
+
+.project-eval-modal::-webkit-scrollbar-thumb {
+  background: #10b981;
+  border-radius: 10px;
+}
+
+.project-eval-modal::-webkit-scrollbar-thumb:hover {
+  background: #059669;
+}

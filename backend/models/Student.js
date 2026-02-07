@@ -1,62 +1,130 @@
 const mongoose = require("mongoose");
 
-const studentSchema = new mongoose.Schema(
+const StudentSchema = new mongoose.Schema(
   {
-    // Firebase user reference
     firebaseUid: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
+      index: true,
     },
 
-    // Basic info
-    name: {
+    fullName: {
       type: String,
-      required: true
+      default: "",
+      trim: true,
     },
+
     email: {
       type: String,
-      required: true,
-      unique: true
+      default: "",
+      lowercase: true,
+      trim: true,
     },
 
-    // Academic details
-    college: String,
-    branch: String,
-    year: Number,
-    cgpa: String,
-    passingYear: String,
+    phone: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
-    // Profile info
-    bio: String,
-    location: String,
+    branch: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
-    // Skills shown in dashboard
-    skills: [
-      {
-        name: String,
-        level: String // Beginner / Intermediate / Advanced
-      }
-    ],
+    rollNo: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
-    // Projects section
-    projects: [
-      {
-        title: String,
-        description: String,
-        technologies: [String],
-        link: String
-      }
-    ],
+    dob: {
+      type: String,
+      default: "",
+    },
 
-    // Social & professional links
-    links: {
-      linkedin: String,
-      github: String,
-      portfolio: String
-    }
+    address: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    linkedin: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    github: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    portfolio: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    resume: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    year: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    cgpa: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // Optional fields (safe for future use)
+    skills: {
+      type: Array,
+      default: [],
+    },
+
+    projects: {
+      type: Array,
+      default: [],
+    },
+
+    certifications: {
+      type: Array,
+      default: [],
+    },
+
+    applications: {
+      type: Array,
+      default: [],
+    },
+
+    upcomingDrives: {
+      type: Array,
+      default: [],
+    },
+
+    notices: {
+      type: Array,
+      default: [],
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-module.exports = mongoose.model("Student", studentSchema);
+/**
+ * 🚨 CRITICAL LINE
+ * Must export the MONGOOSE MODEL
+ */
+module.exports = mongoose.model("Student", StudentSchema);

@@ -1,131 +1,79 @@
+import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+/* ================= PUBLIC ================= */
 import Home from "./pages/Home";
-import About from "./pages/About";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import PortalModal from "./components/PortalModal";
-import StudentDashboard from "./pages/StudentDashboard";
-import JobDrives from "./pages/JobDrives";
-import Applications from "./pages/Applications";
-import RecruiterDashboard from "./pages/RecruiterDashboard";
-import JobPosting from "./pages/JobPosting";
-import AdminDashboard from "./pages/AdminDashboard";
-import Unauthorized from "./pages/Unauthorized";
-import Achievements from "./pages/Achievements";
-import Profile from "./pages/Profile";
+import UnifiedLogin from "./pages/UnifiedLogin";
+import UnifiedRegister from "./pages/UnifiedRegister";
+import VerifyEmail from "./pages/VerifyEmail";
 
-import ProtectedRoute from "./routes/ProtectedRoute";
-import SchedulePage from "./pages/SchedulePage";
+import { StudentProvider } from "./context/StudentContext";
+
+/* ================= STUDENT ================= */
+import StudentDashboard from "./pages/student/StudentDashboard";
+import StudentJobDrives from "./pages/student/StudentJobDrives";
+import StudentApplications from "./pages/student/StudentApplications";
+import StudentSchedule from "./pages/student/StudentSchedule";
+import StudentAchievements from "./pages/student/StudentAchievements";
+import StudentProfile from "./pages/student/StudentProfile";
+
+/* ================= RECRUITER ================= */
+import RecruiterDashboard from "./pages/RecruiterDashboard";
+
+/* ================= ADMIN ================= */
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminStudents from "./pages/admin/AdminStudents";
+import AdminRecruiters from "./pages/admin/AdminRecruiters";
+import AdminCompanies from "./pages/admin/AdminCompanies";
+import AdminPlacementDrives from "./pages/admin/AdminPlacementDrives";
+import AdminSystemLogs from "./pages/admin/AdminSystemLogs";
+import AdminProfile from "./pages/admin/AdminProfile";
+
+/* ================= FEATURES ================= */
+import ProjectEvaluator from "./pages/ProjectEvaluator";
+import InterviewFeature from "./pages/InterviewFeature";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
+        {/* PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/portal" element={<PortalModal />} />
+        <Route path="/login/:role" element={<UnifiedLogin />} />
+        <Route path="/register/:role" element={<UnifiedRegister />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
-        {/* Protected Routes */}
-        {/* Student Dashboard */}
-        <Route
-          path="/student"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <StudentDashboard />
-            </ProtectedRoute>
-          }
-        />
+        {/* FEATURES */}
+        <Route path="/project-evaluator" element={<ProjectEvaluator />} />
+        <Route path="/interview" element={<InterviewFeature />} />
 
-        {/* Job Drives for Students */}
-        <Route
-          path="/pages/jobdrives"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <JobDrives />
-            </ProtectedRoute>
-          }
-        />
+        {/* STUDENT ROUTES */}
+        <Route path="/student/dashboard" element={<StudentProvider><StudentDashboard /></StudentProvider>} />
+        <Route path="/student/job-drives" element={<StudentProvider><StudentJobDrives /></StudentProvider>} />
+        <Route path="/student/applications" element={<StudentProvider><StudentApplications /></StudentProvider>} />
+        <Route path="/student/schedule" element={<StudentProvider><StudentSchedule /></StudentProvider>} />
+        <Route path="/student/achievements" element={<StudentProvider><StudentAchievements /></StudentProvider>} />
+        <Route path="/student/profile" element={<StudentProvider><StudentProfile /></StudentProvider>} />
+        <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
 
-        {/* Application for Students */}
-        <Route
-          path="/applications"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <Applications />
-            </ProtectedRoute>
-          }
-        /> 
-        
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <Profile />
-            </ProtectedRoute>
-          }
-        /> 
+        {/* RECRUITER */}
+        <Route path="/recruiter" element={<RecruiterDashboard />} />
 
-        {/* Schedule for Students */}
-        <Route
-          path="/schedulepage"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <SchedulePage />
-            </ProtectedRoute>
-          } 
-        />
-        {/* Achievements for Students */}
-        <Route
-          path="/achievements"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <Achievements />
-            </ProtectedRoute>
-          } 
-        />
+        {/* ADMIN */}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/students" element={<AdminStudents />} />
+        <Route path="/admin/recruiters" element={<AdminRecruiters />} />
+        <Route path="/admin/companies" element={<AdminCompanies />} />
+        <Route path="/admin/drives" element={<AdminPlacementDrives />} />
+        <Route path="/admin/logs" element={<AdminSystemLogs />} />
+        <Route path="/admin/profile" element={<AdminProfile />} />
 
-        {/* Recruiter Dashboard */}
-        <Route
-          path="/recruiter"
-          element={
-            <ProtectedRoute allowedRoles={["recruiter"]}>
-              <RecruiterDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Job Posting for recruiter*/}
-        <Route
-          path="/JobPosting"
-          element={
-            <ProtectedRoute allowedRoles={["recruiter"]}>
-              <JobPosting />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Admin Dashboard */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Unauthorized */}
-        <Route path="/unauthorized" element={<Unauthorized />} />
-
-        {/* Fallback for unknown routes */}
-        <Route path="*" element={<Navigate to="/" />} />
+        {/* CATCH ALL */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
-export default App; 
+export default App;

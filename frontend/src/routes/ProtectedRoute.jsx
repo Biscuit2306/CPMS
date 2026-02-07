@@ -3,7 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { useEffect, useState } from "react";
 
-function ProtectedRoute({ children, allowedRoles }) {
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
@@ -19,13 +19,25 @@ function ProtectedRoute({ children, allowedRoles }) {
       setUser(firebaseUser);
 
       try {
+        const idToken = await firebaseUser.getIdToken();
         const res = await fetch(
-          `http://localhost:5000/api/users/${firebaseUser.uid}`
+          `${API_BASE}/api/auth/resolve-login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${idToken}`
+            },
+            body: JSON.stringify({
+              firebaseUid: firebaseUser.uid,
+              requestedRole: localStorage.getItem("userRole") || "student"
+            })
+          }
         );
         const data = await res.json();
         setRole(data.role);
       } catch (err) {
-        console.error("Role fetch failed");
+        console.error("Role fetch failed:", err);
       }
 
       setLoading(false);

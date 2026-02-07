@@ -1,0 +1,120 @@
+/* Companies.css */
+@import './AdminShared.css';
+
+.admin-companies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-company-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.9rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.admin-company-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(33, 15, 55, 0.2);
+}
+
+.admin-company-header {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.admin-company-logo {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #210F37, #3a1a5c);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.admin-company-info h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.3rem;
+}
+
+.admin-company-info p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-company-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-bottom: 1.6rem;
+}
+
+.admin-company-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.admin-company-row svg {
+  color: #210F37;
+  flex-shrink: 0;
+}
+
+.admin-company-stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin: 0.5rem 0;
+}
+
+.admin-company-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 0.8rem;
+  background: #f8fafc;
+  border-radius: 10px;
+}
+
+.admin-stat-label {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.admin-stat-value {
+  color: #1f2937;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.admin-company-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .admin-companies-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-company-actions {
+    grid-template-columns: 1fr;
+  }
+}

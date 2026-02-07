@@ -1,0 +1,863 @@
+/* ===========================
+   GOOGLE FONTS IMPORT
+   =========================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ===========================
+   CSS VARIABLES & THEME COLORS
+   =========================== */
+:root {
+  /* Student Theme - Purple */
+  --student-primary: #7c3aed;
+  --student-secondary: #8b5cf6;
+  --student-accent: #a78bfa;
+  --student-dark: #6d28d9;
+  --student-light: #c4b5fd;
+  
+  /* Admin Theme - Deep Purple */
+  --admin-primary: #210F37;
+  --admin-secondary: #1a0b2e;
+  --admin-accent: #3a1a5c;
+  --admin-dark: #1a0b2e;
+  --admin-light: #4a2560;
+  
+  /* Recruiter Theme - Purple Magenta */
+  --recruiter-primary: #4F1C51;
+  --recruiter-secondary: #6b2870;
+  --recruiter-accent: #8a3a8f;
+  --recruiter-dark: #3d1640;
+  --recruiter-light: #7d2f82;
+  
+  /* Dark Card Background */
+  --card-dark: #1e1b4b;
+  --text-light: #e9d5ff;
+  --text-lighter: #f3e8ff;
+  --text-primary: #ffffff;
+  --white: #ffffff;
+}
+
+/* ===========================
+   RESET & BASE STYLES
+   =========================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===========================
+   MAIN CONTAINER - FULL SCREEN
+   =========================== */
+.register-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.5s ease;
+}
+
+/* Student Theme Background */
+.register-container.role-student {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+}
+
+/* Admin Theme Background */
+.register-container.role-admin {
+  background: linear-gradient(135deg, #210F37 0%, #3a1a5c 100%);
+}
+
+/* Recruiter Theme Background */
+.register-container.role-recruiter {
+  background: linear-gradient(135deg, #4F1C51 0%, #6b2870 100%);
+}
+
+/* ===========================
+   DECORATIVE ELEMENTS
+   =========================== */
+.decorative-circle {
+  position: fixed;
+  border-radius: 50%;
+  opacity: 0.1;
+  pointer-events: none;
+  animation: float 25s infinite ease-in-out;
+  filter: blur(60px);
+  z-index: 0;
+}
+
+.circle-1 {
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  right: -200px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.circle-2 {
+  width: 500px;
+  height: 500px;
+  bottom: -150px;
+  left: -150px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.circle-3 {
+  width: 350px;
+  height: 350px;
+  top: 40%;
+  left: -100px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  25% { transform: translate(40px, -60px) rotate(90deg) scale(1.1); }
+  50% { transform: translate(-30px, 30px) rotate(180deg) scale(0.9); }
+  75% { transform: translate(50px, 40px) rotate(270deg) scale(1.05); }
+}
+
+/* ===========================
+   WRAPPER & CARD - LANDSCAPE TWO-COLUMN
+   =========================== */
+.register-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+}
+
+.register-card {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.95) 0%, rgba(26, 22, 64, 0.95) 100%);
+  border-radius: 24px;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: grid;
+  grid-template-columns: 45% 55%;
+  height: calc(100vh - 60px);
+  max-height: 800px;
+}
+
+/* Student Card Accent */
+.role-student .register-card {
+  border-top: 4px solid #7c3aed;
+  box-shadow: 0 30px 80px -20px rgba(124, 58, 237, 0.6);
+}
+
+/* Admin Card Accent */
+.role-admin .register-card {
+  border-top: 4px solid #210F37;
+  box-shadow: 0 30px 80px -20px rgba(33, 15, 55, 0.6);
+}
+
+/* Recruiter Card Accent */
+.role-recruiter .register-card {
+  border-top: 4px solid #4F1C51;
+  box-shadow: 0 30px 80px -20px rgba(79, 28, 81, 0.6);
+}
+
+/* ===========================
+   LEFT SIDE - BRANDING PANEL
+   =========================== */
+.register-left {
+  padding: 40px 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient overlay on left side */
+.register-left::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(167, 139, 250, 0.1) 100%);
+  border-radius: 24px 0 0 24px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.role-admin .register-left::before {
+  background: linear-gradient(135deg, rgba(33, 15, 55, 0.2) 0%, rgba(58, 26, 92, 0.1) 100%);
+}
+
+.role-recruiter .register-left::before {
+  background: linear-gradient(135deg, rgba(79, 28, 81, 0.2) 0%, rgba(107, 40, 112, 0.1) 100%);
+}
+
+.brand-section {
+  position: relative;
+  z-index: 1;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.logo-icon {
+  font-size: 44px;
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+  }
+  50% { 
+    transform: scale(1.08);
+    filter: drop-shadow(0 6px 20px rgba(255, 255, 255, 0.5));
+  }
+}
+
+.logo-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -1px;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+}
+
+.logo-text span {
+  background: linear-gradient(135deg, #a78bfa, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.role-student .logo-text span {
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.role-admin .logo-text span {
+  background: linear-gradient(135deg, #4a2560, #6d3a80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.role-recruiter .logo-text span {
+  background: linear-gradient(135deg, #6b2870, #8a3a8f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.welcome-content {
+  margin-bottom: 28px;
+}
+
+.welcome-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.welcome-subtitle {
+  font-size: 15px;
+  color: var(--text-light);
+  margin-bottom: 14px;
+  opacity: 0.95;
+}
+
+.welcome-description {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.features-list {
+  margin-top: 25px;
+}
+
+.features-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-lighter);
+  margin-bottom: 14px;
+}
+
+.features-items {
+  list-style: none;
+  padding: 0;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--text-light);
+  opacity: 0.9;
+}
+
+.feature-icon {
+  width: 22px;
+  height: 22px;
+  background: rgba(167, 139, 250, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a78bfa;
+  font-weight: 600;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.role-student .feature-icon {
+  background: rgba(124, 58, 237, 0.2);
+  color: #a78bfa;
+}
+
+.role-admin .feature-icon {
+  background: rgba(74, 37, 96, 0.3);
+  color: #8a76a0;
+}
+
+.role-recruiter .feature-icon {
+  background: rgba(107, 40, 112, 0.2);
+  color: #9d5fa1;
+}
+
+/* ===========================
+   RIGHT SIDE - FORM PANEL
+   =========================== */
+.register-right {
+  padding: 40px 35px;
+  background: rgba(21, 18, 50, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Right Panel */
+.register-right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.register-right::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.register-right::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.3);
+  border-radius: 10px;
+}
+
+.register-right::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.5);
+}
+
+.form-container {
+  width: 100%;
+}
+
+/* ===========================
+   GOOGLE SIGN IN BUTTON
+   =========================== */
+.google-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.google-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(255, 255, 255, 0.2);
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ===========================
+   DIVIDER
+   =========================== */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 18px 0 20px 0;
+  gap: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.divider span {
+  font-size: 11px;
+  color: var(--text-light);
+  white-space: nowrap;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+/* ===========================
+   FORM STYLES - COMPACT GRID
+   =========================== */
+.register-form {
+  width: 100%;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.form-grid.role-fields {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-lighter);
+  letter-spacing: 0.2px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background: rgba(45, 42, 84, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: rgba(233, 213, 255, 0.4);
+}
+
+.form-input:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(45, 42, 84, 0.6);
+}
+
+.form-input:focus {
+  background: rgba(45, 42, 84, 0.7);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+/* Student Input Focus */
+.role-student .form-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+/* Admin Input Focus */
+.role-admin .form-input:focus {
+  border-color: #4a2560;
+  box-shadow: 0 0 0 3px rgba(74, 37, 96, 0.2);
+}
+
+/* Recruiter Input Focus */
+.role-recruiter .form-input:focus {
+  border-color: #6b2870;
+  box-shadow: 0 0 0 3px rgba(107, 40, 112, 0.2);
+}
+
+select.form-input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 38px;
+}
+
+select.form-input option {
+  background: #1e1b4b;
+  color: var(--text-primary);
+  padding: 10px;
+}
+
+/* ===========================
+   PASSWORD WRAPPER
+   =========================== */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper .form-input {
+  padding-right: 40px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px 8px;
+  font-size: 15px;
+  color: rgba(167, 139, 250, 0.6);
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.password-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(167, 139, 250, 0.9);
+}
+
+/* ===========================
+   SUBMIT BUTTON
+   =========================== */
+.submit-btn {
+  width: 100%;
+  padding: 12px 24px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 18px;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.submit-btn:hover::before {
+  left: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.4);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Student Submit Button */
+.role-student .submit-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+}
+
+/* Admin Submit Button */
+.role-admin .submit-btn {
+  background: linear-gradient(135deg, #210F37 0%, #3a1a5c 100%);
+}
+
+/* Recruiter Submit Button */
+.role-recruiter .submit-btn {
+  background: linear-gradient(135deg, #4F1C51 0%, #6b2870 100%);
+}
+
+/* ===========================
+   LOADING SPINNER
+   =========================== */
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===========================
+   LOGIN LINK
+   =========================== */
+.login-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-light);
+  opacity: 0.85;
+}
+
+.login-text {
+  color: #a78bfa;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.login-text:hover {
+  color: #c4b5fd;
+}
+
+.role-student .login-text {
+  color: #a78bfa;
+}
+
+.role-admin .login-text {
+  color: #8a76a0;
+}
+
+.role-recruiter .login-text {
+  color: #9d5fa1;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+/* Laptop/Tablet Landscape */
+@media (max-width: 1200px) {
+  .register-card {
+    grid-template-columns: 42% 58%;
+  }
+
+  .register-left,
+  .register-right {
+    padding: 35px 30px;
+  }
+
+  .logo-text {
+    font-size: 30px;
+  }
+
+  .welcome-title {
+    font-size: 26px;
+  }
+}
+
+/* Tablet Portrait - Switch to Single Column */
+@media (max-width: 900px) {
+  .register-container {
+    overflow-y: auto;
+  }
+
+  .register-card {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: none;
+  }
+
+  .register-left {
+    padding: 35px 30px 25px 30px;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .register-left::before {
+    border-radius: 24px 24px 0 0;
+  }
+
+  .register-right {
+    padding: 25px 30px 35px 30px;
+    max-height: none;
+  }
+
+  .welcome-content {
+    margin-bottom: 20px;
+  }
+
+  .features-list {
+    margin-top: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .register-container {
+    padding: 15px;
+  }
+
+  .register-wrapper {
+    margin: 0;
+  }
+
+  .register-card {
+    border-radius: 20px;
+  }
+
+  .register-left,
+  .register-right {
+    padding: 28px 22px;
+  }
+
+  .logo-icon {
+    font-size: 36px;
+  }
+
+  .logo-text {
+    font-size: 26px;
+  }
+
+  .welcome-title {
+    font-size: 22px;
+  }
+
+  .welcome-subtitle {
+    font-size: 14px;
+  }
+
+  .welcome-description {
+    font-size: 13px;
+  }
+
+  .features-title {
+    font-size: 14px;
+  }
+
+  .feature-item {
+    font-size: 12px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .google-btn {
+    font-size: 12px;
+    padding: 11px 20px;
+  }
+
+  .submit-btn {
+    font-size: 12px;
+    padding: 11px 20px;
+  }
+
+  .circle-1 {
+    width: 400px;
+    height: 400px;
+  }
+
+  .circle-2 {
+    width: 300px;
+    height: 300px;
+  }
+
+  .circle-3 {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 400px) {
+  .register-left,
+  .register-right {
+    padding: 24px 18px;
+  }
+
+  .logo-text {
+    font-size: 22px;
+  }
+
+  .welcome-title {
+    font-size: 20px;
+  }
+}
+
+/* ===========================
+   ACCESSIBILITY
+   =========================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+*:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+html {
+  scroll-behavior: smooth;
+}

@@ -1,0 +1,172 @@
+/* StudentJobDrives.css - Job Drives page specific styles */
+
+/* ==================== PAGE HEADER ==================== */
+.student-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.student-page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.student-page-header p {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* ==================== FILTER SECTION ==================== */
+.student-filter-section {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.student-filter-btn {
+  padding: 0.625rem 1.25rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.student-filter-btn:hover {
+  border-color: #7c3aed;
+  color: #7c3aed;
+}
+
+.student-filter-btn.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: white;
+}
+
+/* ==================== JOB DRIVES GRID ==================== */
+.student-job-drives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.student-job-drive-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.student-job-drive-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.15);
+  border-color: #7c3aed;
+}
+
+.student-job-drive-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.student-company-logo-large {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.student-job-drive-title h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.student-drive-type-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.student-drive-type-badge.on-campus {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.student-drive-type-badge.off-campus {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.student-job-role {
+  font-size: 1.05rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.student-job-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.student-job-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.student-job-detail-item svg {
+  color: #7c3aed;
+}
+
+.student-job-apply-btn {
+  width: 100%;
+  padding: 0.875rem;
+  background: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.student-job-apply-btn:hover {
+  background: #6d28d9;
+  transform: scale(1.02);
+}
+
+.student-job-apply-btn.disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.student-job-apply-btn.disabled:hover {
+  transform: none;
+}
