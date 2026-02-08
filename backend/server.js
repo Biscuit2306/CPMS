@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+const path = require("path");
 
 const app = express();
 
@@ -53,6 +54,7 @@ const recruiterRoutes = require("./routes/recruiterRoutes");
 const interviewRoutes = require("./routes/interviewRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const resumeRoutes = require("./routes/resumeRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
@@ -61,6 +63,8 @@ app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/interview", interviewRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/api/resume", resumeRoutes);
 
 
 /* =========================

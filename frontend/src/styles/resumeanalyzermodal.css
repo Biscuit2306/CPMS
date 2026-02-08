@@ -1,0 +1,305 @@
+/* === Overlay === */
+.resume-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* === Modal Box === */
+.resume-modal-box {
+  width: 100%;
+  max-width: 860px;
+  height: 86vh; /* IMPORTANT: fixed height for scroll */
+  background: radial-gradient(
+    circle at top left,
+    rgba(168, 85, 247, 0.15),
+    rgba(15, 23, 42, 0.95)
+  );
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 20px;
+  box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: popIn 0.25s ease-in-out;
+}
+
+/* === Smooth Animation === */
+@keyframes popIn {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* === Header === */
+.resume-modal-header {
+  padding: 18px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.25),
+    rgba(30, 41, 59, 0.85)
+  );
+  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.resume-modal-header h2 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Close button */
+.resume-modal-close {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px;
+  border-radius: 12px;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.resume-modal-close:hover {
+  color: white;
+  border-color: rgba(168, 85, 247, 0.4);
+  transform: rotate(8deg);
+}
+
+/* === Body === */
+.resume-modal-body {
+  flex: 1;
+  padding: 20px 22px;
+  overflow-y: auto; /* SCROLL ENABLED */
+}
+
+/* Scrollbar */
+.resume-modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+.resume-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.25);
+  border-radius: 10px;
+}
+.resume-modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.45);
+}
+
+/* === Sections === */
+.resume-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.resume-section h3 {
+  color: #f1f5f9;
+  font-size: 15px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+/* Upload Row */
+.resume-upload-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* File input */
+.resume-upload-row input[type="file"] {
+  flex: 1;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px dashed rgba(168, 85, 247, 0.35);
+  background: rgba(255, 255, 255, 0.02);
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+/* === Buttons === */
+.resume-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 15px;
+  border-radius: 16px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+  box-shadow: 0px 10px 18px rgba(168, 85, 247, 0.25);
+}
+
+.resume-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.resume-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Analyze button */
+.analyze-btn {
+  width: 100%;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #c084fc, #9333ea);
+  box-shadow: 0px 10px 18px rgba(192, 132, 252, 0.22);
+}
+
+/* Close footer button */
+.close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  color: #f8fafc;
+  box-shadow: none;
+}
+
+.close-btn:hover {
+  background: rgba(168, 85, 247, 0.12);
+}
+
+/* === Current Resume Link === */
+.resume-current {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #d8b4fe;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resume-current a {
+  color: #c084fc;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.resume-current a:hover {
+  text-decoration: underline;
+}
+
+/* === Error === */
+.resume-error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 12px;
+  border-radius: 16px;
+  color: #fecaca;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* === Results === */
+.resume-results {
+  margin-top: 18px;
+}
+
+.resume-results h3 {
+  color: #f8fafc;
+  font-size: 16px;
+  margin-bottom: 12px;
+  font-weight: 800;
+}
+
+/* Result Card */
+.resume-result-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.resume-result-card h4 {
+  color: #f1f5f9;
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+/* Score */
+.resume-score {
+  font-size: 28px;
+  font-weight: 900;
+  color: #c084fc;
+  text-shadow: 0px 0px 20px rgba(192, 132, 252, 0.35);
+}
+
+/* Tags */
+.resume-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.resume-tag {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.22);
+  color: #e9d5ff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Lists */
+.resume-result-card ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.resume-result-card li {
+  color: #e2e8f0;
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Loader spin */
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* === Footer === */
+.resume-modal-footer {
+  padding: 14px 22px;
+  border-top: 1px solid rgba(168, 85, 247, 0.18);
+  background: rgba(15, 23, 42, 0.92);
+  display: flex;
+  justify-content: flex-end;
+}
