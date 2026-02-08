@@ -15,8 +15,7 @@ import {
   FileText,
   Star,
   Plus,
-  X,
-  Shield
+  X
 } from "lucide-react";
 import StudentLayout from "../../components/StudentLayout";
 import InterviewFeature from "../InterviewFeature";
@@ -24,14 +23,11 @@ import ProjectEvaluator from "../ProjectEvaluator";
 import "../../styles/student-css/studentdashboard.css";
 import "../../styles/student-css/studentprofile.css";
 import { useStudent } from "../../context/StudentContext";
-
-// ✅ NEW
 import ResumeAnalyzerModal from "../../components/ResumeAnalyzerModal";
 
 const StudentProfile = () => {
   const { student, updateStudent, loading, error } = useStudent();
 
-  // ✅ FIXED: Backend URL for resume viewing
   const BACKEND_URL =
     import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
@@ -42,7 +38,6 @@ const StudentProfile = () => {
   const [projects, setProjects] = useState([]);
   const [certifications, setCertifications] = useState([]);
 
-  // ✅ NEW (for resume modal)
   const [showResumeModal, setShowResumeModal] = useState(false);
 
   useEffect(() => {
@@ -239,7 +234,6 @@ const StudentProfile = () => {
             )}
           </div>
 
-          {/* ✅ UPDATED RESUME SECTION ONLY */}
           <div className="student-profile-field">
             <label>Resume</label>
 
@@ -251,16 +245,14 @@ const StudentProfile = () => {
                   href={`${BACKEND_URL}${profileData.resume}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={{
-                    color: "#2563eb",
-                    fontWeight: "600",
-                    textDecoration: "none"
-                  }}
+                  className="student-resume-link"
                 >
                   View Resume
                 </a>
               ) : (
-                <span style={{ color: "#6b7280" }}>No resume uploaded</span>
+                <span className="student-no-resume">
+                  No resume uploaded
+                </span>
               )}
 
               <div className="resume-action-buttons">
@@ -285,7 +277,6 @@ const StudentProfile = () => {
               </div>
             </div>
           </div>
-          {/* ✅ END UPDATED RESUME SECTION */}
         </div>
       </div>
     </div>
@@ -323,63 +314,32 @@ const StudentProfile = () => {
   const renderSkills = () => (
     <div className="student-profile-card">
       <div className="student-profile-section">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}
-        >
+        <div className="student-flex-between">
           <h3>Skills</h3>
           {editMode && (
             <button
-              className="student-add-btn"
+              className="student-add-btn student-add-btn-small"
               onClick={() => {
                 const newSkill = prompt("Enter skill name:");
-                if (newSkill) {
-                  setSkills([...skills, newSkill]);
-                }
+                if (newSkill) setSkills([...skills, newSkill]);
               }}
-              style={{ padding: "5px 10px", fontSize: "12px" }}
             >
               <Plus size={16} /> Add Skill
             </button>
           )}
         </div>
+
         {skills.length === 0 ? (
           <p>No skills added yet.</p>
         ) : (
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "10px",
-              marginTop: "15px"
-            }}
-          >
+          <div className="student-skills-tags">
             {skills.map((skill, idx) => (
-              <div
-                key={idx}
-                className="student-skill-tag"
-                style={{
-                  padding: "8px 12px",
-                  backgroundColor: "#e0e7ff",
-                  borderRadius: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px"
-                }}
-              >
+              <div key={idx} className="student-skill-tag">
                 {skill}
                 {editMode && (
                   <button
+                    className="student-remove-icon-btn"
                     onClick={() => setSkills(skills.filter((_, i) => i !== idx))}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#ef4444"
-                    }}
                   >
                     <X size={14} />
                   </button>
@@ -395,17 +355,11 @@ const StudentProfile = () => {
   const renderProjects = () => (
     <div className="student-profile-card">
       <div className="student-profile-section">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}
-        >
+        <div className="student-flex-between">
           <h3>Projects</h3>
           {editMode && (
             <button
-              className="student-add-btn"
+              className="student-add-btn student-add-btn-small"
               onClick={() => {
                 const projectName = prompt("Enter project name:");
                 if (projectName) {
@@ -418,80 +372,48 @@ const StudentProfile = () => {
                   setProjects([...projects, newProject]);
                 }
               }}
-              style={{ padding: "5px 10px", fontSize: "12px" }}
             >
               <Plus size={16} /> Add Project
             </button>
           )}
         </div>
+
         {projects.length === 0 ? (
           <p>No projects added yet.</p>
         ) : (
-          <div style={{ display: "grid", gap: "15px", marginTop: "15px" }}>
+          <div className="student-projects-list">
             {projects.map((project, idx) => (
-              <div
-                key={idx}
-                className="student-project-card"
-                style={{
-                  padding: "15px",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "8px",
-                  backgroundColor: "#f9fafb"
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "start"
-                  }}
-                >
-                  <div style={{ flex: 1 }}>
-                    <h4 style={{ margin: "0 0 8px 0" }}>{project.name}</h4>
-                    <p
-                      style={{
-                        margin: "5px 0",
-                        color: "#6b7280",
-                        fontSize: "14px"
-                      }}
-                    >
+              <div key={idx} className="student-project-card">
+                <div className="student-project-top">
+                  <div className="student-project-main">
+                    <h4 className="student-project-name">{project.name}</h4>
+
+                    <p className="student-project-desc">
                       {project.description}
                     </p>
-                    <p
-                      style={{
-                        margin: "5px 0",
-                        color: "#6b7280",
-                        fontSize: "13px"
-                      }}
-                    >
+
+                    <p className="student-project-tech">
                       <strong>Tech:</strong> {project.tech}
                     </p>
+
                     {project.link && (
                       <a
                         href={`https://${project.link}`}
                         target="_blank"
                         rel="noreferrer"
-                        style={{
-                          color: "#3b82f6",
-                          textDecoration: "none",
-                          fontSize: "13px"
-                        }}
+                        className="student-project-link"
                       >
                         View Project →
                       </a>
                     )}
                   </div>
+
                   {editMode && (
                     <button
+                      className="student-delete-btn"
                       onClick={() =>
                         setProjects(projects.filter((_, i) => i !== idx))
                       }
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#ef4444"
-                      }}
                     >
                       <X size={18} />
                     </button>
@@ -508,17 +430,11 @@ const StudentProfile = () => {
   const renderCertifications = () => (
     <div className="student-profile-card">
       <div className="student-profile-section">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}
-        >
+        <div className="student-flex-between">
           <h3>Certifications</h3>
           {editMode && (
             <button
-              className="student-add-btn"
+              className="student-add-btn student-add-btn-small"
               onClick={() => {
                 const certName = prompt("Enter certification name:");
                 if (certName) {
@@ -531,88 +447,45 @@ const StudentProfile = () => {
                   setCertifications([...certifications, newCert]);
                 }
               }}
-              style={{ padding: "5px 10px", fontSize: "12px" }}
             >
               <Plus size={16} /> Add Certification
             </button>
           )}
         </div>
+
         {certifications.length === 0 ? (
           <p>No certifications added yet.</p>
         ) : (
-          <div style={{ display: "grid", gap: "15px", marginTop: "15px" }}>
+          <div className="student-certifications-list">
             {certifications.map((cert, idx) => (
-              <div
-                key={idx}
-                className="student-certification-card"
-                style={{
-                  padding: "15px",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "8px",
-                  backgroundColor: "#f9fafb"
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "start"
-                  }}
-                >
-                  <div style={{ flex: 1 }}>
-                    <h4
-                      style={{
-                        margin: "0 0 8px 0",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px"
-                      }}
-                    >
+              <div key={idx} className="student-certification-card">
+                <div className="student-certification-top">
+                  <div className="student-certification-main">
+                    <h4 className="student-certification-name">
                       <Award size={18} /> {cert.name}
                     </h4>
-                    <p
-                      style={{
-                        margin: "5px 0",
-                        color: "#6b7280",
-                        fontSize: "14px"
-                      }}
-                    >
+
+                    <p className="student-certification-org">
                       <strong>{cert.organization}</strong>
                     </p>
-                    <p
-                      style={{
-                        margin: "5px 0",
-                        color: "#6b7280",
-                        fontSize: "13px"
-                      }}
-                    >
-                      {cert.date}
-                    </p>
+
+                    <p className="student-certification-date">{cert.date}</p>
+
                     {cert.id && (
-                      <p
-                        style={{
-                          margin: "5px 0",
-                          color: "#6b7280",
-                          fontSize: "13px"
-                        }}
-                      >
+                      <p className="student-certification-id">
                         ID: {cert.id}
                       </p>
                     )}
                   </div>
+
                   {editMode && (
                     <button
+                      className="student-delete-btn"
                       onClick={() =>
                         setCertifications(
                           certifications.filter((_, i) => i !== idx)
                         )
                       }
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#ef4444"
-                      }}
                     >
                       <X size={18} />
                     </button>
@@ -635,6 +508,7 @@ const StudentProfile = () => {
           <h1>My Profile</h1>
           <p>Manage your personal information and achievements</p>
         </div>
+
         <button
           className="student-edit-profile-btn"
           onClick={() => (editMode ? handleSave() : setEditMode(true))}
@@ -677,7 +551,6 @@ const StudentProfile = () => {
       <InterviewFeature />
       <ProjectEvaluator />
 
-      {/* ✅ NEW: Resume Analyzer Modal */}
       <ResumeAnalyzerModal
         isOpen={showResumeModal}
         onClose={() => setShowResumeModal(false)}
