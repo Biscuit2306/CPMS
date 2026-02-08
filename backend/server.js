@@ -55,6 +55,7 @@ const interviewRoutes = require("./routes/interviewRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
@@ -65,6 +66,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/resume", resumeRoutes);
+app.use("/api/chat", chatRoutes);
 
 
 /* =========================

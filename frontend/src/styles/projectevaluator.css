@@ -4,7 +4,7 @@
 .project-eval-floating-btn {
   position: fixed;
   bottom: 2rem;
-  right: 6rem;
+  right: 10rem; /* ✅ moved more left */
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -539,7 +539,7 @@
 
   .project-eval-floating-btn {
     bottom: 1.5rem;
-    right: 1.5rem;
+    right: 9.5rem; /* ✅ left on mobile */
     width: 56px;
     height: 56px;
   }

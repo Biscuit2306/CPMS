@@ -6,6 +6,7 @@ import InterviewFeature from '../InterviewFeature';
 import ProjectEvaluator from '../ProjectEvaluator';
 import '../../styles/student-css/studentdashboard.css';
 import { useStudent } from '../../context/StudentContext';
+import Chatbot from '../../components/Chatbot';
 
 const StudentDashboard = () => {
   const { student } = useStudent();
@@ -136,9 +137,10 @@ const StudentDashboard = () => {
           </div>
         </div>
       </div>
-
+      <Chatbot />
       <InterviewFeature />
       <ProjectEvaluator />
+
     </StudentLayout>
   );
 };
