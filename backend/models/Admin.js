@@ -9,11 +9,10 @@ const adminSchema = new mongoose.Schema(
       index: true,
     },
 
-    // ✅ Email from Firebase OAuth (sparse allows unique null values)
+    // Email from Firebase OAuth - remove unique constraint since multiple admins may have empty emails
     email: {
       type: String,
-      sparse: true,
-      unique: true,
+      default: "",
     },
 
     // ✅ Name from Firebase OAuth

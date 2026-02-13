@@ -4,12 +4,16 @@ import { Menu, X, Search, Bell, Users, LogOut,LayoutDashboard,Briefcase,Calendar
 import '../styles/RecruiterCSS/recruiterLayout.css';
 import { auth } from '../firebase';
 import { useRecruiter } from '../context/RecruiterContext';
+import { useNotification } from '../context/NotificationContext';
+import { NotificationCenter } from './Notifications';
 
 const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const [recruiterName, setRecruiterName] = useState('Recruiter');
   const navigate = useNavigate();
   const { recruiter } = useRecruiter();
+  const { unreadCount, fetchUnreadCount } = useNotification();
 
   useEffect(() => {
     if (recruiter && recruiter.fullName) {
@@ -21,6 +25,13 @@ const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) =
       }
     }
   }, [recruiter]);
+
+  // Fetch notification count on mount
+  useEffect(() => {
+    if (recruiter?.firebaseUid) {
+      fetchUnreadCount(recruiter.firebaseUid);
+    }
+  }, [recruiter?.firebaseUid]);
 
   const handleLogout = async () => {
     try {
@@ -86,10 +97,17 @@ const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) =
         </div>
 
         <div className="nav-topbar-right">
-          <button className="nav-notification-btn">
+          <button 
+            className="nav-notification-btn"
+            onClick={() => setNotificationCenterOpen(!notificationCenterOpen)}
+            style={{ position: 'relative' }}
+          >
             <Bell size={20} />
-            <span className="nav-notification-badge">5</span>
+            {unreadCount > 0 && <span className="nav-notification-badge">{unreadCount}</span>}
           </button>
+          {notificationCenterOpen && recruiter?.firebaseUid && (
+            <NotificationCenter firebaseUid={recruiter.firebaseUid} isOpen={true} onClose={() => setNotificationCenterOpen(false)} />
+          )}
           <div className="nav-user-profile">
             <img 
               src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${recruiterName}`} 

@@ -194,6 +194,148 @@
   transform: scale(1.02);
 }
 
+/* Add Drive Form Styles */
+.recruiter-add-drive-form-container {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #f0f0f0;
+}
+
+.recruiter-add-drive-form-container h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.recruiter-add-drive-form-container h3::before {
+  content: '';
+  width: 4px;
+  height: 28px;
+  background: linear-gradient(135deg, #4F1C51, #6b2870);
+  border-radius: 2px;
+}
+
+.recruiter-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.recruiter-form-grid.full-width {
+  grid-template-columns: 1fr;
+}
+
+.recruiter-form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.recruiter-form-field label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 0.6rem;
+}
+
+.recruiter-form-field label .required {
+  color: #ef4444;
+  margin-left: 0.25rem;
+}
+
+.recruiter-form-field input,
+.recruiter-form-field textarea,
+.recruiter-form-field select {
+  padding: 0.85rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background-color: #fafafa;
+  color: #1f2937;
+  transition: all 0.3s ease;
+}
+
+.recruiter-form-field input:focus,
+.recruiter-form-field textarea:focus,
+.recruiter-form-field select:focus {
+  outline: none;
+  border-color: #4F1C51;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(79, 28, 81, 0.1);
+  color: #1f2937;
+}
+
+.recruiter-form-field input::placeholder,
+.recruiter-form-field textarea::placeholder,
+.recruiter-form-field select::placeholder {
+  color: #9ca3af;
+}
+
+.recruiter-form-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.recruiter-form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.recruiter-btn-cancel {
+  padding: 0.85rem 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.recruiter-btn-cancel:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.recruiter-submit-btn {
+  padding: 0.85rem 1.8rem;
+  border: none;
+  border-radius: 10px;
+  background: #4F1C51;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.3s ease;
+}
+
+.recruiter-submit-btn:hover {
+  background: #3d1640;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(79, 28, 81, 0.2);
+}
+
+.recruiter-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .recruiter-drives-grid {
@@ -217,6 +359,15 @@
   .recruiter-add-drive-btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .recruiter-add-drive-form-container {
+    padding: 1.5rem;
+  }
+
+  .recruiter-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 
@@ -268,6 +419,33 @@
   .recruiter-view-btn,
   .recruiter-manage-action-btn {
     width: 100%;
+  }
+
+  .recruiter-add-drive-form-container {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .recruiter-add-drive-form-container h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .recruiter-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .recruiter-form-actions {
+    flex-direction: column-reverse;
+    gap: 0.8rem;
+  }
+
+  .recruiter-btn-cancel,
+  .recruiter-submit-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
@@ -351,5 +529,45 @@
 
   .recruiter-page-header p {
     font-size: 0.85rem;
+  }
+
+  .recruiter-add-drive-form-container {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .recruiter-add-drive-form-container h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .recruiter-form-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .recruiter-form-field label {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .recruiter-form-field input,
+  .recruiter-form-field textarea {
+    padding: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .recruiter-form-actions {
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .recruiter-btn-cancel,
+  .recruiter-submit-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
   }
 }

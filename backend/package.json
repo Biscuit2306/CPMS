@@ -17,6 +17,8 @@
     "express": "^5.2.1",
     "firebase": "^12.9.0",
     "firebase-admin": "^13.6.1",
-    "mongoose": "^8.21.0"
+    "mongoose": "^8.21.0",
+    "multer": "^2.0.2",
+    "pdf-parse": "^2.4.5"
   }
 }

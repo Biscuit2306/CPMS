@@ -1,23 +1,49 @@
 import React, { useState } from 'react';
-import { DollarSign, MapPin, Calendar, Clock } from 'lucide-react';
+import { DollarSign, MapPin, Calendar, Clock, CheckCircle } from 'lucide-react';
 import StudentLayout from '../../components/StudentLayout';
 import InterviewFeature from '../InterviewFeature';
 import ProjectEvaluator from '../ProjectEvaluator';
+import { useStudent } from '../../context/StudentContext';
 import '../../styles/student-css/studentdashboard.css';
 import '../../styles/student-css/studentjobdrives.css';
 
 
 const StudentJobDrives = () => {
   const [filterCategory, setFilterCategory] = useState('all');
+  const { jobDrives, drivesLoading, applications, applyForDrive } = useStudent();
+  const [appliedDriveIds, setAppliedDriveIds] = useState(
+    applications.map(app => app.driveId)
+  );
 
-  const allJobDrives = [
-    { id: 1, company: 'TCS', date: 'Jan 28, 2026', role: 'Software Engineer', package: '3.6 LPA', location: 'Mumbai', type: 'On Campus', deadline: 'Jan 26, 2026', eligible: true },
-    { id: 2, company: 'Infosys', date: 'Feb 2, 2026', role: 'System Engineer', package: '4.0 LPA', location: 'Bangalore', type: 'On Campus', deadline: 'Jan 30, 2026', eligible: true },
-    { id: 3, company: 'Wipro', date: 'Feb 5, 2026', role: 'Project Engineer', package: '3.8 LPA', location: 'Pune', type: 'On Campus', deadline: 'Feb 1, 2026', eligible: true },
-    { id: 4, company: 'Google', date: 'Feb 10, 2026', role: 'Software Engineer', package: '18 LPA', location: 'Hyderabad', type: 'Off Campus', deadline: 'Feb 5, 2026', eligible: true },
-    { id: 5, company: 'Amazon', date: 'Feb 12, 2026', role: 'SDE-1', package: '20 LPA', location: 'Bangalore', type: 'Off Campus', deadline: 'Feb 7, 2026', eligible: true },
-    { id: 6, company: 'Microsoft', date: 'Feb 15, 2026', role: 'Software Developer', package: '16 LPA', location: 'Hyderabad', type: 'Off Campus', deadline: 'Feb 10, 2026', eligible: false }
-  ];
+  const handleApply = async (driveId, recruiterId) => {
+    try {
+      await applyForDrive(recruiterId, driveId);
+      setAppliedDriveIds([...appliedDriveIds, driveId]);
+      alert('Applied successfully!');
+    } catch (err) {
+      console.error('Error applying:', err);
+      alert(err.response?.data?.error || 'Failed to apply. You may have already applied to this drive.');
+    }
+  };
+
+  if (drivesLoading) {
+    return (
+      <StudentLayout>
+        <div className="student-page-header">
+          <h1>Job Drives</h1>
+          <p>Loading available drives...</p>
+        </div>
+      </StudentLayout>
+    );
+  }
+
+  const filteredDrives = jobDrives.filter(drive => {
+    if (filterCategory === 'all') return true;
+    if (filterCategory === 'on-campus') return drive.type === 'On Campus';
+    if (filterCategory === 'off-campus') return drive.type === 'Off Campus';
+    if (filterCategory === 'applied') return appliedDriveIds.includes(drive._id);
+    return true;
+  });
 
   return (
     <StudentLayout>
@@ -27,56 +53,96 @@ const StudentJobDrives = () => {
           <p>Browse and apply to upcoming placement drives</p>
         </div>
         <div className="student-filter-section">
-          <button className={`student-filter-btn ${filterCategory === 'all' ? 'active' : ''}`} onClick={() => setFilterCategory('all')}>
-            All Drives
+          <button 
+            className={`student-filter-btn ${filterCategory === 'all' ? 'active' : ''}`} 
+            onClick={() => setFilterCategory('all')}
+          >
+            All Drives ({jobDrives.length})
           </button>
-          <button className={`student-filter-btn ${filterCategory === 'on-campus' ? 'active' : ''}`} onClick={() => setFilterCategory('on-campus')}>
-            On Campus
-          </button>
-          <button className={`student-filter-btn ${filterCategory === 'off-campus' ? 'active' : ''}`} onClick={() => setFilterCategory('off-campus')}>
-            Off Campus
+          <button 
+            className={`student-filter-btn ${filterCategory === 'applied' ? 'active' : ''}`} 
+            onClick={() => setFilterCategory('applied')}
+          >
+            My Applications ({appliedDriveIds.length})
           </button>
         </div>
       </div>
 
       <div className="student-job-drives-grid">
-        {allJobDrives
-          .filter(drive => filterCategory === 'all' || drive.type.toLowerCase().replace(' ', '-') === filterCategory)
-          .map((drive) => (
-          <div key={drive.id} className="student-job-drive-card">
-            <div className="student-job-drive-header">
-              <div className="student-company-logo-large">
-                {drive.company.charAt(0)}
+        {filteredDrives && filteredDrives.length > 0 ? (
+          filteredDrives.map((drive) => {
+            const hasApplied = appliedDriveIds.includes(drive._id);
+            const isDeadlinePassed = new Date(drive.applicationDeadline) < new Date();
+            
+            return (
+              <div key={drive._id} className="student-job-drive-card">
+                <div className="student-job-drive-header">
+                  <div className="student-company-logo-large">
+                    {(drive.companyName || drive.position)?.charAt(0) || 'J'}
+                  </div>
+                  <div className="student-job-drive-title">
+                    <h3>{drive.companyName || drive.position}</h3>
+                    <span className={`student-drive-type-badge ${drive.status?.toLowerCase()}`}>
+                      {drive.status === 'active' ? 'Hiring' : drive.status === 'scheduled' ? 'Upcoming' : drive.status}
+                    </span>
+                  </div>
+                </div>
+                <h4 className="student-job-role">{drive.position}</h4>
+                <div className="student-job-details">
+                  <div className="student-job-detail-item">
+                    <DollarSign size={16} />
+                    <span>{drive.salary}</span>
+                  </div>
+                  <div className="student-job-detail-item">
+                    <MapPin size={16} />
+                    <span>{drive.location}</span>
+                  </div>
+                  <div className="student-job-detail-item">
+                    <Calendar size={16} />
+                    <span>{new Date(drive.date).toLocaleDateString()}</span>
+                  </div>
+                  <div className="student-job-detail-item">
+                    <Clock size={16} />
+                    <span>Deadline: {new Date(drive.applicationDeadline).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                
+                <div style={{mt: '10px', padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '5px', fontSize: '14px'}}>
+                  <strong>Min CGPA:</strong> {drive.eligibilityCriteria?.minCGPA || 0} | 
+                  <strong> Applicants:</strong> {drive.applications?.length || 0}
+                </div>
+
+                <button 
+                  className={`student-job-apply-btn ${hasApplied || isDeadlinePassed ? 'disabled' : ''}`} 
+                  disabled={hasApplied || isDeadlinePassed}
+                  onClick={() => handleApply(drive._id, drive.recruiterId)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    marginTop: '10px'
+                  }}
+                >
+                  {hasApplied ? (
+                    <>
+                      <CheckCircle size={16} />
+                      Already Applied
+                    </>
+                  ) : isDeadlinePassed ? (
+                    'Deadline Passed'
+                  ) : (
+                    'Apply Now'
+                  )}
+                </button>
               </div>
-              <div className="student-job-drive-title">
-                <h3>{drive.company}</h3>
-                <span className={`student-drive-type-badge ${drive.type.toLowerCase().replace(' ', '-')}`}>{drive.type}</span>
-              </div>
-            </div>
-            <h4 className="student-job-role">{drive.role}</h4>
-            <div className="student-job-details">
-              <div className="student-job-detail-item">
-                <DollarSign size={16} />
-                <span>{drive.package}</span>
-              </div>
-              <div className="student-job-detail-item">
-                <MapPin size={16} />
-                <span>{drive.location}</span>
-              </div>
-              <div className="student-job-detail-item">
-                <Calendar size={16} />
-                <span>{drive.date}</span>
-              </div>
-              <div className="student-job-detail-item">
-                <Clock size={16} />
-                <span>Deadline: {drive.deadline}</span>
-              </div>
-            </div>
-            <button className={`student-job-apply-btn ${!drive.eligible ? 'disabled' : ''}`} disabled={!drive.eligible}>
-              {drive.eligible ? 'Apply Now' : 'Not Eligible'}
-            </button>
+            );
+          })
+        ) : (
+          <div style={{gridColumn: '1 / -1', textAlign: 'center', padding: '40px'}}>
+            <p>No drives available at the moment.</p>
           </div>
-        ))}
+        )}
       </div>
 
       <InterviewFeature />

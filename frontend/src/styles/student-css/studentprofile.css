@@ -564,3 +564,163 @@
 .student-certification-meta-icon {
   display: inline;
 }
+
+.resume-action-buttons {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.student-analyze-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  background: #0f766e;
+  color: white;
+}
+
+.student-analyze-btn:hover {
+  background: #0d5f59;
+}
+
+.student-analyze-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==================== REMOVED INLINE CSS (NEW CLASSES) ==================== */
+
+.student-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-add-btn-small {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Skills Tags Layout */
+.student-skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Skill Tag button remove */
+.student-remove-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Projects Layout */
+.student-projects-list {
+  display: grid;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.student-project-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.student-project-main {
+  flex: 1;
+}
+
+.student-project-name {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.student-project-desc {
+  margin: 5px 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.student-project-tech {
+  margin: 5px 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* Certifications Layout */
+.student-certifications-list {
+  display: grid;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.student-certification-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.student-certification-main {
+  flex: 1;
+}
+
+.student-certification-name {
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.student-certification-org {
+  margin: 5px 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.student-certification-date,
+.student-certification-id {
+  margin: 5px 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* Delete button (Projects + Certifications) */
+.student-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Resume Section */
+.student-resume-link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.student-resume-link:hover {
+  text-decoration: underline;
+}
+
+.student-no-resume {
+  color: #6b7280;
+}

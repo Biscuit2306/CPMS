@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+const path = require("path");
 
 const app = express();
 
@@ -27,7 +28,8 @@ console.log("========================\n");
 ========================= */
 app.use(
   cors({
-    origin: FRONTEND_URL,
+    // Allow the configured frontend origin in production, but accept any origin during development
+    origin: process.env.NODE_ENV === 'production' ? FRONTEND_URL : true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -49,18 +51,31 @@ app.use((req, res, next) => {
 const authRoutes = require("./routes/authRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const adminManagementRoutes = require("./routes/adminManagementRoutes");
 const recruiterRoutes = require("./routes/recruiterRoutes");
 const interviewRoutes = require("./routes/interviewRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const jobDriveRoutes = require("./routes/jobDriveRoutes");
+const scheduleRoutes = require("./routes/scheduleRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const resumeRoutes = require("./routes/resumeRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/admin/manage", adminManagementRoutes);
 app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/interview", interviewRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/drives", jobDriveRoutes);
+app.use("/api/schedules", scheduleRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/api/resume", resumeRoutes);
+app.use("/api/chat", chatRoutes);
 
 
 /* =========================

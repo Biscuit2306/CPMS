@@ -2,31 +2,28 @@
    BASE STYLES - SHARED
    =========================== */
 
-/* Container */
 .unified-login-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: var(--spacing-lg);
 }
 
-/* Card */
 .unified-login-card {
   display: flex;
   width: 100%;
   max-width: 1000px;
   min-height: 600px;
-  background: white;
-  border-radius: 20px;
+  background: var(--color-surface);
+  border-radius: var(--radius-2xl);
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-xl);
 }
 
-/* Left Side - Login Form */
 .unified-login-left {
   flex: 1;
-  padding: 60px 50px;
+  padding: var(--spacing-4xl) var(--spacing-3xl);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,97 +35,135 @@
 }
 
 .unified-login-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-extrabold);
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--line-height-tight);
 }
 
 .unified-login-subtitle {
-  font-size: 14px;
-  margin-bottom: 40px;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-2xl);
+  color: var(--color-text-secondary);
 }
 
-/* Form */
 .unified-login-form {
   width: 100%;
 }
 
 .unified-form-group {
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .unified-form-label {
   display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text);
 }
 
 .unified-form-input {
   width: 100%;
-  padding: 12px 16px;
-  font-size: 14px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-base);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
   box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
 }
 
 .unified-form-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.unified-form-input:disabled {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .unified-forgot-password {
   text-align: right;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .unified-forgot-link {
-  font-size: 13px;
+  font-size: var(--font-size-xs);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color var(--transition-base);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.unified-forgot-link:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
 }
 
 .unified-login-btn {
   width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all var(--transition-base);
+  background: var(--color-primary-gradient);
+  box-shadow: var(--shadow-md);
 }
 
 .unified-login-btn:hover {
   transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .unified-login-btn:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+.unified-login-btn:disabled,
+.unified-login-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .unified-signup-link {
   text-align: center;
-  margin-top: 24px;
-  font-size: 14px;
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .unified-signup-text {
   text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
+  font-weight: var(--font-weight-semibold);
+  transition: color var(--transition-base);
+  color: var(--color-primary);
 }
 
-/* Right Side - Welcome Section */
+.unified-signup-text:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
 .unified-login-right {
   flex: 1;
-  padding: 60px 50px;
+  padding: var(--spacing-4xl) var(--spacing-3xl);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  background: var(--color-primary-gradient);
 }
 
 .unified-welcome-content {
@@ -136,7 +171,18 @@
   color: white;
 }
 
-/* Password Input Wrapper */
+.unified-welcome-content h2 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-lg);
+  color: white;
+}
+
+.unified-welcome-content p {
+  font-size: var(--font-size-base);
+  opacity: 0.9;
+  line-height: var(--line-height-relaxed);
+}
+
 .unified-password-input-wrapper {
   position: relative;
   width: 100%;
@@ -154,21 +200,389 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0 12px;
+  padding: 0 var(--spacing-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.3s ease;
-  border-radius: 0 8px 8px 0;
+  transition: all var(--transition-base);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--color-text-secondary);
 }
 
 .unified-password-toggle:focus {
   outline: none;
+  color: var(--color-primary);
+}
+
+.unified-password-toggle:hover {
+  color: var(--color-primary);
 }
 
 .unified-password-toggle svg {
   width: 18px;
   height: 18px;
+}
+
+/* Google Sign In Button */
+.unified-google-btn {
+  width: 100%;
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  color: var(--color-text);
+}
+
+.unified-google-btn:hover {
+  background-color: var(--color-surface-alt);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.unified-google-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ===========================
+   STUDENT ROLE STYLES
+   =========================== */
+
+.unified-login-container-student {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.unified-login-left-student {
+  background-color: var(--color-surface);
+}
+
+.unified-login-title-student {
+  color: var(--color-text);
+}
+
+.unified-login-subtitle-student {
+  color: var(--color-text-secondary);
+}
+
+.unified-form-label-student {
+  color: var(--color-text);
+}
+
+.unified-form-input-student {
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.unified-form-input-student:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.unified-form-input-student::placeholder {
+  color: var(--color-text-muted);
+}
+
+.unified-forgot-link-student {
+  color: var(--color-primary);
+}
+
+.unified-forgot-link-student:hover {
+  color: var(--color-primary-dark);
+}
+
+.unified-login-btn-student {
+  background: var(--color-primary-gradient);
+}
+
+.unified-login-btn-student:hover {
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.unified-signup-link-student {
+  color: var(--color-text-secondary);
+}
+
+.unified-signup-text-student {
+  color: var(--color-primary);
+}
+
+.unified-signup-text-student:hover {
+  color: var(--color-primary-dark);
+}
+
+.unified-login-right-student {
+  background: var(--color-primary-gradient);
+}
+
+.unified-password-toggle-student {
+  color: var(--color-text-secondary);
+}
+
+.unified-password-toggle-student:hover {
+  color: var(--color-primary);
+  background-color: rgba(102, 126, 234, 0.1);
+}
+
+.unified-password-toggle-student:focus {
+  color: var(--color-primary);
+}
+
+.unified-google-btn-student {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.unified-google-btn-student:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+/* ===========================
+   ADMIN ROLE STYLES
+   =========================== */
+
+.unified-login-container-admin {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.unified-login-left-admin {
+  background-color: var(--color-surface);
+}
+
+.unified-login-title-admin {
+  color: var(--color-text);
+}
+
+.unified-login-subtitle-admin {
+  color: var(--color-text-secondary);
+}
+
+.unified-form-label-admin {
+  color: var(--color-text);
+}
+
+.unified-form-input-admin {
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.unified-form-input-admin:focus {
+  border-color: #f5576c;
+  box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+}
+
+.unified-form-input-admin::placeholder {
+  color: var(--color-text-muted);
+}
+
+.unified-forgot-link-admin {
+  color: #f5576c;
+}
+
+.unified-forgot-link-admin:hover {
+  color: #f093fb;
+}
+
+.unified-login-btn-admin {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.unified-login-btn-admin:hover {
+  box-shadow: 0 10px 20px rgba(245, 87, 108, 0.3);
+}
+
+.unified-signup-link-admin {
+  color: var(--color-text-secondary);
+}
+
+.unified-signup-text-admin {
+  color: #f5576c;
+}
+
+.unified-signup-text-admin:hover {
+  color: #f093fb;
+}
+
+.unified-login-right-admin {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.unified-password-toggle-admin {
+  color: var(--color-text-secondary);
+}
+
+.unified-password-toggle-admin:hover {
+  color: #f093fb;
+  background-color: rgba(245, 87, 108, 0.1);
+}
+
+.unified-password-toggle-admin:focus {
+  color: #f5576c;
+}
+
+.unified-google-btn-admin {
+  border-color: #f5576c;
+  color: #f5576c;
+}
+
+.unified-google-btn-admin:hover {
+  background: rgba(245, 87, 108, 0.05);
+}
+
+/* ===========================
+   RECRUITER ROLE STYLES
+   =========================== */
+
+.unified-login-container-recruiter {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.unified-login-left-recruiter {
+  background-color: var(--color-surface);
+}
+
+.unified-login-title-recruiter {
+  color: var(--color-text);
+}
+
+.unified-login-subtitle-recruiter {
+  color: var(--color-text-secondary);
+}
+
+.unified-form-label-recruiter {
+  color: var(--color-text);
+}
+
+.unified-form-input-recruiter {
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.unified-form-input-recruiter:focus {
+  border-color: #4facfe;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.unified-form-input-recruiter::placeholder {
+  color: var(--color-text-muted);
+}
+
+.unified-forgot-link-recruiter {
+  color: #4facfe;
+}
+
+.unified-forgot-link-recruiter:hover {
+  color: #00f2fe;
+}
+
+.unified-login-btn-recruiter {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.unified-login-btn-recruiter:hover {
+  box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+}
+
+.unified-signup-link-recruiter {
+  color: var(--color-text-secondary);
+}
+
+.unified-signup-text-recruiter {
+  color: #4facfe;
+}
+
+.unified-signup-text-recruiter:hover {
+  color: #00f2fe;
+}
+
+.unified-login-right-recruiter {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.unified-password-toggle-recruiter {
+  color: var(--color-text-secondary);
+}
+
+.unified-password-toggle-recruiter:hover {
+  color: #00f2fe;
+  background-color: rgba(79, 172, 254, 0.1);
+}
+
+.unified-password-toggle-recruiter:focus {
+  color: #4facfe;
+}
+
+.unified-google-btn-recruiter {
+  border-color: #4facfe;
+  color: #4facfe;
+}
+
+.unified-google-btn-recruiter:hover {
+  background: rgba(79, 172, 254, 0.05);
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 768px) {
+  .unified-login-card {
+    flex-direction: column;
+    max-width: 500px;
+  }
+
+  .unified-login-left,
+  .unified-login-right {
+    padding: var(--spacing-3xl) var(--spacing-2xl);
+  }
+
+  .unified-login-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .unified-login-subtitle {
+    font-size: var(--font-size-sm);
+  }
+  
+  .unified-welcome-content h2 {
+    font-size: var(--font-size-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .unified-login-container {
+    padding: var(--spacing-sm);
+  }
+
+  .unified-login-left,
+  .unified-login-right {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+  }
+
+  .unified-login-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .unified-form-input {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .unified-login-btn {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-base);
+  }
 }
 
 /* ===========================

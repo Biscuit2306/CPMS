@@ -24,9 +24,14 @@ import ProjectEvaluator from "../ProjectEvaluator";
 import "../../styles/student-css/studentdashboard.css";
 import "../../styles/student-css/studentprofile.css";
 import { useStudent } from "../../context/StudentContext";
+import ResumeAnalyzerModal from "../../components/ResumeAnalyzerModal";
 
 const StudentProfile = () => {
   const { student, updateStudent, loading, error } = useStudent();
+
+  const BACKEND_URL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
   const [editMode, setEditMode] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [activeProfileTab, setActiveProfileTab] = useState("personal");
@@ -40,6 +45,8 @@ const StudentProfile = () => {
   const [editingSkillIdx, setEditingSkillIdx] = useState(null);
   const [editingProjectIdx, setEditingProjectIdx] = useState(null);
   const [editingCertIdx, setEditingCertIdx] = useState(null);
+
+  const [showResumeModal, setShowResumeModal] = useState(false);
 
   useEffect(() => {
     if (student) {
@@ -255,8 +262,38 @@ const StudentProfile = () => {
             <label>Resume</label>
             <div className="student-resume-upload">
               <FileText size={16} />
-              <span>{profileData.resume}</span>
-              {editMode && <button className="student-upload-btn">Upload New</button>}
+
+              {profileData.resume && profileData.resume !== "N/A" && profileData.resume !== "" ? (
+                <a
+                  href={`${BACKEND_URL}${profileData.resume}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="student-resume-link"
+                >
+                  View Resume
+                </a>
+              ) : (
+                <span>{profileData.resume || "No resume uploaded"}</span>
+              )}
+
+              {editMode && (
+                <button
+                  type="button"
+                  className="student-upload-btn"
+                  onClick={() => setShowResumeModal(true)}
+                >
+                  Upload New
+                </button>
+              )}
+
+              <button
+                type="button"
+                className="student-analyze-btn"
+                onClick={() => setShowResumeModal(true)}
+                disabled={!profileData.resume || profileData.resume === "N/A" || profileData.resume === ""}
+              >
+                Analyze
+              </button>
             </div>
           </div>
         </div>
@@ -820,6 +857,17 @@ const StudentProfile = () => {
 
       <InterviewFeature />
       <ProjectEvaluator />
+
+      <ResumeAnalyzerModal
+        isOpen={showResumeModal}
+        onClose={() => setShowResumeModal(false)}
+        currentResume={
+          student?.resume && student?.resume !== "N/A" && student?.resume !== ""
+            ? `${BACKEND_URL}${student.resume}`
+            : null
+        }
+        student={student}
+      />
     </StudentLayout>
   );
 };

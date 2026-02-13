@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios");
+const InterviewSession = require("../models/InterviewSession");
 
 const router = express.Router();
 
@@ -7,38 +8,28 @@ const GEMINI_URL =
   "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
 
 /* =========================
-   IN-MEMORY INTERVIEW STATE
-   ========================= */
-let interviewSession = {
-  role: "",
-  level: "",
-  techStack: [],
-  answers: [],
-  questionNumber: 1
-};
-
-/* =========================
    START INTERVIEW
    POST /api/ai/start
    ========================= */
 router.post("/start", async (req, res) => {
   try {
-    const { role, level, techStack } = req.body;
+    const { studentFirebaseUid, role, level, techStack } = req.body;
 
-    if (!role || !level || !techStack?.length) {
+    if (!studentFirebaseUid || !role || !level || !techStack?.length) {
       return res.status(400).json({ error: "Invalid interview data" });
     }
 
-    // reset session
-    interviewSession = {
+    // Create new interview session in database
+    const session = await InterviewSession.create({
+      studentFirebaseUid,
       role,
       level,
       techStack,
-      answers: [],
-      questionNumber: 1
-    };
+      currentQuestionNumber: 1,
+      status: "in-progress",
+    });
 
-    console.log("Starting interview session:", interviewSession);
+    console.log("Starting interview session:", session._id);
 
     const prompt = `
 You are a technical interviewer.
@@ -70,7 +61,10 @@ Ask question number 1.
       question = "Explain the concept of closures in JavaScript."; // fallback question
     }
 
-    res.json({ question: question || "Failed to generate question" });
+    res.json({ 
+      sessionId: session._id,
+      question: question || "Failed to generate question" 
+    });
 
   } catch (error) {
     console.error("❌ Start interview error:", error.response?.data || error.message);
@@ -84,24 +78,40 @@ Ask question number 1.
    ========================= */
 router.post("/answer", async (req, res) => {
   try {
-    const { answer } = req.body;
+    const { sessionId, answer } = req.body;
 
-    if (!answer) {
-      return res.status(400).json({ error: "Answer is required" });
+    if (!sessionId || !answer) {
+      return res.status(400).json({ error: "Missing sessionId or answer" });
     }
 
-    // store answer
-    interviewSession.answers.push({
-      questionNumber: interviewSession.questionNumber,
-      answer
+    const session = await InterviewSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ error: "Interview session not found" });
+    }
+
+    if (session.status !== "in-progress") {
+      return res.status(400).json({ error: "Interview session is not active" });
+    }
+
+    // Store question and answer
+    session.questions.push({
+      questionNumber: session.currentQuestionNumber,
+      question: req.body.lastQuestion || "Question",
+      answer,
+      timestamp: new Date(),
     });
 
-    interviewSession.questionNumber++;
+    session.currentQuestionNumber++;
 
-    // interview finished
-    if (interviewSession.questionNumber > 5) {
-      return res.json({ done: true });
+    // Interview finished after 5 questions
+    if (session.currentQuestionNumber > 5) {
+      session.status = "completed";
+      session.completedAt = new Date();
+      await session.save();
+      return res.json({ done: true, message: "Interview completed" });
     }
+
+    await session.save();
 
     const prompt = `
 You are a technical interviewer.
@@ -111,11 +121,11 @@ STRICT RULES:
 - Do NOT explain
 - Do NOT evaluate previous answers
 
-Role: ${interviewSession.role}
-Level: ${interviewSession.level}
-Tech Stack: ${interviewSession.techStack.join(", ")}
+Role: ${session.role}
+Level: ${session.level}
+Tech Stack: ${session.techStack.join(", ")}
 
-Ask question number ${interviewSession.questionNumber}.
+Ask question number ${session.currentQuestionNumber}.
 `;
 
     let nextQuestion;
@@ -129,7 +139,7 @@ Ask question number ${interviewSession.questionNumber}.
       nextQuestion = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
     } catch (apiError) {
       console.error("❌ Gemini API failed:", apiError.response?.data || apiError.message);
-      nextQuestion = `Please explain a concept related to ${interviewSession.techStack[0]}.`; // fallback
+      nextQuestion = `Please explain a concept related to ${session.techStack[0]}.`; // fallback
     }
 
     res.json({ nextQuestion: nextQuestion || "Failed to generate next question" });
@@ -146,12 +156,23 @@ Ask question number ${interviewSession.questionNumber}.
    ========================= */
 router.post("/evaluate", async (req, res) => {
   try {
+    const { sessionId } = req.body;
+
+    if (!sessionId) {
+      return res.status(400).json({ error: "Missing sessionId" });
+    }
+
+    const session = await InterviewSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ error: "Interview session not found" });
+    }
+
     const prompt = `
 You are a strict technical interviewer.
 
 Evaluate the candidate's overall interview performance based on all answers:
 
-${interviewSession.answers.map(a => `Q${a.questionNumber}: ${a.answer}`).join("\n")}
+${session.questions.map(q => `Q${q.questionNumber}: ${q.answer}`).join("\n")}
 
 Return ONLY valid JSON in this format:
 {
@@ -179,7 +200,7 @@ Return ONLY valid JSON in this format:
       feedbackText = "";
     }
 
-    // 🔹 Safe JSON extraction
+    // Safe JSON extraction
     const jsonMatch = feedbackText.match(/\{[\s\S]*\}/);
     const feedback = jsonMatch ? JSON.parse(jsonMatch[0]) : {
       score: 50,
@@ -187,6 +208,12 @@ Return ONLY valid JSON in this format:
       weaknesses: [],
       suggestions: ["Retry interview"]
     };
+
+    // Save feedback to session
+    session.feedback = feedback;
+    session.status = "completed";
+    session.completedAt = new Date();
+    await session.save();
 
     res.json(feedback);
 
@@ -198,6 +225,24 @@ Return ONLY valid JSON in this format:
       weaknesses: ["Retry interview for more accurate feedback"],
       suggestions: ["Ensure all questions are answered properly"]
     });
+  }
+});
+
+/* =========================
+   GET INTERVIEW HISTORY
+   GET /api/ai/history/:studentFirebaseUid
+   ========================= */
+router.get("/history/:studentFirebaseUid", async (req, res) => {
+  try {
+    const sessions = await InterviewSession.find({
+      studentFirebaseUid: req.params.studentFirebaseUid,
+      status: "completed",
+    }).sort({ completedAt: -1 });
+
+    res.json({ success: true, data: sessions });
+  } catch (error) {
+    console.error("❌ History fetch error:", error.message);
+    res.status(500).json({ error: "Failed to fetch history" });
   }
 });
 

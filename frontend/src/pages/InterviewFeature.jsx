@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MessageSquare, X, Send, CheckCircle, AlertCircle, TrendingUp, Award, Loader } from 'lucide-react';
+import { auth } from '../firebase';
 import '../styles/interviewfeature.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -7,6 +8,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 const InterviewFeature = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState('setup'); // setup, interview, feedback
+  const [sessionId, setSessionId] = useState(null);
   const [interviewData, setInterviewData] = useState({
     role: '',
     level: '',
@@ -57,87 +59,115 @@ const InterviewFeature = () => {
   };
 
   const startInterview = async () => {
-  if (!interviewData.role || !interviewData.level || interviewData.techStack.length === 0) {
-    alert('Please fill all fields');
-    return;
-  }
+    if (!interviewData.role || !interviewData.level || interviewData.techStack.length === 0) {
+      alert('Please fill all fields');
+      return;
+    }
 
-  setIsLoading(true);
+    setIsLoading(true);
 
-  try {
-    const response = await fetch(`${API_BASE}/api/ai/start`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(interviewData)
-    });
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Please login first');
+        return;
+      }
 
-    const data = await response.json();
+      const response = await fetch(`${API_BASE}/api/ai/start`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          studentFirebaseUid: user.uid,
+          ...interviewData
+        })
+      });
 
-    setCurrentQuestion(data.question);
-    setCurrentStep("interview");
-    setQuestionNumber(1);
-  } catch (err) {
-    console.error("Start interview error:", err);
-    alert("Failed to start interview");
-  } finally {
-    setIsLoading(false);
-  }
-};
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to start interview");
+      }
+
+      setSessionId(data.sessionId);
+      setCurrentQuestion(data.question);
+      setCurrentStep("interview");
+      setQuestionNumber(1);
+    } catch (err) {
+      console.error("Start interview error:", err);
+      alert("Failed to start interview: " + err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
   const submitAnswer = async () => {
-  if (!currentAnswer.trim()) {
-    alert("Please provide an answer");
-    return;
-  }
+    if (!currentAnswer.trim()) {
+      alert("Please provide an answer");
+      return;
+    }
 
-  setIsLoading(true);
+    setIsLoading(true);
 
-  try {
-    const response = await fetch(`${API_BASE}/api/ai/answer`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        answer: currentAnswer,
-        questionNumber
-      })
-    });
+    try {
+      const response = await fetch(`${API_BASE}/api/ai/answer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          sessionId,
+          answer: currentAnswer,
+          lastQuestion: currentQuestion
+        })
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.nextQuestion) {
-      setCurrentQuestion(data.nextQuestion);
-      setQuestionNumber(prev => prev + 1);
-      setCurrentAnswer("");
-    } else {
-      // 🔥 FINAL EVALUATION
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit answer");
+      }
+
+      if (data.done) {
+        // 🔥 FINAL EVALUATION
+        getEvaluation();
+      } else if (data.nextQuestion) {
+        setCurrentQuestion(data.nextQuestion);
+        setQuestionNumber(prev => prev + 1);
+        setCurrentAnswer("");
+      }
+    } catch (err) {
+      console.error("Submit answer error:", err);
+      alert("Failed to submit answer: " + err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getEvaluation = async () => {
+    try {
       const evalResponse = await fetch(`${API_BASE}/api/ai/evaluate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify({ sessionId })
       });
 
       const feedback = await evalResponse.json();
       setFeedback(feedback);
       setCurrentStep("feedback");
+    } catch (err) {
+      console.error("Evaluation error:", err);
+      alert("Failed to get evaluation: " + err.message);
     }
-  } catch (err) {
-    console.error("Submit answer error:", err);
-    alert("Failed to submit answer");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
+  };
 
   const resetInterview = () => {
     setCurrentStep('setup');
+    setSessionId(null);
     setInterviewData({ role: '', level: '', techStack: [] });
     setCurrentQuestion('');
     setCurrentAnswer('');

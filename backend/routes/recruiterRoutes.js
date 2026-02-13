@@ -1,20 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Recruiter = require("../models/Recruiter");
+const Student = require("../models/Student");
 
-// Register a new recruiter
-router.post("/register", async (req, res) => {
-  try {
-    const { name, company, email, password, position } = req.body;
-    const recruiter = new Recruiter({ name, company, email, password, position });
-    await recruiter.save();
-    res.status(201).json({ message: "Recruiter registered successfully" });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-// Get recruiter dashboard
+// Get recruiter dashboard with jobs
 router.get("/dashboard/:uid", async (req, res) => {
   try {
     let recruiter = await Recruiter.findOne({
@@ -23,20 +12,42 @@ router.get("/dashboard/:uid", async (req, res) => {
 
     // If recruiter doesn't exist, create a default one
     if (!recruiter) {
-      recruiter = await Recruiter.create({
-        firebaseUid: req.params.uid,
-        fullName: "",
-        email: "",
-        phone: "",
-        companyName: "",
-        designation: "",
-        companyWebsite: "",
-        companySize: ""
-      });
+      try {
+        recruiter = await Recruiter.create({
+          firebaseUid: req.params.uid,
+          fullName: "",
+          phone: "",
+          companyName: "",
+          designation: "",
+          companyWebsite: "",
+          companySize: "",
+          jobDrives: []
+        });
+      } catch (createErr) {
+        console.error("Failed to create default recruiter", createErr);
+        // If creation fails, return a minimal recruiter object
+        recruiter = {
+          firebaseUid: req.params.uid,
+          fullName: "",
+          email: "",
+          phone: "",
+          companyName: "",
+          designation: "",
+          companyWebsite: "",
+          companySize: "",
+          jobDrives: []
+        };
+      }
     }
 
-    res.json(recruiter);
+    // Filter out soft-deleted / blocked job drives before returning dashboard
+    const recObj = recruiter && typeof recruiter.toObject === 'function' ? recruiter.toObject() : recruiter;
+    if (recObj && Array.isArray(recObj.jobDrives)) {
+      recObj.jobDrives = recObj.jobDrives.filter(d => !(d.isDeleted === true || (d.status && String(d.status).toLowerCase() === 'deleted') || d.isBlocked === true || (d.status && String(d.status).toLowerCase() === 'blocked')));
+    }
+    res.json(recObj);
   } catch (err) {
+    console.error("Dashboard fetch error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -52,7 +63,12 @@ router.get("/profile/:uid", async (req, res) => {
       return res.status(404).json({ error: "Recruiter not found" });
     }
 
-    res.json({ success: true, data: recruiter });
+    // Hide deleted/blocked drives in profile response
+    const recObj = recruiter && typeof recruiter.toObject === 'function' ? recruiter.toObject() : recruiter;
+    if (recObj && Array.isArray(recObj.jobDrives)) {
+      recObj.jobDrives = recObj.jobDrives.filter(d => !(d.isDeleted === true || (d.status && String(d.status).toLowerCase() === 'deleted') || d.isBlocked === true || (d.status && String(d.status).toLowerCase() === 'blocked')));
+    }
+    res.json({ success: true, data: recObj });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

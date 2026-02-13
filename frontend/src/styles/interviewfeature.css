@@ -4,7 +4,7 @@
 .interview-floating-btn {
   position: fixed;
   bottom: 2rem;
-  right: 2rem;
+  right: 6rem; /* ✅ moved left */
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
@@ -19,6 +19,8 @@
   transition: all 0.3s ease;
   z-index: 999;
 }
+
+
 
 .interview-floating-btn:hover {
   transform: scale(1.1);
@@ -588,7 +590,7 @@
 
   .interview-floating-btn {
     bottom: 1.5rem;
-    right: 1.5rem;
+    right: 5.5rem; /* ✅ middle on mobile */
     width: 56px;
     height: 56px;
   }

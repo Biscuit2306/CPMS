@@ -117,6 +117,31 @@ const StudentSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+
+    // Block/Delete tracking
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+
+    blockedBy: {
+      adminFirebaseUid: String,
+      adminName: String,
+      reason: String,
+      blockedAt: Date,
+    },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+
+    deletedBy: {
+      adminFirebaseUid: String,
+      adminName: String,
+      reason: String,
+      deletedAt: Date,
+    },
   },
   {
     timestamps: true,
@@ -128,3 +153,4 @@ const StudentSchema = new mongoose.Schema(
  * Must export the MONGOOSE MODEL
  */
 module.exports = mongoose.model("Student", StudentSchema);
+

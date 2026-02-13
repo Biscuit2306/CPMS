@@ -99,8 +99,316 @@
 
 .admin-drive-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.admin-view-btn {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.admin-view-btn:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.admin-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.admin-action-btn-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.admin-action-btn-warning:hover {
+  background: #fde68a;
+  transform: translateY(-1px);
+}
+
+.admin-action-btn-danger {
+  background: #fecaca;
+  color: #dc2626;
+}
+
+.admin-action-btn-danger:hover {
+  background: #fca5a5;
+  transform: translateY(-1px);
+}
+
+/* Blocked/Deleted Card States */
+.admin-drive-card.blocked,
+.admin-drive-card.deleted {
+  opacity: 0.7;
+  border-color: #fca5a5;
+  position: relative;
+}
+
+.admin-drive-status-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.4rem;
+  gap: 12px;
+  z-index: 1;
+}
+
+.admin-drive-warning {
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #92400e;
+  margin-top: 8px;
+}
+
+.admin-drive-status-badge.blocked {
+  background: #fecaca;
+  color: #dc2626;
+}
+
+.admin-drive-status-badge.deleted {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+/* Modal styles */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.admin-modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  margin: 20px;
+  overflow: hidden;
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.admin-modal-header {
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #1f2937;
+}
+
+.admin-modal-body {
+  padding: 24px;
+}
+
+.admin-modal-text {
+  font-size: 14px;
+  color: #374151;
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.admin-modal-subtext {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0 0 20px 0;
+  padding: 12px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  border-left: 3px solid #f59e0b;
+}
+
+.admin-modal-form-group {
+  margin-bottom: 0;
+}
+
+.admin-modal-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.admin-modal-form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #1f2937;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.admin-modal-form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.admin-modal-footer {
+  padding: 20px 24px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.admin-btn-secondary,
+.admin-btn-warning,
+.admin-btn-danger {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.admin-btn-secondary {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.admin-btn-secondary:hover {
+  background: #d1d5db;
+}
+
+.admin-btn-warning {
+  background: #fcd34d;
+  color: #92400e;
+}
+
+.admin-btn-warning:hover {
+  background: #f7c34d;
+}
+
+.admin-btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.admin-btn-danger:hover {
+  background: #dc2626;
+}
+
+.admin-btn-warning:disabled,
+.admin-btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Success/Error messages */
+.admin-success-banner,
+.admin-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.admin-success-banner {
+  background: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+.admin-error-banner {
+  background: #fee2e2;
+  color: #7f1d1d;
+  border-left: 4px solid #ef4444;
 }
 
 @media (max-width: 1024px) {
@@ -111,6 +419,21 @@
 
 @media (max-width: 768px) {
   .admin-drive-actions {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-modal-content {
+    max-width: 100%;
+    margin: 16px;
+  }
+
+  .admin-modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .admin-btn-secondary,
+  .admin-btn-warning,
+  .admin-btn-danger {
+    width: 100%;
   }
 }

@@ -47,6 +47,12 @@ const recruiterSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    // Job Drives posted by this recruiter
+    jobDrives: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: [],
+    },
   },
   { timestamps: true }
 );

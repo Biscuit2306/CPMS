@@ -1,27 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Shield, LayoutDashboard, Users, UserCheck, Building2, Briefcase, Activity, Settings, LogOut, Search, Menu, X, Mail } from 'lucide-react';
+import { Shield, LayoutDashboard, Users, UserCheck, Building2, Briefcase, Activity, Settings, LogOut, Search, Menu, X, Mail, Calendar } from 'lucide-react';
 import '../styles/admin-css/adminlayout.css';
 import { auth } from '../firebase';
 import { useAdmin } from '../context/AdminContext';
+import { useNotification } from '../context/NotificationContext';
+import { NotificationCenter } from './Notifications';
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [adminName, setAdminName] = useState('Admin');
+  const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { admin } = useAdmin();
+  const { unreadCount, fetchUnreadCount } = useNotification();
 
-  useEffect(() => {
+  // Compute admin name using useMemo instead of useState + useEffect
+  const adminName = useMemo(() => {
+    let name = 'Admin';
     if (admin && admin.fullName) {
-      setAdminName(admin.fullName);
+      name = admin.fullName;
     } else {
       const user = auth.currentUser;
       if (user) {
-        setAdminName(user.displayName || user.email?.split('@')[0] || 'Admin');
+        name = user.displayName || user.email?.split('@')[0] || 'Admin';
       }
     }
+    return name;
   }, [admin]);
+
+  // Fetch notification count on mount
+  useEffect(() => {
+    if (admin?.firebaseUid) {
+      fetchUnreadCount(admin.firebaseUid);
+    }
+  }, [admin?.firebaseUid, fetchUnreadCount]);
 
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
@@ -29,6 +42,7 @@ const AdminLayout = ({ children }) => {
     { id: 'recruiters', icon: UserCheck, label: 'Recruiters', path: '/admin/recruiters' },
     { id: 'companies', icon: Building2, label: 'Companies', path: '/admin/companies' },
     { id: 'drives', icon: Briefcase, label: 'Placement Drives', path: '/admin/drives' },
+    { id: 'schedules', icon: Calendar, label: 'Interview Schedules', path: '/admin/schedules' },
     { id: 'logs', icon: Activity, label: 'System Logs', path: '/admin/logs' },
     { id: 'profile', icon: Settings, label: 'Profile', path: '/admin/profile' }
   ];
@@ -91,10 +105,17 @@ const AdminLayout = ({ children }) => {
           </div>
 
           <div className="admin-navbar-right">
-            <button className="admin-notification-btn">
+            <button 
+              className="admin-notification-btn"
+              onClick={() => setNotificationCenterOpen(!notificationCenterOpen)}
+              style={{ position: 'relative' }}
+            >
               <Mail size={20} />
-              <span className="admin-notification-badge">3</span>
+              {unreadCount > 0 && <span className="admin-notification-badge">{unreadCount}</span>}
             </button>
+            {notificationCenterOpen && admin?.firebaseUid && (
+              <NotificationCenter firebaseUid={admin.firebaseUid} isOpen={true} onClose={() => setNotificationCenterOpen(false)} />
+            )}
             <div className="admin-user-profile">
               <img 
                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${adminName}`} 

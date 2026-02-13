@@ -1,83 +1,117 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Building2, Mail, Phone, Calendar, Eye, Edit2 } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
+import { useAdmin } from '../../context/AdminContext';
 import '../../styles/admin-css/admincompanies.css';
 
 const Companies = () => {
-  const allCompanies = [
-    { id: 1, company: 'TechCorp Solutions', industry: 'IT Services', contact: 'hr@techcorp.com', phone: '+91 9876501234', totalHires: 45, avgPackage: '13.5 LPA', status: 'Active', lastVisit: 'Jan 28, 2026' },
-    { id: 2, company: 'InnovateTech', industry: 'Software', contact: 'careers@innovate.com', phone: '+91 9876501235', totalHires: 32, avgPackage: '11 LPA', status: 'Active', lastVisit: 'Feb 2, 2026' },
-    { id: 3, company: 'Digital Dynamics', industry: 'Analytics', contact: 'jobs@digitaldyn.com', phone: '+91 9876501236', totalHires: 28, avgPackage: '16 LPA', status: 'Active', lastVisit: 'Feb 5, 2026' },
-    { id: 4, company: 'CloudWorks', industry: 'Cloud Services', contact: 'recruit@cloudworks.com', phone: '+91 9876501237', totalHires: 38, avgPackage: '14.5 LPA', status: 'Inactive', lastVisit: 'Dec 15, 2025' },
-    { id: 5, company: 'NextGen AI', industry: 'AI/ML', contact: 'hiring@nextgenai.com', phone: '+91 9876501238', totalHires: 15, avgPackage: '20 LPA', status: 'Active', lastVisit: 'Feb 12, 2026' },
-    { id: 6, company: 'SecureNet', industry: 'Cybersecurity', contact: 'jobs@securenet.com', phone: '+91 9876501239', totalHires: 22, avgPackage: '12 LPA', status: 'Inactive', lastVisit: 'Jan 20, 2026' }
-  ];
+  const { recruiters, statsLoading } = useAdmin();
+  const [filteredRecruiters, setFilteredRecruiters] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    let filtered = recruiters;
+    if (searchTerm) {
+      filtered = recruiters.filter(r => 
+        r.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    setFilteredRecruiters(filtered);
+  }, [searchTerm, recruiters]);
+
+  const getTotalHires = (recruiter) => {
+    const drives = (recruiter.jobDrives || []).filter(drive =>
+      !drive?.isDeleted && drive?.status !== 'deleted' && !drive?.isBlocked && drive?.status !== 'blocked'
+    );
+
+    return drives.reduce((sum, drive) => 
+      sum + ((drive.applications || drive.applicants || []).filter(a => a.applicationStatus === 'selected').length || 0), 0
+    ) || 0;
+  };
+
+  const getAvgPackage = (recruiter) => {
+    return recruiter.salary || 'N/A';
+  };
 
   return (
     <AdminLayout>
       <div className="admin-page-header">
         <div>
           <h1>Company Management</h1>
-          <p>Manage partner companies and recruiters</p>
+          <p>Manage partner companies and recruiters ({filteredRecruiters.length} companies)</p>
         </div>
-        <button className="admin-add-btn">
-          <Building2 size={20} />
-          Add Company
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <input 
+            type="text" 
+            placeholder="Search companies..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: '1px solid #e5e7eb',
+              width: '200px'
+            }}
+          />
+          <button className="admin-add-btn">
+            <Building2 size={20} />
+            Add Company
+          </button>
+        </div>
       </div>
 
-      <div className="admin-companies-grid">
-        {allCompanies.map((company) => (
-          <div key={company.id} className="admin-company-card">
-            <div className="admin-company-header">
-              <div className="admin-company-logo">
-                {company.company.charAt(0)}
-              </div>
-              <div className="admin-company-info">
-                <h3>{company.company}</h3>
-                <p>{company.industry}</p>
-                <span className={`admin-status-badge admin-status-${company.status.toLowerCase()}`}>
-                  {company.status}
-                </span>
-              </div>
-            </div>
-            <div className="admin-company-details">
-              <div className="admin-company-row">
-                <Mail size={16} />
-                <span>{company.contact}</span>
-              </div>
-              <div className="admin-company-row">
-                <Phone size={16} />
-                <span>{company.phone}</span>
-              </div>
-              <div className="admin-company-stats-row">
-                <div className="admin-company-stat">
-                  <span className="admin-stat-label">Total Hires</span>
-                  <span className="admin-stat-value">{company.totalHires}</span>
+      {statsLoading ? (
+        <div style={{ textAlign: 'center', padding: '40px' }}>Loading companies...</div>
+      ) : filteredRecruiters.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '40px' }}>No companies found</div>
+      ) : (
+        <div className="admin-companies-grid">
+          {filteredRecruiters.map((recruiter) => (
+            <div key={recruiter._id} className="admin-company-card">
+              <div className="admin-company-header">
+                <div className="admin-company-logo">
+                  {(recruiter.companyName || recruiter.fullName || 'C').charAt(0)}
                 </div>
-                <div className="admin-company-stat">
-                  <span className="admin-stat-label">Avg. Package</span>
-                  <span className="admin-stat-value">{company.avgPackage}</span>
+                <div className="admin-company-info">
+                  <h3>{recruiter.companyName || recruiter.fullName}</h3>
+                  <p>{recruiter.designation || 'Recruiter'}</p>
+                  <span className="admin-status-badge admin-status-active">
+                    Active
+                  </span>
                 </div>
               </div>
-              <div className="admin-company-row">
-                <Calendar size={16} />
-                <span>Last Visit: {company.lastVisit}</span>
+              <div className="admin-company-details">
+                <div className="admin-company-row">
+                  <Mail size={16} />
+                  <span>{recruiter.email || 'N/A'}</span>
+                </div>
+                <div className="admin-company-row">
+                  <Phone size={16} />
+                  <span>{recruiter.phone || 'N/A'}</span>
+                </div>
+                <div className="admin-company-row">
+                  <Calendar size={16} />
+                  <span>Total Hires: {getTotalHires(recruiter)}</span>
+                </div>
+                <div className="admin-company-row">
+                  <span>Avg Package: {getAvgPackage(recruiter)}</span>
+                </div>
+              </div>
+              <div className="admin-company-actions">
+                <button className="admin-view-btn">
+                  <Eye size={16} />
+                  View Details
+                </button>
+                <button className="admin-edit-btn">
+                  <Edit2 size={16} />
+                  Edit
+                </button>
               </div>
             </div>
-            <div className="admin-company-actions">
-              <button className="admin-view-btn">
-                <Eye size={16} />
-                View Details
-              </button>
-              <button className="admin-edit-btn">
-                <Edit2 size={16} />
-                Edit
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </AdminLayout>
   );
 }; 

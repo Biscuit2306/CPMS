@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, LayoutDashboard, FileText, Calendar, Bell, LogOut, Search, Briefcase, Menu, X, TrendingUp, Users } from 'lucide-react';
 import '../styles/student-css/studentlayout.css';
 import { auth } from '../firebase';
 import { useStudent } from '../context/StudentContext';
+import { useNotification } from '../context/NotificationContext';
+import { NotificationCenter } from './Notifications';
+import Chatbot from './Chatbot';
 
 const StudentLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { student } = useStudent();
+  const { unreadCount, fetchUnreadCount } = useNotification();
 
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/student/dashboard' },
@@ -30,6 +35,13 @@ const StudentLayout = ({ children }) => {
       console.error("Logout failed:", error);
     }
   };
+
+  // Fetch notification count on mount
+  useEffect(() => {
+    if (student?.firebaseUid) {
+      fetchUnreadCount(student.firebaseUid);
+    }
+  }, [student?.firebaseUid]);
 
   return (
     <div className="student-dashboard-wrapper">
@@ -76,10 +88,17 @@ const StudentLayout = ({ children }) => {
           </div>
 
           <div className="student-navbar-right">
-            <button className="student-notification-btn">
+            <button 
+              className="student-notification-btn"
+              onClick={() => setNotificationCenterOpen(!notificationCenterOpen)}
+              style={{ position: 'relative' }}
+            >
               <Bell size={20} />
-              <span className="student-notification-badge">3</span>
+              {unreadCount > 0 && <span className="student-notification-badge">{unreadCount}</span>}
             </button>
+            {notificationCenterOpen && student?.firebaseUid && (
+              <NotificationCenter firebaseUid={student.firebaseUid} isOpen={true} onClose={() => setNotificationCenterOpen(false)} />
+            )}
             <div className="student-user-profile">
               <img 
                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student?.fullName || 'User'}`} 
@@ -97,6 +116,8 @@ const StudentLayout = ({ children }) => {
           {children}
         </div>
       </main>
+      
+      <Chatbot />
     </div>
   );
 };

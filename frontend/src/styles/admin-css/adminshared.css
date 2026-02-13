@@ -1,11 +1,11 @@
 /* =========================================================
    ADMIN SHARED STYLES – SCOPED ONLY
    Wrap admin pages with: <div class="admin-scope">
+   Uses CSS variables from design-system.css
    ========================================================= */
 
-/* ---------- SAFE BASE ---------- */
 .admin-scope {
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-family-base);
 }
 
 /* ==================== PAGE HEADER ==================== */
@@ -13,25 +13,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl);
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--spacing-lg);
 }
 
 .admin-scope .admin-page-header h1 {
-  font-size: 2.1rem;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin: 0;
 }
 
 .admin-scope .admin-page-header p {
-  color: #64748b;
-  font-size: 1rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
 }
 
 .admin-scope .admin-header-actions {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-md);
   flex-wrap: wrap;
 }
 
@@ -41,59 +43,88 @@
 .admin-scope .admin-action-menu-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.9rem 1.6rem;
-  background: #210F37;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-admin-primary);
   color: white;
   border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
 }
 
 .admin-scope .admin-add-btn:hover,
 .admin-scope .admin-manage-btn:hover,
 .admin-scope .admin-action-menu-btn:hover {
-  background: #1a0b2e;
+  background: var(--color-admin-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-scope .admin-add-btn:active,
+.admin-scope .admin-manage-btn:active,
+.admin-scope .admin-action-menu-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-scope .admin-add-btn:focus-visible,
+.admin-scope .admin-manage-btn:focus-visible,
+.admin-scope .admin-action-menu-btn:focus-visible {
+  outline: 2px solid var(--color-admin-primary);
+  outline-offset: 2px;
 }
 
 .admin-scope .admin-export-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.9rem 1.6rem;
-  background: white;
-  color: #210F37;
-  border: 2px solid #210F37;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  color: var(--color-admin-primary);
+  border: 2px solid var(--color-admin-primary);
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
   cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.admin-scope .admin-export-btn:hover {
+  background-color: rgba(33, 15, 55, 0.05);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-scope .admin-export-btn:active {
+  transform: translateY(0) scale(0.98);
 }
 
 /* ==================== STATUS BADGES ==================== */
 .admin-scope .admin-status-badge {
-  padding: 0.3rem 0.8rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  display: inline-block;
 }
 
 .admin-scope .admin-status-placed {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
 }
 
 .admin-scope .admin-status-active {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-info-light);
+  color: var(--color-info-dark);
 }
 
 .admin-scope .admin-status-inactive {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
 }
 
 /* ==================== ACTION BUTTONS ==================== */
@@ -102,50 +133,132 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem;
-  background: #faf5fb;
-  color: #210F37;
-  border: 2px solid #210F37;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: var(--spacing-md);
+  background: rgba(33, 15, 55, 0.05);
+  color: var(--color-admin-primary);
+  border: 2px solid var(--color-admin-primary);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.admin-scope .admin-view-btn:hover,
+.admin-scope .admin-edit-btn:hover {
+  background: var(--color-admin-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-scope .admin-view-btn:active,
+.admin-scope .admin-edit-btn:active {
+  transform: translateY(0) scale(0.96);
 }
 
 .admin-scope .admin-delete-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem;
-  background: #fee2e2;
-  color: #991b1b;
-  border: 2px solid #fca5a5;
-  border-radius: 10px;
+  padding: var(--spacing-md);
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
+  border: 2px solid var(--color-error);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.admin-scope .admin-delete-btn:hover {
+  background: var(--color-error);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-scope .admin-delete-btn:active {
+  transform: translateY(0) scale(0.96);
 }
 
 /* ==================== CARDS ==================== */
 .admin-scope .admin-card {
-  background: white;
-  border-radius: 16px;
-  padding: 1.9rem;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.admin-scope .admin-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .admin-scope .admin-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.6rem;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .admin-scope .admin-card-header h2 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin: 0;
 }
 
 .admin-scope .admin-see-all {
-  color: #210F37;
+  color: var(--color-admin-primary);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-base);
+}
+
+.admin-scope .admin-see-all:hover {
+  color: var(--color-admin-primary-dark);
+  text-decoration: underline;
+}
+
+/* ==================== FILTERS ==================== */
+.admin-scope .admin-filter-section {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-lg);
+}
+
+.admin-scope .admin-filter-btn {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.admin-scope .admin-filter-btn:hover {
+  border-color: var(--color-admin-primary);
+  color: var(--color-admin-primary);
+}
+
+.admin-scope .admin-filter-btn.active {
+  background: var(--color-admin-primary);
+  border-color: var(--color-admin-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.admin-scope .admin-filter-btn:focus-visible {
+  outline: 2px solid var(--color-admin-primary);
+  outline-offset: 2px;
 }
 
 /* ==================== FILTERS ==================== */

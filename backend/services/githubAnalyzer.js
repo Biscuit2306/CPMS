@@ -22,6 +22,10 @@ function parseGitHubUrl(url) {
  */
 function githubRequest(path) {
   return new Promise((resolve, reject) => {
+    if (!process.env.GITHUB_TOKEN) {
+      return reject(new Error("GitHub token not configured. GitHub analysis will be skipped. Set GITHUB_TOKEN in .env"));
+    }
+
     const options = {
       hostname: 'api.github.com',
       path,
