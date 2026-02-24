@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, LayoutDashboard, FileText, Calendar, Bell, LogOut, Search, Briefcase, Menu, X, TrendingUp, Users, Globe } from 'lucide-react';
 import '../styles/student-css/studentlayout.css';
+import axios from 'axios';
 import { auth } from '../firebase';
 import { useStudent } from '../context/StudentContext';
 import { useNotification } from '../context/NotificationContext';
 import { NotificationCenter } from './Notifications';
 import Chatbot from './Chatbot';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const StudentLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -30,10 +33,40 @@ const StudentLayout = ({ children }) => {
 
   const handleLogout = async () => {
     try {
+      const user = auth.currentUser;
+      if (user) {
+        const idToken = await user.getIdToken();
+        
+        // ✅ Call backend logout to clear trusted device token
+        try {
+          await axios.post(
+            `${API_BASE}/api/auth/logout`,
+            { role: 'student' },
+            {
+              headers: {
+                Authorization: `Bearer ${idToken}`,
+              },
+              withCredentials: true, // ✅ Include cookies
+            }
+          );
+        } catch (logoutErr) {
+          console.warn("Backend logout failed:", logoutErr.message);
+          // Continue with Firebase logout even if backend fails
+        }
+      }
+
       await auth.signOut(); // sign out from Firebase
+      
+      // ✅ Clear session data
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("userData");
+      localStorage.removeItem("twoFactorVerified");
+      localStorage.removeItem("twoFactorVerifiedAt");
+      
       navigate('/'); // redirect to home
     } catch (error) {
       console.error("Logout failed:", error);
+      alert("Logout failed. Please try again.");
     }
   };
 

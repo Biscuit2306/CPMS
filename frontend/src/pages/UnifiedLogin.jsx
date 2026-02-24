@@ -107,9 +107,6 @@ const UnifiedLogin = ({ role: propRole, isModal = false }) => {
       // ⚠️ Email verification check removed - not mandatory for CPMS
       // Users can login and verify email later if needed
 
-      // ✅ reset 2FA session every login (SESSION ONLY)
-      sessionStorage.setItem("twoFactorVerified", "false");
-
       const idToken = await cred.user.getIdToken();
 
       const res = await axios.post(
@@ -121,6 +118,7 @@ const UnifiedLogin = ({ role: propRole, isModal = false }) => {
           headers: {
             Authorization: `Bearer ${idToken}`,
           },
+          withCredentials: true, // ✅ Include cookies
         }
       );
 
@@ -131,12 +129,46 @@ const UnifiedLogin = ({ role: propRole, isModal = false }) => {
       localStorage.setItem("userRole", backendRole);
       localStorage.setItem("userData", JSON.stringify(userData));
 
-      // 🔥 MANDATORY 2FA FLOW
+      // 🔥 2FA FLOW
       if (!twoFactorEnabled) {
         navigate("/setup-2fa");
         return;
       }
 
+      // ✅ CHECK IF TRUSTED DEVICE (skip 2FA if valid)
+      try {
+        console.log("🔍 Checking if device is trusted...");
+        
+        const trustRes = await axios.post(
+          `${API_BASE}/api/auth/check-trusted-device`,
+          { role: backendRole },
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+            withCredentials: true, // ✅ Include cookies
+          }
+        );
+
+        console.log("📡 Trusted device response:", trustRes.data);
+
+        if (trustRes.data.trusted) {
+          // ✅ Device is trusted, skip 2FA
+          console.log("✅ Device is TRUSTED - Skipping 2FA");
+          localStorage.setItem("twoFactorVerified", "true");
+          if (backendRole === "student") navigate("/student");
+          else if (backendRole === "recruiter") navigate("/recruiter");
+          else if (backendRole === "admin") navigate("/admin");
+          else navigate("/");
+          return;
+        }
+      } catch (trustErr) {
+        console.warn("Trusted device check failed, requiring 2FA:", trustErr.message);
+      }
+
+      // ❌ Device not trusted, require 2FA
+      console.log("❌ Device NOT trusted - Requiring 2FA");
+      localStorage.setItem("twoFactorVerified", "false");
       navigate("/verify-2fa");
     } catch (err) {
       console.error("Login failed:", err);
@@ -165,9 +197,6 @@ const UnifiedLogin = ({ role: propRole, isModal = false }) => {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
-      // ✅ reset 2FA session every login (SESSION ONLY)
-      sessionStorage.setItem("twoFactorVerified", "false");
-
       const idToken = await user.getIdToken();
 
       const payload = {
@@ -182,6 +211,7 @@ const UnifiedLogin = ({ role: propRole, isModal = false }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
+        withCredentials: true, // ✅ Include cookies
       });
 
       const { role: backendRole, user: userData, twoFactorEnabled } = res.data;
@@ -189,12 +219,46 @@ const UnifiedLogin = ({ role: propRole, isModal = false }) => {
       localStorage.setItem("userRole", backendRole);
       localStorage.setItem("userData", JSON.stringify(userData));
 
-      // 🔥 MANDATORY 2FA FLOW
+      // 🔥 2FA FLOW
       if (!twoFactorEnabled) {
         navigate("/setup-2fa");
         return;
       }
 
+      // ✅ CHECK IF TRUSTED DEVICE (skip 2FA if valid)
+      try {
+        console.log("🔍 Checking if device is trusted...");
+        
+        const trustRes = await axios.post(
+          `${API_BASE}/api/auth/check-trusted-device`,
+          { role: backendRole },
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+            withCredentials: true, // ✅ Include cookies
+          }
+        );
+
+        console.log("📡 Trusted device response:", trustRes.data);
+
+        if (trustRes.data.trusted) {
+          // ✅ Device is trusted, skip 2FA
+          console.log("✅ Device is TRUSTED - Skipping 2FA");
+          localStorage.setItem("twoFactorVerified", "true");
+          if (backendRole === "student") navigate("/student");
+          else if (backendRole === "recruiter") navigate("/recruiter");
+          else if (backendRole === "admin") navigate("/admin");
+          else navigate("/");
+          return;
+        }
+      } catch (trustErr) {
+        console.warn("Trusted device check failed, requiring 2FA:", trustErr.message);
+      }
+
+      // ❌ Device not trusted, require 2FA
+      console.log("❌ Device NOT trusted - Requiring 2FA");
+      localStorage.setItem("twoFactorVerified", "false");
       navigate("/verify-2fa");
     } catch (err) {
       if (err.code === "auth/popup-closed-by-user") return;

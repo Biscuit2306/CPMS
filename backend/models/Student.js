@@ -102,6 +102,17 @@ const StudentSchema = new mongoose.Schema(
       default: "",
     },
 
+    // ─── Trusted Device Token (Skip 2FA for 7 days) ───────────────
+    trustedDeviceToken: {
+      type: String,
+      default: "",
+    },
+
+    trustedDeviceExpiry: {
+      type: Date,
+      default: null,
+    },
+
     // ─── Career & Placements ─────────────────────────────────────
     skills: {
       type: Array,

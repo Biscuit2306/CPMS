@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const crypto = require("crypto");
 
 const Student = require("../models/Student");
 const Recruiter = require("../models/Recruiter");
@@ -375,7 +376,7 @@ router.post("/2fa/verify-setup", verifyFirebaseToken, async (req, res) => {
 // ----------------------------
 router.post("/2fa/verify-login", verifyFirebaseToken, async (req, res) => {
   try {
-    const { role, otp } = req.body;
+    const { role, otp, rememberDevice } = req.body;
     const firebaseUid = req.user?.uid;
 
     if (!role || !otp) {
@@ -408,9 +409,138 @@ router.post("/2fa/verify-login", verifyFirebaseToken, async (req, res) => {
       return res.status(401).json({ error: "Invalid OTP. Check time sync." });
     }
 
-    res.json({ success: true, message: "2FA verified", verified: true });
+    // ✅ Generate trusted device token (valid 7 days)
+    let updateObj = {};
+    if (rememberDevice) {
+      const trustedToken = crypto.randomBytes(32).toString("hex");
+      const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+      updateObj = {
+        trustedDeviceToken: trustedToken,
+        trustedDeviceExpiry: expiryDate,
+      };
+
+      await updateUserByRole(role, firebaseUid, updateObj);
+
+      // 🍪 Set secure httpOnly cookie (CRITICAL: secure must be false on localhost)
+      const cookieOptions = {
+        httpOnly: true,
+        secure: false, // ⚠️ MUST be false for localhost (http), true only for production (https)
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: "/",
+      };
+
+      res.cookie("trustedDeviceToken", trustedToken, cookieOptions);
+
+      console.log(`✅ 2FA VERIFIED - Trusted device token set for ${role} user`);
+      console.log(`   Cookie name: trustedDeviceToken`);
+      console.log(`   Cookie options:`, cookieOptions);
+      console.log(`   Token: ${trustedToken.substring(0, 10)}...`);
+      console.log(`   Token expiry: ${expiryDate.toISOString()}`);
+    }
+
+    res.json({
+      success: true,
+      message: "2FA verified",
+      verified: true,
+      trustedDevice: rememberDevice ? true : false,
+    });
   } catch (err) {
     console.error("2FA VERIFY LOGIN ERROR:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// =======================================================
+// 🚪 LOGOUT & CLEAR TRUSTED DEVICE
+// POST /api/auth/logout
+// =======================================================
+router.post("/logout", verifyFirebaseToken, async (req, res) => {
+  try {
+    const { role } = req.body;
+    const firebaseUid = req.user?.uid;
+
+    if (!role) {
+      return res.status(400).json({ error: "Missing role" });
+    }
+
+    const user = await findUserByRole(role, firebaseUid);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // ✅ NOTE: We DO NOT clear the trusted device token on logout
+    // Reason: Logout = end session, but device should remain trusted for next login
+    // User can explicitly "untrust device" if they want (separate feature)
+    
+    console.log(`🚪 User logging out - Device remains trusted for 7 days`);
+
+    res.json({ success: true, message: "Logged out successfully" });
+  } catch (err) {
+    console.error("LOGOUT ERROR:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// =======================================================
+// ✅ CHECK TRUSTED DEVICE (Skip 2FA if valid)
+// POST /api/auth/check-trusted-device
+// =======================================================
+router.post("/check-trusted-device", verifyFirebaseToken, async (req, res) => {
+  try {
+    const { role } = req.body;
+    const firebaseUid = req.user?.uid;
+    const trustedToken = req.cookies?.trustedDeviceToken;
+
+    if (!role) {
+      return res.status(400).json({ error: "Missing role" });
+    }
+
+    console.log(`\n🔍 TRUSTED DEVICE CHECK for ${role}:`);
+    console.log(`   All cookies received:`, Object.keys(req.cookies || {}));
+    console.log(`   trustedDeviceToken: ${trustedToken ? trustedToken.substring(0, 10) + "..." : "NOT FOUND"}`);
+
+    if (!trustedToken) {
+      console.log(`   ❌ No trusted token in cookies - Requiring 2FA\n`);
+      return res.json({ trusted: false, message: "No token found" });
+    }
+
+    const user = await findUserByRole(role, firebaseUid);
+
+    if (!user) {
+      console.log(`   ❌ User not found for role: ${role}`);
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // ✅ Check if trusted device token is valid
+    const tokenMatch = user.trustedDeviceToken === trustedToken;
+    const tokenNotExpired = user.trustedDeviceExpiry && new Date(user.trustedDeviceExpiry) > new Date();
+
+    console.log(`   Token in DB: ${user.trustedDeviceToken ? user.trustedDeviceToken.substring(0, 10) + "..." : "EMPTY"}`);
+    console.log(`   Token match: ${tokenMatch}`);
+    console.log(`   Token not expired: ${tokenNotExpired}`);
+    if (user.trustedDeviceExpiry) {
+      console.log(`   Token expiry: ${new Date(user.trustedDeviceExpiry).toISOString()}`);
+    }
+
+    if (tokenMatch && tokenNotExpired) {
+      console.log(`   ✅ TRUSTED DEVICE AUTHORIZED - Skipping 2FA\n`);
+      return res.json({
+        trusted: true,
+        message: "Device is trusted, skipping 2FA",
+      });
+    }
+
+    // ❌ Token expired or mismatch
+    console.log(`   ❌ DEVICE NOT TRUSTED - Requiring 2FA\n`);
+    return res.json({
+      trusted: false,
+      message: "Token expired or invalid",
+    });
+  } catch (err) {
+    console.error("CHECK TRUSTED DEVICE ERROR:", err);
     res.status(500).json({ error: "Server error" });
   }
 });

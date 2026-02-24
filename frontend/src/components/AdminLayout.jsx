@@ -2,10 +2,13 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Shield, LayoutDashboard, Users, UserCheck, Building2, Briefcase, Activity, Settings, LogOut, Search, Menu, X, Mail, Calendar } from 'lucide-react';
 import '../styles/admin-css/adminlayout.css';
+import axios from 'axios';
 import { auth } from '../firebase';
 import { useAdmin } from '../context/AdminContext';
 import { useNotification } from '../context/NotificationContext';
 import { NotificationCenter } from './Notifications';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -53,10 +56,40 @@ const AdminLayout = ({ children }) => {
 
   const handleLogout = async () => {
     try {
+      const user = auth.currentUser;
+      if (user) {
+        const idToken = await user.getIdToken();
+        
+        // ✅ Call backend logout to clear trusted device token
+        try {
+          await axios.post(
+            `${API_BASE}/api/auth/logout`,
+            { role: 'admin' },
+            {
+              headers: {
+                Authorization: `Bearer ${idToken}`,
+              },
+              withCredentials: true, // ✅ Include cookies
+            }
+          );
+        } catch (logoutErr) {
+          console.warn("Backend logout failed:", logoutErr.message);
+          // Continue with Firebase logout even if backend fails
+        }
+      }
+
       await auth.signOut();
+      
+      // ✅ Clear session data
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("userData");
+      localStorage.removeItem("twoFactorVerified");
+      localStorage.removeItem("twoFactorVerifiedAt");
+      
       navigate('/');
     } catch (error) {
       console.error("Logout failed:", error);
+      alert("Logout failed. Please try again.");
     }
   };
 

@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Search, Bell, Users, LogOut,LayoutDashboard,Briefcase,Calendar,Building2,Settings} from 'lucide-react';
 import '../styles/RecruiterCSS/recruiterLayout.css';
+import axios from 'axios';
 import { auth } from '../firebase';
 import { useRecruiter } from '../context/RecruiterContext';
 import { useNotification } from '../context/NotificationContext';
 import { NotificationCenter } from './Notifications';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -35,10 +38,40 @@ const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) =
 
   const handleLogout = async () => {
     try {
+      const user = auth.currentUser;
+      if (user) {
+        const idToken = await user.getIdToken();
+        
+        // ✅ Call backend logout to clear trusted device token
+        try {
+          await axios.post(
+            `${API_BASE}/api/auth/logout`,
+            { role: 'recruiter' },
+            {
+              headers: {
+                Authorization: `Bearer ${idToken}`,
+              },
+              withCredentials: true, // ✅ Include cookies
+            }
+          );
+        } catch (logoutErr) {
+          console.warn("Backend logout failed:", logoutErr.message);
+          // Continue with Firebase logout even if backend fails
+        }
+      }
+
       await auth.signOut();
+      
+      // ✅ Clear session data
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("userData");
+      localStorage.removeItem("twoFactorVerified");
+      localStorage.removeItem("twoFactorVerifiedAt");
+      
       navigate('/');
     } catch (error) {
       console.error("Logout failed:", error);
+      alert("Logout failed. Please try again.");
     }
   };
 

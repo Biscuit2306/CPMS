@@ -9,6 +9,7 @@ const Verify2FA = () => {
   const navigate = useNavigate();
 
   const [otp, setOtp] = useState("");
+  const [rememberDevice, setRememberDevice] = useState(false);
   const role = localStorage.getItem("userRole") || "student";
 
   const handleVerifyLogin = async () => {
@@ -18,17 +19,24 @@ const Verify2FA = () => {
 
       const idToken = await user.getIdToken();
 
-      await axios.post(
+      console.log("🔐 Verifying 2FA code with rememberDevice:", rememberDevice);
+
+      const response = await axios.post(
         `${API_BASE}/api/auth/2fa/verify-login`,
-        { role, otp },
+        { role, otp, rememberDevice },
         {
           headers: {
             Authorization: `Bearer ${idToken}`,
           },
+          withCredentials: true, // ✅ Include cookies in request
         }
       );
 
-      sessionStorage.setItem("twoFactorVerified", "true");
+      console.log("✅ 2FA verification successful", response.data);
+
+      // ✅ Store 2FA verification in localStorage (persistent across tabs)
+      localStorage.setItem("twoFactorVerified", "true");
+      localStorage.setItem("twoFactorVerifiedAt", new Date().toISOString());
 
       if (role === "student") navigate("/student");
       else if (role === "recruiter") navigate("/recruiter");
@@ -73,6 +81,23 @@ const Verify2FA = () => {
             marginBottom: "14px",
           }}
         />
+
+        <label style={{ display: "flex", alignItems: "center", marginBottom: "14px", cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={rememberDevice}
+            onChange={(e) => setRememberDevice(e.target.checked)}
+            style={{
+              marginRight: "8px",
+              width: "18px",
+              height: "18px",
+              cursor: "pointer",
+            }}
+          />
+          <span style={{ color: "#cbd5e1", fontSize: "14px" }}>
+            Remember this device for 7 days
+          </span>
+        </label>
 
         <button
           onClick={handleVerifyLogin}

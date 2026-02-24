@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cron = require("node-cron");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const path = require("path");
 
@@ -44,8 +45,32 @@ app.use(
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// 🔍 REQUEST LOGGER
+// 🔍 COOKIE DEBUG MIDDLEWARE
+app.use((req, res, next) => {
+  if (req.path.includes("auth")) {
+    const cookieKeys = Object.keys(req.cookies || {});
+    if (cookieKeys.length > 0) {
+      console.log(`🍪 Incoming cookies on ${req.method} ${req.path}:`, cookieKeys);
+    }
+  }
+  
+  // Log when cookies are being set
+  const originalCookie = res.cookie.bind(res);
+  res.cookie = function(name, value, options) {
+    console.log(`🍪 Setting cookie: ${name} with options:`, {
+      httpOnly: options?.httpOnly,
+      secure: options?.secure,
+      sameSite: options?.sameSite,
+      maxAge: options?.maxAge,
+      path: options?.path,
+    });
+    return originalCookie(name, value, options);
+  };
+  
+  next();
+});
 app.use((req, res, next) => {
   console.log(`📨 ${req.method} ${req.originalUrl}`);
   next();
