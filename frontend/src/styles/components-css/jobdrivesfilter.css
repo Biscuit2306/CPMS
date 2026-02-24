@@ -1,0 +1,460 @@
+/* ================== JOB DRIVES FILTER COMPONENT ================== */
+
+.job-drives-filter-container {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+/* ================== FILTER HEADER ================== */
+
+.job-drives-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.job-drives-filter-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.job-drives-filter-toggle-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.job-drives-filter-toggle-main:hover {
+  color: #7c3aed;
+}
+
+.job-drives-filter-toggle-main svg {
+  flex-shrink: 0;
+}
+
+.job-drives-filter-chevron {
+  transition: transform 0.3s ease;
+  color: #9ca3af;
+}
+
+.job-drives-filter-chevron.open {
+  transform: rotate(180deg);
+  color: #7c3aed;
+}
+
+.job-drives-filter-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.job-drives-filter-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.job-drives-filter-stat svg {
+  color: #7c3aed;
+  flex-shrink: 0;
+}
+
+.job-drives-filter-reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.job-drives-filter-reset-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* ================== FILTER CONTENT ================== */
+
+.job-drives-filter-content {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: #ffffff;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================== FILTER SECTION ================== */
+
+.job-drives-filter-section {
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 0.75rem;
+}
+
+.job-drives-filter-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.job-drives-filter-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.45rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.job-drives-filter-section-header:hover {
+  color: #7c3aed;
+}
+
+.job-drives-filter-section-header svg {
+  color: #7c3aed;
+  flex-shrink: 0;
+}
+
+.job-drives-filter-section-chevron {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+  color: #9ca3af;
+}
+
+.job-drives-filter-section-chevron.open {
+  transform: rotate(180deg);
+  color: #7c3aed;
+}
+
+.job-drives-filter-section-body {
+  margin-top: 0.6rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ================== SEARCH INPUT ================== */
+
+.job-drives-filter-search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.job-drives-filter-search-wrapper:focus-within {
+  border-color: #7c3aed;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.job-drives-filter-search-wrapper svg {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.job-drives-filter-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  color: #1f2937;
+}
+
+.job-drives-filter-search-input::placeholder {
+  color: #9ca3af;
+}
+
+.job-drives-filter-search-clear {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.job-drives-filter-search-clear:hover {
+  color: #ef4444;
+}
+
+/* ================== FILTER OPTIONS ================== */
+
+.job-drives-filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.job-drives-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.5rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.job-drives-filter-option:hover {
+  background: #f3f4f6;
+}
+
+.job-drives-filter-option input[type="radio"],
+.job-drives-filter-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #7c3aed;
+  flex-shrink: 0;
+}
+
+.job-drives-filter-option span {
+  color: #374151;
+  font-weight: 500;
+  user-select: none;
+  font-size: 0.85rem;
+}
+
+/* ================== SELECT FILTER ================== */
+
+.job-drives-filter-select {
+  width: 100%;
+  padding: 0.5rem;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #1f2937;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.job-drives-filter-select:hover {
+  border-color: #7c3aed;
+  background: white;
+}
+
+.job-drives-filter-select:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* ================== RANGE SLIDER ================== */
+
+.job-drives-filter-range {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.job-drives-filter-range-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.job-drives-filter-range-label {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.8rem;
+  background: #f3f4f6;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.job-drives-filter-range-divider {
+  color: #d1d5db;
+  font-weight: 500;
+}
+
+.job-drives-filter-range-input {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.job-drives-filter-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #7c3aed;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  transition: all 0.3s ease;
+}
+
+.job-drives-filter-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.job-drives-filter-range-input::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #7c3aed;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  transition: all 0.3s ease;
+}
+
+.job-drives-filter-range-input::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.job-drives-filter-range-input-min {
+  margin-bottom: -0.5rem;
+  z-index: 5;
+}
+
+.job-drives-filter-range-input-max {
+  z-index: 6;
+}
+
+/* ================== DATE RANGE ================== */
+
+.job-drives-filter-date-range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.job-drives-filter-date-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.job-drives-filter-date-input-group label {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.8rem;
+}
+
+.job-drives-filter-date-input {
+  padding: 0.5rem;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.job-drives-filter-date-input:hover {
+  border-color: #7c3aed;
+  background: white;
+}
+
+.job-drives-filter-date-input:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* ================== RESPONSIVE ================== */
+
+@media (max-width: 768px) {
+  .job-drives-filter-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .job-drives-filter-header-content {
+    width: 100%;
+  }
+
+  .job-drives-filter-stats {
+    width: 100%;
+  }
+
+  .job-drives-filter-reset-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .job-drives-filter-date-range {
+    grid-template-columns: 1fr;
+  }
+}

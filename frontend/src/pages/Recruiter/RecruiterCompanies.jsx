@@ -32,79 +32,64 @@ const Companies = () => {
     if (!company) return null;
 
     return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          padding: '30px',
-          maxWidth: '500px',
-          width: '90%',
-          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-          maxHeight: '80vh',
-          overflowY: 'auto'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ margin: 0 }}>{company.company}</h2>
-            <button 
+      <div className="company-modal-overlay">
+        <div className="company-modal-content">
+          <div className="company-modal-header">
+            <h2 className="company-modal-title">{company.company}</h2>
+            <button
               onClick={onClose}
-              style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}
+              className="company-modal-close-btn"
             >
               ×
             </button>
           </div>
 
-          <div style={{ display: 'grid', gap: '15px' }}>
-            <div style={{ padding: '12px', backgroundColor: '#f3f4f6', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontWeight: 'bold' }}>Status:</span>
-              <span style={{ color: '#10b981', fontWeight: '500' }}>
+          <div className="company-modal-body">
+            <div className="company-modal-status-row">
+              <span className="company-modal-status-label">Status:</span>
+              <span className="company-modal-status-value">
                 {company.active ? '● Active' : '● Inactive'}
               </span>
             </div>
 
-            <div>
+            <div className="company-modal-stat-block">
               <strong>Total Hires:</strong>
-              <div style={{ fontSize: '24px', color: '#0ea5e9', fontWeight: 'bold', marginTop: '5px' }}>
+              <div className="company-modal-stat-number company-modal-stat-blue">
                 {company.totalHires}
               </div>
             </div>
 
-            <div>
+            <div className="company-modal-stat-block">
               <strong>Total Applications:</strong>
-              <div style={{ fontSize: '24px', color: '#f59e0b', fontWeight: 'bold', marginTop: '5px' }}>
+              <div className="company-modal-stat-number company-modal-stat-amber">
                 {company.applications}
               </div>
             </div>
 
-            <div>
+            <div className="company-modal-stat-block">
               <strong>Success Rate:</strong>
-              <div style={{ fontSize: '24px', color: '#8b5cf6', fontWeight: 'bold', marginTop: '5px' }}>
+              <div className="company-modal-stat-number company-modal-stat-purple">
                 {company.successRate}
               </div>
             </div>
 
             {company.website && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #e5e7eb' }}>
-                <Globe size={18} color="#0ea5e9" />
-                <a href={company.website} target="_blank" rel="noopener noreferrer" style={{ color: '#0ea5e9', textDecoration: 'none' }}>
+              <div className="company-modal-website-row">
+                <Globe size={18} className="company-modal-icon" />
+                <a
+                  href={company.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="company-modal-link"
+                >
                   {company.website}
                 </a>
               </div>
             )}
 
             {company.size && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Users size={18} color="#0ea5e9" />
+              <div className="company-modal-size-row">
+                <Users size={18} className="company-modal-icon" />
                 <span>Company Size: <strong>{company.size}</strong></span>
               </div>
             )}
@@ -167,7 +152,7 @@ const Companies = () => {
                     <span className="recruiter-stat-value">{company.successRate}</span>
                   </div>
                 </div>
-                <button 
+                <button
                   className="recruiter-company-details-btn"
                   onClick={() => {
                     setSelectedCompany(company);
@@ -181,16 +166,10 @@ const Companies = () => {
             ))}
           </div>
         ) : (
-          <div style={{
-            textAlign: 'center',
-            padding: '60px 20px',
-            backgroundColor: '#f9fafb',
-            borderRadius: '8px',
-            marginTop: '20px'
-          }}>
-            <Building2 size={48} style={{ marginBottom: '16px', color: '#d1d5db' }} />
-            <h3 style={{ color: '#6b7280', marginBottom: '8px' }}>No companies yet</h3>
-            <p style={{ color: '#9ca3af' }}>
+          <div className="company-empty-state">
+            <Building2 size={48} className="company-empty-icon" />
+            <h3 className="company-empty-title">No companies yet</h3>
+            <p className="company-empty-subtitle">
               Start by creating a job drive to add your company
             </p>
           </div>
@@ -198,8 +177,8 @@ const Companies = () => {
       </div>
 
       {showModal && selectedCompany && (
-        <CompanyDetailsModal 
-          company={selectedCompany} 
+        <CompanyDetailsModal
+          company={selectedCompany}
           onClose={() => {
             setShowModal(false);
             setSelectedCompany(null);

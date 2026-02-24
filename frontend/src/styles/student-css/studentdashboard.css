@@ -4,8 +4,8 @@
 .student-welcome-banner {
   background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
   border-radius: 20px;
-  padding: 3rem;
-  margin-bottom: 2rem;
+  padding: 2rem;
+  margin-bottom: 1rem;
   box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
 }
 
@@ -17,14 +17,14 @@
 
 .student-welcome-text h1 {
   color: white;
-  font-size: 2.5rem;
+  font-size: 2.0rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
 .student-welcome-text p {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 400;
 }
 
@@ -38,7 +38,7 @@
 /* ==================== STATS GRID ==================== */
 .student-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -70,14 +70,14 @@
 }
 
 .student-stat-content h3 {
-  font-size: 2rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1f2937;
   margin-bottom: 0.25rem;
 }
 
 .student-stat-content p {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #6b7280;
   font-weight: 500;
 }
@@ -94,7 +94,7 @@
 .student-card {
   background: white;
   border-radius: 16px;
-  padding: 1.75rem;
+  padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
 }
@@ -108,7 +108,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  padding-bottom: 0rem;
   border-bottom: 1px solid #f3f4f6;
 }
 
@@ -141,7 +141,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.25rem;
+  padding: 1rem;
   background: #f9fafb;
   border-radius: 12px;
   transition: all 0.3s ease;
@@ -197,21 +197,22 @@
 }
 
 .student-apply-btn {
-  background: #7c3aed;
+  background: #2563EB;
   color: white;
   border: none;
   padding: 0.65rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
 }
 
 .student-apply-btn:hover {
-  background: #6d28d9;
+  background: #2563EB;
   transform: scale(1.05);
+  color:#ffff;
 }
 
 /* ==================== APPLICATIONS LIST ==================== */
@@ -255,7 +256,7 @@
 }
 
 .student-app-details h3 {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #1f2937;
   margin-bottom: 0.25rem;
@@ -280,8 +281,8 @@
 }
 
 .student-status-applied {
-  background: #fef3c7;
-  color: #92400e;
+  background: #10B981 !important;
+  color: #ffff !important;
 }
 
 .student-status-test-cleared {

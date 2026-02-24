@@ -1,52 +1,297 @@
-/* Students.css */
+/* AdminStudents.css - Table View */
 @import './AdminShared.css';
 
-.admin-students-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 1.5rem;
+.admin-students-wrapper {
+  padding: 1.5rem;
 }
 
-.admin-student-card {
-  background: white;
-  border-radius: 16px;
-  padding: 1.9rem;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-}
-
-.admin-student-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(33, 15, 55, 0.2);
-}
-
-.admin-student-header {
+.admin-students-search {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
-  margin-bottom: 1.6rem;
-  padding-bottom: 1.2rem;
-  border-bottom: 2px solid #f1f5f9;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  max-width: 500px;
 }
 
-.admin-student-avatar {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #210F37, #3a1a5c);
-  border-radius: 14px;
+.admin-students-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.admin-students-search input::placeholder {
+  color: #9ca3af;
+}
+
+.admin-students-table-wrapper {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-students-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-students-table thead {
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.admin-students-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-students-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.admin-students-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.admin-student-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.admin-student-email {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.admin-app-count {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.admin-status-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: white;
+}
+
+.admin-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-view-btn,
+.admin-block-btn,
+.admin-delete-btn,
+.admin-unblock-btn {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 1.3rem;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
-.admin-student-info h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
+.admin-view-btn {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+
+.admin-view-btn:hover {
+  background: #c7d2fe;
+}
+
+.admin-block-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.admin-block-btn:hover {
+  background: #fecaca;
+}
+
+.admin-delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.admin-delete-btn:hover {
+  background: #fecaca;
+}
+
+.admin-unblock-btn {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.admin-unblock-btn:hover {
+  background: #bbf7d0;
+}
+
+/* Modal Styles */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.admin-modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+}
+
+.admin-modal-content h2 {
   color: #1f2937;
-  margin-bottom: 0.3rem;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.admin-modal-body {
+  margin: 1.5rem 0;
+  color: #6b7280;
+}
+
+.admin-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.admin-detail-row label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.admin-detail-row span {
+  color: #6b7280;
+}
+
+.admin-detail-row a {
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+.admin-detail-row a:hover {
+  text-decoration: underline;
+}
+
+.admin-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.admin-cancel-btn,
+.admin-block-btn,
+.admin-delete-btn,
+.admin-unblock-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.admin-cancel-btn {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.admin-cancel-btn:hover {
+  background: #e5e7eb;
+}
+
+.admin-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-block-btn {
+  background: #f59e0b;
+  color: white;
+}
+
+.admin-block-btn:hover {
+  background: #d97706;
+}
+
+.admin-block-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-delete-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.admin-delete-btn:hover {
+  background: #dc2626;
+}
+
+.admin-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-unblock-btn {
+  background: #10b981;
+  color: white;
+}
+
+.admin-unblock-btn:hover {
+  background: #059669;
+}
+
+.admin-unblock-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .admin-student-info p {
@@ -99,4 +344,41 @@
   .admin-student-actions {
     grid-template-columns: 1fr;
   }
+}
+
+/* ==================== LOADING STATE ==================== */
+.admin-loading-container {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.admin-loading-container p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* ==================== EMPTY STATE ==================== */
+.admin-empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+}
+
+.admin-empty-state svg {
+  opacity: 0.5;
+  margin: 0 auto 10px;
+  display: block;
+}
+
+.admin-empty-state p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ==================== BUTTONS CONTAINER ==================== */
+.admin-filter-buttons-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }

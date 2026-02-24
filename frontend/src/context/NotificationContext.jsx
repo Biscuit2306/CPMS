@@ -35,21 +35,20 @@ export function NotificationProvider({ children }) {
   /**
    * Get unread notification count
    */
-  const fetchUnreadCount = useCallback(async (firebaseUid) => {
-    if (!firebaseUid) return;
+  const fetchUnreadCount = useCallback((firebaseUid) => {
+    if (!firebaseUid || !notifications.length) {
+      setUnreadCount(0);
+      return;
+    }
 
     try {
-      const res = await axios.get(
-        `${API_BASE}/api/notifications/${firebaseUid}/count`
-      );
-
-      if (res.data.success) {
-        setUnreadCount(res.data.unreadCount || 0);
-      }
+      const unreadCount = notifications.filter(n => !n.read).length;
+      setUnreadCount(unreadCount);
     } catch (err) {
-      console.error("❌ Failed to fetch unread count:", err);
+      console.error("❌ Failed to calculate unread count:", err);
+      setUnreadCount(0);
     }
-  }, [API_BASE]);
+  }, [notifications]);
 
   /**
    * Mark single notification as read

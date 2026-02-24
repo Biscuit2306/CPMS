@@ -266,6 +266,88 @@ router.delete("/drives/:recruiterId/:driveId", async (req, res) => {
   }
 });
 
+// Delete a student
+router.delete("/students/:studentId", async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    console.log('🗑️ DELETE /students endpoint hit with ID:', studentId);
+    
+    const student = await Student.findByIdAndDelete(studentId);
+    console.log('📍 Query result:', student ? 'Found and deleted' : 'Not found');
+    
+    if (!student) {
+      console.warn('⚠️ Student not found:', studentId);
+      return res.status(404).json({ success: false, error: 'Student not found' });
+    }
+
+    console.log('✅ Student deleted:', student._id);
+    res.json({
+      success: true,
+      message: 'Student deleted successfully',
+      data: student
+    });
+  } catch (err) {
+    console.error("❌ Error deleting student:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete a recruiter
+router.delete("/recruiters/:recruiterId", async (req, res) => {
+  try {
+    const { recruiterId } = req.params;
+    console.log('🗑️ DELETE /recruiters endpoint hit with ID:', recruiterId);
+    
+    const recruiter = await Recruiter.findByIdAndDelete(recruiterId);
+    console.log('📍 Query result:', recruiter ? 'Found and deleted' : 'Not found');
+    
+    if (!recruiter) {
+      console.warn('⚠️ Recruiter not found:', recruiterId);
+      return res.status(404).json({ success: false, error: 'Recruiter not found' });
+    }
+
+    console.log('✅ Recruiter deleted:', recruiter._id);
+    res.json({
+      success: true,
+      message: 'Recruiter deleted successfully',
+      data: recruiter
+    });
+  } catch (err) {
+    console.error("❌ Error deleting recruiter:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete a job drive
+router.delete("/job-drives/:driveId", async (req, res) => {
+  try {
+    const { driveId } = req.params;
+    console.log('🗑️ DELETE /job-drives endpoint hit with ID:', driveId);
+    
+    // Find and delete the drive from the recruiter's jobDrives array
+    const result = await Recruiter.updateOne(
+      { 'jobDrives._id': driveId },
+      { $pull: { 'jobDrives': { _id: driveId } } }
+    );
+    
+    console.log('📍 Update result:', { matched: result.matchedCount, modified: result.modifiedCount });
+    
+    if (result.matchedCount === 0) {
+      console.warn('⚠️ Job drive not found:', driveId);
+      return res.status(404).json({ success: false, error: 'Job drive not found' });
+    }
+
+    console.log('✅ Job drive deleted:', driveId);
+    res.json({
+      success: true,
+      message: 'Job drive deleted successfully'
+    });
+  } catch (err) {
+    console.error("❌ Error deleting job drive:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Block a job drive (set isBlocked flag)
 router.patch("/drives/:recruiterId/:driveId/block", async (req, res) => {
   try {
@@ -418,7 +500,11 @@ router.get("/dashboard/:uid", async (req, res) => {
     let totalInterviews = 0;
 
     try {
-      const schedules = await InterviewSchedule.find({ status: 'completed' });
+      const schedules = await InterviewSchedule.find({ 
+        status: 'completed',
+        isDeleted: { $ne: true },
+        isBlocked: { $ne: true }
+      });
       
       if (schedules && Array.isArray(schedules)) {
         for (const schedule of schedules) {
@@ -532,6 +618,35 @@ router.put("/profile/:uid", async (req, res) => {
     }
     res.json({ success: true, data: admin });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Get all system activity logs (admin only)
+ */
+router.get("/logs/activity", async (req, res) => {
+  try {
+    const Notification = require("../models/Notification");
+    const { limit = 100, skip = 0 } = req.query;
+
+    const notifications = await Notification.find()
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip))
+      .lean();
+
+    const total = await Notification.countDocuments();
+
+    res.json({
+      success: true,
+      notifications,
+      total,
+      limit: parseInt(limit),
+      skip: parseInt(skip),
+    });
+  } catch (err) {
+    console.error("❌ Error fetching activity logs:", err);
     res.status(500).json({ error: err.message });
   }
 });

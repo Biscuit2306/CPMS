@@ -83,10 +83,12 @@ const UnifiedRegister = () => {
       ...formData,
     });
 
-    // ✅ DIRECT DASHBOARD REDIRECT
-    if (role === "student") navigate("/student");
-    else if (role === "recruiter") navigate("/recruiter");
-    else if (role === "admin") navigate("/admin");
+    // ✅ Store user role in localStorage
+    localStorage.setItem("userRole", role);
+    sessionStorage.setItem("twoFactorVerified", "false");
+
+    // 🔑 Send to 2FA setup/verify (mandatory)
+    navigate("/setup-2fa");
 
   } catch (err) {
     alert(err.response?.data?.message || err.message);
@@ -115,11 +117,10 @@ const UnifiedRegister = () => {
     // ✅ SAVE ROLE LOCALLY
     localStorage.setItem("userRole", role);
     localStorage.setItem("userData", JSON.stringify(res.data.user));
+    sessionStorage.setItem("twoFactorVerified", "false");
 
-    // ✅ DIRECT DASHBOARD REDIRECT
-    if (role === "student") navigate("/student");
-    else if (role === "recruiter") navigate("/recruiter");
-    else if (role === "admin") navigate("/admin");
+    // 🔑 Send to 2FA setup (mandatory for all registrations)
+    navigate("/setup-2fa");
 
   } catch (err) {
     alert(err.response?.data?.message || err.message);

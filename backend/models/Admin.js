@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const adminSchema = new mongoose.Schema(
   {
+    // ─── Core Identity ───────────────────────────────────────────
     firebaseUid: {
       type: String,
       required: true,
@@ -9,13 +10,16 @@ const adminSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Email from Firebase OAuth - remove unique constraint since multiple admins may have empty emails
+    // ─── Personal Info ───────────────────────────────────────────
+    // sparse + unique allows multiple admins with empty/null emails
+    // while still enforcing uniqueness for those who do have one
     email: {
       type: String,
       default: "",
+      sparse: true,
+      unique: true,
     },
 
-    // ✅ Name from Firebase OAuth
     fullName: {
       type: String,
       default: "",
@@ -26,6 +30,18 @@ const adminSchema = new mongoose.Schema(
       default: "",
     },
 
+    // ─── Security (2FA) ──────────────────────────────────────────
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false,
+    },
+
+    twoFactorSecret: {
+      type: String,
+      default: "",
+    },
+
+    // ─── Admin / Organization Info ───────────────────────────────
     collegeName: {
       type: String,
       default: "",
@@ -49,6 +65,5 @@ const adminSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ prevents OverwriteModelError
-module.exports =
-  mongoose.models.Admin || mongoose.model("Admin", adminSchema);
+// ✅ Prevents OverwriteModelError during hot reloads
+module.exports = mongoose.models.Admin || mongoose.model("Admin", adminSchema);

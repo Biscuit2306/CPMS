@@ -153,6 +153,13 @@ const Schedule = () => {
     }
   };
 
+  const getStatusClassName = (status) => {
+    if (status === 'scheduled') return 'schedule-status-badge schedule-status-scheduled';
+    if (status === 'completed') return 'schedule-status-badge schedule-status-completed';
+    if (status === 'ongoing') return 'schedule-status-badge schedule-status-ongoing';
+    return 'schedule-status-badge schedule-status-cancelled';
+  };
+
   return (
     <RecruiterLayout activeMenu={activeMenu} setActiveMenu={setActiveMenu}>
       <div className="recruiter-dashboard-content">
@@ -171,37 +178,20 @@ const Schedule = () => {
         </div>
 
         {schedulesLoading || loading ? (
-          <p style={{ textAlign: 'center', padding: '40px' }}>Loading schedules...</p>
+          <p className="schedule-loading-text">Loading schedules...</p>
         ) : displaySchedules.length > 0 ? (
           <div className="recruiter-schedule-grid">
             {displaySchedules.map((schedule) => (
-              <div key={schedule._id} className="recruiter-schedule-card" style={schedule.isBlocked || schedule.isCancelled ? { opacity: 0.6, position: 'relative' } : {}}>
+              <div
+                key={schedule._id}
+                className={`recruiter-schedule-card${schedule.isBlocked || schedule.isCancelled ? ' schedule-card-blocked' : ''}`}
+              >
                 {(schedule.isBlocked || schedule.isCancelled) && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                    paddingTop: '15px',
-                    zIndex: 10,
-                    backdropFilter: 'blur(2px)'
-                  }}>
-                    <div style={{
-                      backgroundColor: '#fff',
-                      padding: '12px 10px',
-                      borderRadius: '6px',
-                      textAlign: 'center',
-                      boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-                    }}>
-                      <Lock size={24} style={{ color: '#ef4444', marginBottom: '4px' }} />
-                      <p style={{ fontWeight: 'bold', color: '#1f2937', marginBottom: '2px', fontSize: '12px' }}>Schedule Blocked</p>
-                      <p style={{ fontSize: '10px', color: '#666' }}>By Admin</p>
+                  <div className="schedule-blocked-overlay">
+                    <div className="schedule-blocked-badge">
+                      <Lock size={24} className="schedule-blocked-icon" />
+                      <p className="schedule-blocked-title">Schedule Blocked</p>
+                      <p className="schedule-blocked-subtitle">By Admin</p>
                     </div>
                   </div>
                 )}
@@ -213,26 +203,12 @@ const Schedule = () => {
                     <div>
                       <h3>{schedule.company}</h3>
                       <span className="recruiter-schedule-type">{schedule.interviewType}</span>
-                      <span style={{ display: 'block', fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                      <span className="schedule-position-text">
                         {schedule.position}
                       </span>
                     </div>
                   </div>
-                  <span 
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      backgroundColor: schedule.status === 'scheduled' ? '#dbeafe' : 
-                                       schedule.status === 'completed' ? '#dcfce7' : 
-                                       schedule.status === 'ongoing' ? '#fef08a' : '#fee2e2',
-                      color: schedule.status === 'scheduled' ? '#0284c7' : 
-                             schedule.status === 'completed' ? '#16a34a' : 
-                             schedule.status === 'ongoing' ? '#b45309' : '#dc2626',
-                      textTransform: 'capitalize'
-                    }}
-                  >
+                  <span className={getStatusClassName(schedule.status)}>
                     {schedule.status}
                   </span>
                 </div>
@@ -255,24 +231,13 @@ const Schedule = () => {
                   </div>
                 </div>
                 {schedule.candidates && schedule.candidates.length > 0 && (
-                  <div style={{
-                    marginTop: '15px',
-                    paddingTop: '15px',
-                    borderTop: '1px solid #e5e7eb',
-                    maxHeight: '200px',
-                    overflowY: 'auto'
-                  }}>
-                    <p style={{ fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>Scheduled Candidates:</p>
-                    <div style={{ display: 'grid', gap: '8px' }}>
+                  <div className="schedule-candidates-section">
+                    <p className="schedule-candidates-title">Scheduled Candidates:</p>
+                    <div className="schedule-candidates-grid">
                       {schedule.candidates.map((candidate, idx) => (
-                        <div key={idx} style={{
-                          padding: '8px',
-                          backgroundColor: '#f3f4f6',
-                          borderRadius: '4px',
-                          fontSize: '12px'
-                        }}>
-                          <p style={{ margin: '0 0 3px 0', fontWeight: '500' }}>{candidate.studentName}</p>
-                          <p style={{ margin: '0', color: '#6b7280' }}>{candidate.studentEmail}</p>
+                        <div key={idx} className="schedule-candidate-item">
+                          <p className="schedule-candidate-name">{candidate.studentName}</p>
+                          <p className="schedule-candidate-email">{candidate.studentEmail}</p>
                         </div>
                       ))}
                     </div>
@@ -287,8 +252,7 @@ const Schedule = () => {
                     Edit
                   </button>
                   <button 
-                    className="recruiter-notify-btn"
-                    style={{ backgroundColor: '#ef4444', color: 'white', border: 'none' }}
+                    className="recruiter-notify-btn schedule-delete-btn"
                     onClick={() => handleDelete(schedule._id)}
                   >
                     <Trash2 size={16} />
@@ -299,29 +263,15 @@ const Schedule = () => {
             ))}
           </div>
         ) : (
-          <div style={{
-            textAlign: 'center',
-            padding: '60px 20px',
-            backgroundColor: '#f9fafb',
-            borderRadius: '8px',
-            marginTop: '20px'
-          }}>
-            <Calendar size={48} style={{ marginBottom: '16px', color: '#d1d5db' }} />
-            <h3 style={{ color: '#6b7280', marginBottom: '8px' }}>No schedules yet</h3>
-            <p style={{ color: '#9ca3af', marginBottom: '20px' }}>
+          <div className="schedule-empty-state">
+            <Calendar size={48} className="schedule-empty-icon" />
+            <h3 className="schedule-empty-title">No schedules yet</h3>
+            <p className="schedule-empty-subtitle">
               Create your first interview schedule to get started
             </p>
             <button 
               onClick={handleAddClick}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#0ea5e9',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
+              className="schedule-empty-create-btn"
             >
               Create Schedule
             </button>

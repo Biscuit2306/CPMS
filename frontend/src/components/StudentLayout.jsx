@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { GraduationCap, LayoutDashboard, FileText, Calendar, Bell, LogOut, Search, Briefcase, Menu, X, TrendingUp, Users } from 'lucide-react';
+import { GraduationCap, LayoutDashboard, FileText, Calendar, Bell, LogOut, Search, Briefcase, Menu, X, TrendingUp, Users, Globe } from 'lucide-react';
 import '../styles/student-css/studentlayout.css';
 import { auth } from '../firebase';
 import { useStudent } from '../context/StudentContext';
@@ -19,6 +19,7 @@ const StudentLayout = ({ children }) => {
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/student/dashboard' },
     { id: 'job-drives', icon: Briefcase, label: 'Job Drives', path: '/student/job-drives' },
+    { id: 'external-jobs', icon: Globe, label: 'External Jobs', path: '/student/external-jobs' },
     { id: 'applications', icon: FileText, label: 'Applications', path: '/student/applications' },
     { id: 'schedule', icon: Calendar, label: 'Schedule', path: '/student/schedule' },
     { id: 'achievements', icon: TrendingUp, label: 'Achievements', path: '/student/achievements' },

@@ -106,3 +106,128 @@
     height: 48px;
   }
 }
+
+/* Filter and Search Styles */
+.admin-logs-filters {
+  display: flex;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-filter-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.filter-btn.active {
+  background: #210F37;
+  color: white;
+  border-color: #210F37;
+}
+
+.admin-search-logs {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.admin-search-logs::placeholder {
+  color: #9ca3af;
+}
+
+.admin-search-logs:focus {
+  outline: none;
+  border-color: #210F37;
+  box-shadow: 0 0 0 3px rgba(33, 15, 55, 0.1);
+}
+
+/* Refresh Button */
+.admin-header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.admin-refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.admin-refresh-btn:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.admin-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-export-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: #210F37;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.admin-export-btn:hover {
+  background: #3a1a5c;
+}
+
+@media (max-width: 768px) {
+  .admin-logs-filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-search-logs {
+    width: 100%;
+  }
+
+  .admin-filter-group {
+    flex-wrap: wrap;
+  }
+}

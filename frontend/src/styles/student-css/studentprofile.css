@@ -1,88 +1,115 @@
-/* StudentProfile.css - Profile page specific styles */
+
+
+/* StudentProfile.css - Redesigned: Professional, Compact, Consistent */
+
+/* ==================== CSS VARIABLES ==================== */
+:root {
+  --sp-primary: #7c3aed;
+  --sp-primary-dark: #6d28d9;
+  --sp-primary-light: #ede9fe;
+  --sp-success: #10b981;
+  --sp-danger: #ef4444;
+  --sp-text-dark: #1f2937;
+  --sp-text-muted: #6b7280;
+  --sp-border: #e5e7eb;
+  --sp-bg-light: #f9fafb;
+  --sp-bg-medium: #f3f4f6;
+  --sp-white: #ffffff;
+  --sp-radius-sm: 6px;
+  --sp-radius-md: 10px;
+  --sp-radius-lg: 14px;
+  --sp-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  --sp-input-height: 36px;
+  --sp-font-sm: 0.75rem;      /* 12px */
+  --sp-font-base: 0.8125rem;  /* 13px */
+  --sp-font-md: 0.875rem;     /* 14px */
+  --sp-font-lg: 0.9375rem;    /* 15px */
+  --sp-transition: all 0.2s ease;
+}
 
 /* ==================== PAGE HEADER ==================== */
 .student-page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;                /* flush against the card below */
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .student-page-header h1 {
-  font-size: 2rem;
+  font-size: 2.0rem;
   font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+  color: #ffffff;
+  margin-bottom: 0.1rem;
 }
 
 .student-page-header p {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
 }
 
 .student-edit-profile-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
-  background: #7c3aed;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+    padding: 0.625rem 1.25rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    color: #7c3aed;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .student-edit-profile-btn:hover {
-  background: #6d28d9;
-  transform: scale(1.05);
+  background: #ffff;
+  transform: translateY(-1px);
 }
 
 /* ==================== PROFILE TABS ==================== */
+/* Push tabs down so the page-header button visually sits beside the avatar */
 .student-profile-tabs-container {
-  background: white;
-  border-radius: 14px;
-  padding: 0.5rem;
-  margin-bottom: 2rem;
+  background: var(--sp-white);
+  border-radius: var(--sp-radius-lg);
+  padding: 0.375rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
   display: flex;
-  gap: 0.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  gap: 0.375rem;
+  box-shadow: var(--sp-shadow);
   flex-wrap: wrap;
 }
 
 .student-profile-tab-btn {
   flex: 1;
-  min-width: 140px;
+  min-width: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.25rem;
+  gap: 0.375rem;
+  padding: 0.55rem 0.75rem;
   background: transparent;
-  color: #6b7280;
+  color: var(--sp-text-muted);
   border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  border-radius: var(--sp-radius-sm);
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--sp-transition);
 }
 
 .student-profile-tab-btn:hover {
-  background: #f3f4f6;
+  background: var(--sp-bg-medium);
+  color: var(--sp-text-dark);
 }
 
 .student-profile-tab-active {
-  background: #7c3aed !important;
-  color: white !important;
+  background: var(--sp-primary) !important;
+  color: var(--sp-white) !important;
 }
 
 .student-profile-tab-active:hover {
-  background: #7c3aed !important;
+  background: var(--sp-primary) !important;
 }
 
 /* ==================== PROFILE CONTAINER ==================== */
@@ -91,75 +118,85 @@
 }
 
 .student-profile-card {
-  background: white;
-  border-radius: 14px;
-  padding: 2.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background: var(--sp-white);
+  border-radius: var(--sp-radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--sp-shadow);
 }
 
+/* ==================== PROFILE HEADER (Avatar + Name) ==================== */
+/* No background color — clean plain layout inside the white card */
 .student-profile-header {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  padding-bottom: 2rem;
-  margin-bottom: 2rem;
-  border-bottom: 2px solid #f3f4f6;
+  gap: 1rem;
+  padding: 0 0 1rem 0;
+  margin-bottom: 1rem;
+  border-bottom: 1.5px solid var(--sp-border);
 }
 
 .student-profile-avatar {
   position: relative;
+  flex-shrink: 0;
 }
 
 .student-profile-avatar img {
-  width: 120px;
-  height: 120px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  border: 4px solid #7c3aed;
+  border: 2px solid var(--sp-primary);
+  display: block;
 }
 
 .student-avatar-upload {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 36px;
-  height: 36px;
-  background: #7c3aed;
-  border: 3px solid white;
+  bottom: -2px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+  background: var(--sp-white);
+  border: 1.5px solid var(--sp-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--sp-primary);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--sp-transition);
+  padding: 0;
 }
 
 .student-avatar-upload:hover {
-  background: #6d28d9;
-  transform: scale(1.1);
+  background: var(--sp-primary);
+  color: var(--sp-white);
+}
+
+.student-profile-basic {
+  flex: 1;
 }
 
 .student-profile-basic h2 {
-  font-size: 1.75rem;
+  font-size: var(--sp-font-lg);
   font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+  color: var(--sp-text-dark);
+  margin: 0 0 0.15rem 0;
 }
 
 .student-profile-basic p {
-  color: #6b7280;
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
+  color: var(--sp-text-muted);
+  font-size: var(--sp-font-base);
+  margin: 0 0 0.1rem 0;
 }
 
 .student-profile-roll {
-  color: #7c3aed;
+  color: var(--sp-primary) !important;
   font-weight: 600;
+  font-size: var(--sp-font-sm) !important;
 }
 
 /* ==================== PROFILE SECTIONS ==================== */
 .student-profile-section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .student-profile-section:last-child {
@@ -167,553 +204,145 @@
 }
 
 .student-profile-section h3 {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 1.5rem;
+  color: var(--sp-primary);
+  margin-bottom: 0.875rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--sp-border);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
+/* ==================== PROFILE GRID ==================== */
 .student-profile-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.875rem;
 }
 
 .student-profile-field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .student-profile-field label {
-  color: #6b7280;
-  font-size: 0.875rem;
+  color: var(--sp-text-muted);
+  font-size: 0.85rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-.student-profile-field span,
-.student-profile-field input {
-  color: #1f2937;
-  font-size: 1rem;
-  padding: 0.75rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 2px solid transparent;
+/* Unified read-only display */
+.student-profile-field span {
+  color: var(--sp-text-dark);
+  font-size: var(--sp-font-base);
+  padding: 0 0.5rem;
+  height: var(--sp-input-height);
+  display: flex;
+  align-items: center;
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-sm);
+  border: 1px solid transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+/* Unified input field */
 .student-profile-field input {
-  border-color: #e5e7eb;
-  transition: all 0.3s ease;
+  color: var(--sp-text-dark);
+  font-size: var(--sp-font-base);
+  padding: 0 0.625rem;
+  height: var(--sp-input-height);
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-sm);
+  border: 1.5px solid var(--sp-border);
+  outline: none;
+  transition: var(--sp-transition);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .student-profile-field input:focus {
-  outline: none;
-  border-color: #7c3aed;
-  background: white;
+  border-color: var(--sp-primary);
+  background: var(--sp-white);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
 }
 
+/* Value row with icon */
 .student-profile-value {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: #f9fafb;
-  border-radius: 8px;
+  gap: 0.5rem;
+  height: var(--sp-input-height);
+  padding: 0 0.5rem;
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-sm);
+  border: 1px solid transparent;
 }
 
 .student-profile-value svg {
-  color: #7c3aed;
+  color: var(--sp-primary);
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
 }
 
-.student-profile-value input {
-  padding: 0;
+.student-profile-value input[type="text"],
+.student-profile-value input[type="email"],
+.student-profile-value input[type="tel"] {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  height: auto !important;
+  box-shadow: none !important;
+  width: 100%;
+}
+
+.student-profile-value input:focus {
   background: transparent;
   border: none;
+  box-shadow: none;
 }
 
+/* When value row is in edit mode — show border */
+.student-profile-value:has(input) {
+  border: 1.5px solid var(--sp-border);
+  background: var(--sp-bg-light);
+}
+
+.student-profile-value:has(input:focus) {
+  border-color: var(--sp-primary);
+  background: var(--sp-white);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+/* ==================== RESUME SECTION ==================== */
 .student-resume-upload {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: #f9fafb;
-  border-radius: 8px;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  height: var(--sp-input-height);
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-sm);
+  border: 1px solid var(--sp-border);
 }
 
 .student-resume-upload svg {
-  color: #7c3aed;
-}
-
-.student-upload-btn {
-  margin-left: auto;
-  padding: 0.5rem 1rem;
-  background: #7c3aed;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.student-upload-btn:hover {
-  background: #6d28d9;
-}
-
-/* ==================== SEMESTER PERFORMANCE ==================== */
-.student-semester-grid {
-  display: grid;
-  gap: 1rem;
-}
-
-.student-semester-card {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem;
-  background: #f9fafb;
-  border-radius: 10px;
-  align-items: center;
-}
-
-.student-semester-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.student-semester-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0 0 0.25rem 0;
-}
-
-.student-semester-credits {
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin: 0;
-}
-
-.student-semester-sgpa {
-  background: #7c3aed;
-  color: white;
-  padding: 0.5rem 1.25rem;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-/* ==================== PREVIOUS EDUCATION ==================== */
-.student-education-grid {
-  display: grid;
-  gap: 1rem;
-}
-
-.student-education-card {
-  padding: 1.25rem;
-  background: #f9fafb;
-  border-radius: 10px;
-}
-
-.student-education-title {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
-}
-
-.student-education-detail {
-  color: #6b7280;
-  font-size: 0.9rem;
-  margin: 0.25rem 0;
-}
-
-/* ==================== SKILLS ==================== */
-.student-skills-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.student-skills-heading {
-  margin: 0;
-}
-
-.student-skills-grid {
-  display: grid;
-  gap: 2rem;
-}
-
-.student-skill-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.student-skill-category {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #7c3aed;
-  margin: 0 0 1rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.student-skill-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.student-skill-tag {
-  padding: 0.625rem 1.25rem;
-  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
-  color: white;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.student-skill-remove-icon {
-  cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
-
-.student-skill-remove-icon:hover {
-  opacity: 1;
-}
-
-/* ==================== PROJECTS ==================== */
-.student-projects-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.student-projects-heading {
-  margin: 0;
-}
-
-.student-projects-grid {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.student-project-card {
-  padding: 1.75rem;
-  background: #f9fafb;
-  border-radius: 14px;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.student-project-card:hover {
-  border-color: #7c3aed;
-  background: #faf5ff;
-}
-
-.student-project-content {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.student-project-icon {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+  color: var(--sp-primary);
   flex-shrink: 0;
+  width: 14px;
+  height: 14px;
 }
 
-.student-project-details {
-  flex: 1;
-}
-
-.student-project-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
-}
-
-.student-project-tech-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: #dbeafe;
-  color: #1e40af;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-}
-
-.student-project-description {
-  color: #6b7280;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin: 0 0 0.75rem 0;
-}
-
-.student-project-link {
-  color: #7c3aed;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.student-project-link:hover {
-  color: #6d28d9;
-  text-decoration: underline;
-}
-
-/* ==================== CERTIFICATIONS ==================== */
-.student-certifications-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.student-certifications-heading {
-  margin: 0;
-}
-
-.student-certifications-grid {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.student-certification-card {
-  padding: 1.75rem;
-  background: #f9fafb;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.student-certification-card:hover {
-  border-color: #7c3aed;
-  background: #faf5ff;
-}
-
-.student-certification-icon {
-  width: 70px;
-  height: 70px;
-  background: linear-gradient(135deg, #10b981, #059669);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  flex-shrink: 0;
-}
-
-.student-certification-details {
-  flex: 1;
-}
-
-.student-certification-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
-}
-
-.student-certification-organization {
-  color: #6b7280;
-  font-size: 0.95rem;
-  margin: 0 0 0.5rem 0;
-}
-
-.student-certification-meta {
-  display: flex;
-  gap: 1.5rem;
-  font-size: 0.85rem;
-}
-
-.student-certification-date {
-  color: #7c3aed;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.student-certification-id {
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.student-certification-meta-icon {
-  display: inline;
-}
-
-.resume-action-buttons {
-  margin-left: auto;
-  display: flex;
-  gap: 10px;
-}
-
-.student-analyze-btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  background: #0f766e;
-  color: white;
-}
-
-.student-analyze-btn:hover {
-  background: #0d5f59;
-}
-
-.student-analyze-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ==================== REMOVED INLINE CSS (NEW CLASSES) ==================== */
-
-.student-flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.student-add-btn-small {
-  padding: 6px 12px;
-  font-size: 12px;
-}
-
-/* Skills Tags Layout */
-.student-skills-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-/* Skill Tag button remove */
-.student-remove-icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #ef4444;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Projects Layout */
-.student-projects-list {
-  display: grid;
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.student-project-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.student-project-main {
-  flex: 1;
-}
-
-.student-project-name {
-  margin: 0 0 8px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.student-project-desc {
-  margin: 5px 0;
-  color: #6b7280;
-  font-size: 14px;
-}
-
-.student-project-tech {
-  margin: 5px 0;
-  color: #6b7280;
-  font-size: 13px;
-}
-
-/* Certifications Layout */
-.student-certifications-list {
-  display: grid;
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.student-certification-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.student-certification-main {
-  flex: 1;
-}
-
-.student-certification-name {
-  margin: 0 0 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.student-certification-org {
-  margin: 5px 0;
-  color: #6b7280;
-  font-size: 14px;
-}
-
-.student-certification-date,
-.student-certification-id {
-  margin: 5px 0;
-  color: #6b7280;
-  font-size: 13px;
-}
-
-/* Delete button (Projects + Certifications) */
-.student-delete-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #ef4444;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Resume Section */
 .student-resume-link {
-  color: #2563eb;
+  color: var(--sp-primary);
   font-weight: 600;
+  font-size: var(--sp-font-base);
   text-decoration: none;
 }
 
@@ -722,5 +351,604 @@
 }
 
 .student-no-resume {
-  color: #6b7280;
+  color: var(--sp-text-muted);
+  font-size: var(--sp-font-base);
+}
+
+.student-upload-btn {
+  margin-left: auto;
+  padding: 0 0.75rem;
+  height: 28px;
+  background: var(--sp-primary);
+  color: var(--sp-white);
+  border: none;
+  border-radius: var(--sp-radius-sm);
+  font-weight: 600;
+  font-size: var(--sp-font-sm);
+  cursor: pointer;
+  transition: var(--sp-transition);
+  flex-shrink: 0;
+}
+
+.student-upload-btn:hover {
+  background: var(--sp-primary-dark);
+}
+
+.student-analyze-btn {
+  padding: 0 0.75rem;
+  height: 28px;
+  border: none;
+  border-radius: var(--sp-radius-sm);
+  cursor: pointer;
+  font-size: var(--sp-font-sm);
+  font-weight: 600;
+  background: #0f766e;
+  color: var(--sp-white);
+  flex-shrink: 0;
+  transition: var(--sp-transition);
+}
+
+.student-analyze-btn:hover:not(:disabled) {
+  background: #0d5f59;
+}
+
+.student-analyze-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== SKILLS ==================== */
+.student-skills-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.875rem;
+}
+
+.student-skills-heading {
+  margin: 0;
+}
+
+.student-skills-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.student-skill-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-skill-category {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--sp-primary);
+  margin: 0 0 0.625rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.student-skill-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Skill tag — used in JSX for inline-styled elements too */
+.student-skill-tag {
+  padding: 0.3rem 0.75rem !important;
+  background: var(--sp-primary-light) !important;
+  color: var(--sp-primary) !important;
+  border-radius: 20px;
+  font-size: var(--sp-font-base) !important;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 32px;
+}
+
+.student-skill-remove-icon {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.student-skill-remove-icon:hover {
+  opacity: 1;
+}
+
+/* New Skill / Add Form panel */
+.student-add-panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--sp-bg-medium);
+  border-radius: var(--sp-radius-md);
+  border: 1px dashed var(--sp-border);
+}
+
+.student-add-panel h4 {
+  margin: 0 0 0.625rem 0;
+  font-size: var(--sp-font-base);
+  font-weight: 700;
+  color: var(--sp-text-dark);
+}
+
+/* Generic add row for skill */
+.student-add-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.student-add-input {
+  flex: 1;
+  padding: 0 0.625rem;
+  height: var(--sp-input-height);
+  border-radius: var(--sp-radius-sm);
+  border: 1.5px solid var(--sp-border);
+  font-size: var(--sp-font-base);
+  background: var(--sp-white);
+  outline: none;
+  transition: var(--sp-transition);
+}
+
+.student-add-input:focus {
+  border-color: var(--sp-primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+/* Override for inline styles from JSX — keeps add panels consistent */
+/* These selectors target the dynamically rendered add panels and form inputs */
+.student-profile-card [style*="margin-top: 20px"][style*="padding: 15px"] {
+  margin-top: 1rem !important;
+  padding: 0.875rem !important;
+  background: var(--sp-bg-medium) !important;
+  border-radius: var(--sp-radius-md) !important;
+  border: 1px dashed var(--sp-border);
+}
+
+.student-profile-card [style*="margin-top: 20px"] input,
+.student-profile-card [style*="margin-top: 20px"] textarea {
+  padding: 0 0.625rem !important;
+  height: var(--sp-input-height) !important;
+  border-radius: var(--sp-radius-sm) !important;
+  border: 1.5px solid var(--sp-border) !important;
+  font-size: var(--sp-font-base) !important;
+  background: var(--sp-white) !important;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.student-profile-card [style*="margin-top: 20px"] textarea {
+  height: auto !important;
+  min-height: 54px !important;
+  padding: 0.5rem 0.625rem !important;
+}
+
+/* ==================== PROJECTS ==================== */
+.student-projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.875rem;
+}
+
+.student-projects-heading {
+  margin: 0;
+}
+
+.student-projects-grid {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.student-project-card {
+  padding: 0.875rem 1rem;
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-md);
+  border: 1.5px solid var(--sp-border);
+  transition: var(--sp-transition);
+}
+
+.student-project-card:hover {
+  border-color: var(--sp-primary);
+  background: #faf5ff;
+}
+
+.student-project-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.student-project-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--sp-primary), #a78bfa);
+  border-radius: var(--sp-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sp-white);
+  flex-shrink: 0;
+}
+
+.student-project-details {
+  flex: 1;
+}
+
+.student-project-title {
+  font-size: var(--sp-font-md);
+  font-weight: 700;
+  color: var(--sp-text-dark);
+  margin: 0 0 0.25rem 0;
+}
+
+.student-project-tech-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 10px;
+  font-size: var(--sp-font-sm);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.student-project-description {
+  color: var(--sp-text-muted);
+  font-size: var(--sp-font-base);
+  line-height: 1.5;
+  margin: 0 0 0.4rem 0;
+}
+
+.student-project-link {
+  color: var(--sp-primary);
+  font-size: var(--sp-font-base);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.student-project-link:hover {
+  color: var(--sp-primary-dark);
+  text-decoration: underline;
+}
+
+/* ==================== CERTIFICATIONS ==================== */
+.student-certifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.875rem;
+}
+
+.student-certifications-heading {
+  margin: 0;
+}
+
+.student-certifications-grid {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.student-certification-card {
+  padding: 0.875rem 1rem;
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-md);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1.5px solid var(--sp-border);
+  transition: var(--sp-transition);
+}
+
+.student-certification-card:hover {
+  border-color: var(--sp-primary);
+  background: #faf5ff;
+}
+
+.student-certification-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--sp-success), #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sp-white);
+  flex-shrink: 0;
+}
+
+.student-certification-details {
+  flex: 1;
+}
+
+.student-certification-title {
+  font-size: var(--sp-font-md);
+  font-weight: 700;
+  color: var(--sp-text-dark);
+  margin: 0 0 0.25rem 0;
+}
+
+.student-certification-organization {
+  color: var(--sp-text-muted);
+  font-size: var(--sp-font-base);
+  margin: 0 0 0.25rem 0;
+}
+
+.student-certification-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: var(--sp-font-sm);
+}
+
+.student-certification-date {
+  color: var(--sp-primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.student-certification-id {
+  color: var(--sp-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.student-certification-meta-icon {
+  display: inline;
+}
+
+/* ==================== SEMESTER & EDUCATION (Academic Tab) ==================== */
+.student-semester-grid {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.student-semester-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.625rem 0.875rem;
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-md);
+  align-items: center;
+  border: 1px solid var(--sp-border);
+}
+
+.student-semester-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.student-semester-title {
+  font-size: var(--sp-font-base);
+  font-weight: 600;
+  color: var(--sp-text-dark);
+  margin: 0;
+}
+
+.student-semester-credits {
+  font-size: var(--sp-font-sm);
+  color: var(--sp-text-muted);
+  margin: 0;
+}
+
+.student-semester-sgpa {
+  background: var(--sp-primary);
+  color: var(--sp-white);
+  padding: 0.3rem 0.875rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: var(--sp-font-sm);
+}
+
+.student-education-grid {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.student-education-card {
+  padding: 0.75rem 0.875rem;
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-md);
+  border: 1px solid var(--sp-border);
+}
+
+.student-education-title {
+  font-size: var(--sp-font-base);
+  font-weight: 600;
+  color: var(--sp-text-dark);
+  margin: 0 0 0.25rem 0;
+}
+
+.student-education-detail {
+  color: var(--sp-text-muted);
+  font-size: var(--sp-font-sm);
+  margin: 0.125rem 0;
+}
+
+/* ==================== INLINE OVERRIDE HELPERS ==================== */
+/* These ensure JSX inline-styled elements look consistent */
+
+.resume-action-buttons {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.student-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.student-add-btn-small {
+  padding: 0.25rem 0.75rem;
+  font-size: var(--sp-font-sm);
+  height: 28px;
+}
+
+.student-skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.625rem;
+}
+
+.student-remove-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--sp-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.student-projects-list {
+  display: grid;
+  gap: 0.875rem;
+  margin-top: 0.625rem;
+}
+
+.student-project-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.student-project-main {
+  flex: 1;
+}
+
+.student-project-name {
+  margin: 0 0 0.25rem 0;
+  font-size: var(--sp-font-md);
+  font-weight: 700;
+  color: var(--sp-text-dark);
+}
+
+.student-project-desc {
+  margin: 0.2rem 0;
+  color: var(--sp-text-muted);
+  font-size: var(--sp-font-base);
+}
+
+.student-project-tech {
+  margin: 0.2rem 0;
+  color: var(--sp-text-muted);
+  font-size: var(--sp-font-sm);
+}
+
+.student-certifications-list {
+  display: grid;
+  gap: 0.875rem;
+  margin-top: 0.625rem;
+}
+
+.student-certification-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.student-certification-main {
+  flex: 1;
+}
+
+.student-certification-name {
+  margin: 0 0 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--sp-font-md);
+  font-weight: 700;
+  color: var(--sp-text-dark);
+}
+
+.student-certification-org {
+  margin: 0.2rem 0;
+  color: var(--sp-text-muted);
+  font-size: var(--sp-font-base);
+}
+
+.student-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--sp-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: var(--sp-radius-sm);
+  transition: var(--sp-transition);
+}
+
+.student-delete-btn:hover {
+  background: #fee2e2;
+}
+
+/* ==================== INLINE STYLE NORMALIZATION ==================== */
+/* Normalize JSX inline-style elements for consistent sizing */
+
+/* All inline inputs inside profile card */
+.student-profile-card input[type="text"],
+.student-profile-card input[type="email"],
+.student-profile-card input[type="tel"] {
+  height: var(--sp-input-height);
+  padding: 0 0.625rem;
+  border-radius: var(--sp-radius-sm);
+  border: 1.5px solid var(--sp-border);
+  font-size: var(--sp-font-base);
+  background: var(--sp-white);
+  box-sizing: border-box;
+  width: 100%;
+  outline: none;
+  transition: var(--sp-transition);
+}
+
+.student-profile-card input[type="text"]:focus,
+.student-profile-card input[type="email"]:focus,
+.student-profile-card input[type="tel"]:focus {
+  border-color: var(--sp-primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+.student-profile-card textarea {
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--sp-radius-sm);
+  border: 1.5px solid var(--sp-border);
+  font-size: var(--sp-font-base);
+  background: var(--sp-white);
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 60px;
+  outline: none;
+  resize: vertical;
+  transition: var(--sp-transition);
+  font-family: inherit;
+}
+
+.student-profile-card textarea:focus {
+  border-color: var(--sp-primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+/* Normalize inline buttons inside profile card */
+.student-profile-card button[style] {
+  font-family: inherit;
 }

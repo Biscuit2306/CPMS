@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const recruiterSchema = new mongoose.Schema(
   {
+    // ─── Core Identity ───────────────────────────────────────────
     firebaseUid: {
       type: String,
       required: true,
@@ -9,25 +10,37 @@ const recruiterSchema = new mongoose.Schema(
       index: true,
     },
 
-    // ✅ From Firebase OAuth
+    // ─── Personal Info ───────────────────────────────────────────
     fullName: {
       type: String,
       default: "",
     },
 
-    // ✅ Email from Firebase OAuth (sparse allows unique null values)
+    // sparse + unique allows multiple recruiters with empty/null emails
+    // while still enforcing uniqueness for those who do have one
     email: {
       type: String,
       sparse: true,
       unique: true,
     },
 
-    // ✅ Optional - can be filled in recruiter profile
     phone: {
       type: String,
       default: "",
     },
 
+    // ─── Security (2FA) ──────────────────────────────────────────
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false,
+    },
+
+    twoFactorSecret: {
+      type: String,
+      default: "",
+    },
+
+    // ─── Company Info ─────────────────────────────────────────────
     companyName: {
       type: String,
       default: "",
@@ -48,16 +61,40 @@ const recruiterSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Job Drives posted by this recruiter
+    // ─── Job Drives ───────────────────────────────────────────────
     jobDrives: {
       type: [mongoose.Schema.Types.Mixed],
       default: [],
+    },
+
+    // ─── Block / Delete Tracking (Admin) ─────────────────────────
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+
+    blockedBy: {
+      adminFirebaseUid: String,
+      adminName: String,
+      reason: String,
+      blockedAt: Date,
+    },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+
+    deletedBy: {
+      adminFirebaseUid: String,
+      adminName: String,
+      reason: String,
+      deletedAt: Date,
     },
   },
   { timestamps: true }
 );
 
-// ✅ prevents OverwriteModelError
+// ✅ Prevents OverwriteModelError during hot reloads
 module.exports =
-  mongoose.models.Recruiter ||
-  mongoose.model("Recruiter", recruiterSchema);
+  mongoose.models.Recruiter || mongoose.model("Recruiter", recruiterSchema);

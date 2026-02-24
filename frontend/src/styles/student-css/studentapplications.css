@@ -5,7 +5,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -13,12 +13,12 @@
 .student-page-header h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #ffff;
   margin-bottom: 0.5rem;
 }
 
 .student-page-header p {
-  color: #6b7280;
+  color: #ffff;
   font-size: 1rem;
 }
 
@@ -30,11 +30,12 @@
 }
 
 .student-application-card {
-  background: white;
-  border-radius: 14px;
-  padding: 1.75rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+    background: white;
+    border-radius: 14px;
+    padding: 1.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid #7c3aed;
 }
 
 .student-application-card:hover {
@@ -89,14 +90,14 @@
 
 .student-info-label {
   color: #6b7280;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
 }
 
 .student-info-value {
   color: #1f2937;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .student-status-badge {
@@ -133,18 +134,81 @@
 
 .student-view-details-btn {
   width: 100%;
-  padding: 0.875rem;
-  background: #f8f7fc;
-  color: #7c3aed;
-  border: 2px solid #7c3aed;
+  padding: 0.9rem;
+  background: #2563EB;
+  color: #ffff;
+  border: 2px solid #2563EB;
   border-radius: 10px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  flex:1;
 }
 
 .student-view-details-btn:hover {
-  background: #7c3aed;
+  background: #2563EB;
   color: white;
+}
+
+.student-status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* Applied */
+.student-status-applied {
+  color: #2563eb;
+  background-color: #2563eb20;
+}
+
+/* In Review */
+.student-status-in-review {
+  color: #f59e0b;
+  background-color: #f59e0b20;
+}
+
+/* Accepted */
+.student-status-accepted {
+  color: #16a34a;
+  background-color: #16a34a20;
+}
+
+/* Rejected */
+.student-status-rejected {
+  color: #dc2626;
+  background-color: #dc262620;
+}
+
+.student-application-both-btns{
+  display: flex; gap: 10px; margin-top: 10px;
+}
+
+.student-withdraw-btn {
+  flex: 1;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* Hover effect */
+.student-withdraw-btn:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+/* Disabled state */
+.student-withdraw-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

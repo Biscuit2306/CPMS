@@ -11,7 +11,7 @@ import axios from 'axios';
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const StudentDashboard = () => {
-  const { student, jobDrives, schedules } = useStudent();
+  const { student, jobDrives, schedules, getDriveDetails, syncStudentSchedules } = useStudent();
   const [stats, setStats] = useState({
     companiesRegistered: 0,
     studentsPlaced: 0,
@@ -48,51 +48,139 @@ const StudentDashboard = () => {
     fetchStats();
   }, [student]);
 
-  // Process drives data
+  // Process drives data with enrichment
   useEffect(() => {
-    // Filter upcoming drives (active ones with deadline in future)
-    const upcoming = jobDrives
-      .filter(d => d.status === 'active' && new Date(d.applicationDeadline) > new Date())
-      .slice(0, 3)
-      .map(d => ({
-        company: d.companyName || d.recruiterName,
-        date: new Date(d.date).toLocaleDateString(),
-        role: d.position,
+    const processDrives = async () => {
+      // Filter upcoming drives (active ones with deadline in future)
+      const filtered = jobDrives
+        .filter(d => d.status === 'active' && new Date(d.applicationDeadline) > new Date())
+        .slice(0, 3);
+
+      // Enrich drives with complete details
+      const enriched = await Promise.all(
+        filtered.map(async (d) => {
+          try {
+            // Check if drive already has all required fields
+            if (d.company && d.salary && d.date) {
+              return d; // Already has complete data
+            }
+
+            // Fetch complete drive details if missing
+            if (d.recruiterId && d._id) {
+              const driveDetails = await getDriveDetails(d.recruiterId, d._id);
+              return {
+                ...d,
+                ...driveDetails,
+                _id: d._id,
+                recruiterId: d.recruiterId,
+              };
+            }
+            return d;
+          } catch (err) {
+            console.log(`⚠️ Could not enrich drive:`, err.message);
+            return d;
+          }
+        })
+      );
+
+      const upcoming = enriched.map(d => ({
+        company: d.company || d.companyName || 'Company',
+        date: d.date ? new Date(d.date).toLocaleDateString() : 'N/A',
+        role: d.position || 'Position',
         package: d.salary || 'N/A'
       }));
-    setUpcomingDrives(upcoming);
+      setUpcomingDrives(upcoming);
+    };
 
-    // Get applications for this student
-    if (student && student.applications) {
-      const applied = student.applications.map(app => ({
-        company: app.companyName || 'Unknown',
-        status: app.applicationStatus === 'selected' ? 'Placed' : 
-                app.applicationStatus === 'rejected' ? 'Rejected' : 'Applied',
-        date: new Date(app.appliedAt).toLocaleDateString()
-      }));
-      setAppliedCompanies(applied);
-    }
+    processDrives();
+  }, [jobDrives, getDriveDetails]);
+
+  // Process applications and schedules
+  useEffect(() => {
+    // ⚠️ REMOVED: syncStudentSchedules() was auto-triggering infinite loop
+    // It was being called every render, causing state updates, which triggered re-render
+    // If manual sync is needed, add a button instead
+
+    // Get applications for this student with enrichment
+    const enrichApps = async () => {
+      if (student && student.applications) {
+        const enriched = await Promise.all(
+          student.applications.map(async (app) => {
+            try {
+              // Check if application already has company name
+              if (app.company || app.companyName) {
+                return app;
+              }
+
+              // Try to fetch drive details if company info is missing
+              if (app.recruiterId && app.driveId) {
+                const driveDetails = await getDriveDetails(app.recruiterId, app.driveId);
+                return {
+                  ...app,
+                  ...driveDetails,
+                };
+              }
+              return app;
+            } catch (err) {
+              console.log(`⚠️ Could not enrich application:`, err.message);
+              return app;
+            }
+          })
+        );
+
+        const applied = enriched.map(app => ({
+          company: app.company || app.companyName || 'Unknown',
+          status: app.applicationStatus === 'selected' ? 'Placed' : 
+                  app.applicationStatus === 'rejected' ? 'Rejected' : 'Applied',
+          date: app.applicationDate ? new Date(app.applicationDate).toLocaleDateString() : 
+                app.appliedAt ? new Date(app.appliedAt).toLocaleDateString() : 'N/A'
+        }));
+        setAppliedCompanies(applied);
+      }
+    };
+
+    enrichApps();
 
     // Get upcoming schedules for this student
     if (schedules && schedules.length > 0 && student?.firebaseUid) {
+      console.log("📅 Processing schedules for dashboard");
+      console.log("Total schedules available:", schedules.length);
+      console.log("Student UID:", student.firebaseUid);
+      
+      // Filter for schedules where student is a candidate
       const mySchedules = schedules
         .filter(s => {
-          if (!s.candidates) return false;
-          const candidateStatus = s.candidates.find(c => c.studentId === student.firebaseUid);
-          return candidateStatus && (candidateStatus.status === 'scheduled' || candidateStatus.status === 'attended');
+          // Check if this schedule has candidates and student is one of them
+          if (!s.candidates || !Array.isArray(s.candidates)) {
+            console.log("⚠️ Schedule has no candidates array:", s.company);
+            return false;
+          }
+          
+          const isCandidate = s.candidates.some(c => c.studentId === student.firebaseUid);
+          console.log(`Schedule ${s.company}: student is candidate?`, isCandidate);
+          return isCandidate;
         })
-        .filter(s => new Date(s.date) > new Date())
-        .slice(0, 3)
         .map(s => ({
-          company: s.company,
-          type: s.interviewType,
-          date: new Date(s.date).toLocaleDateString(),
-          time: s.time,
-          venue: s.venue
-        }));
+          company: s.company || 'Company',
+          position: s.position || 'Position',
+          type: s.interviewType || 'Interview',
+          date: s.date ? new Date(s.date).toLocaleDateString() : 'N/A',
+          time: s.time || 'N/A',
+          venue: s.venue || 'TBD'
+        }))
+        .slice(0, 3);
+      
+      console.log("📅 Filtered schedules for display:", mySchedules.length);
       setUpcomingSchedules(mySchedules);
+    } else {
+      console.log("ℹ️ No schedules to process", {
+        hasSchedules: schedules && schedules.length > 0,
+        schedulesCount: schedules?.length,
+        hasStudent: !!student,
+        hasUID: !!student?.firebaseUid
+      });
     }
-  }, [jobDrives, student, schedules]);
+  }, [student, schedules]);
 
   const placementStats = [
     { icon: Building2, label: 'Companies Registered', value: stats.companiesRegistered.toString(), color: '#7c3aed' },

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const StudentSchema = new mongoose.Schema(
   {
+    // ─── Core Identity ───────────────────────────────────────────
     firebaseUid: {
       type: String,
       required: true,
@@ -9,6 +10,7 @@ const StudentSchema = new mongoose.Schema(
       index: true,
     },
 
+    // ─── Personal Info ───────────────────────────────────────────
     fullName: {
       type: String,
       default: "",
@@ -28,6 +30,18 @@ const StudentSchema = new mongoose.Schema(
       trim: true,
     },
 
+    dob: {
+      type: String,
+      default: "",
+    },
+
+    address: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // ─── Academic Info ───────────────────────────────────────────
     branch: {
       type: String,
       default: "",
@@ -40,17 +54,19 @@ const StudentSchema = new mongoose.Schema(
       trim: true,
     },
 
-    dob: {
-      type: String,
-      default: "",
-    },
-
-    address: {
+    year: {
       type: String,
       default: "",
       trim: true,
     },
 
+    cgpa: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // ─── Online Presence ─────────────────────────────────────────
     linkedin: {
       type: String,
       default: "",
@@ -75,19 +91,18 @@ const StudentSchema = new mongoose.Schema(
       trim: true,
     },
 
-    year: {
-      type: String,
-      default: "",
-      trim: true,
+    // ─── Security (2FA) ──────────────────────────────────────────
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false,
     },
 
-    cgpa: {
+    twoFactorSecret: {
       type: String,
       default: "",
-      trim: true,
     },
 
-    // Optional fields (safe for future use)
+    // ─── Career & Placements ─────────────────────────────────────
     skills: {
       type: Array,
       default: [],
@@ -102,6 +117,59 @@ const StudentSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+
+    achievements: [
+      {
+        _id: mongoose.Schema.Types.ObjectId,
+        title: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        description: {
+          type: String,
+          default: "",
+        },
+        category: {
+          type: String,
+          enum: [
+            "Certification",
+            "Award",
+            "Hackathon",
+            "Coding",
+            "Academic",
+            "Project",
+            "Competition",
+            "Other",
+          ],
+          default: "Other",
+        },
+        date: {
+          type: String, // YYYY-MM-DD format
+          default: () => new Date().toISOString().split("T")[0],
+        },
+        organization: {
+          type: String,
+          default: "",
+        },
+        certificateImage: {
+          type: String, // File path to uploaded certificate image
+          default: null,
+        },
+        credentialUrl: {
+          type: String,
+          default: "",
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        updatedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
 
     applications: {
       type: Array,
@@ -118,7 +186,7 @@ const StudentSchema = new mongoose.Schema(
       default: [],
     },
 
-    // Block/Delete tracking
+    // ─── Block / Delete Tracking (Admin) ─────────────────────────
     isBlocked: {
       type: Boolean,
       default: false,
@@ -148,9 +216,4 @@ const StudentSchema = new mongoose.Schema(
   }
 );
 
-/**
- * 🚨 CRITICAL LINE
- * Must export the MONGOOSE MODEL
- */
 module.exports = mongoose.model("Student", StudentSchema);
-

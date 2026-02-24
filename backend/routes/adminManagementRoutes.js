@@ -225,10 +225,10 @@ router.post("/schedule/block/:scheduleId", async (req, res) => {
       return res.status(404).json({ error: "Schedule not found" });
     }
 
-    // Mark schedule as blocked
+    // Mark schedule as blocked (soft block - use isBlocked boolean)
     schedule.isBlocked = true;
     schedule.isCancelled = true;
-    schedule.status = "blocked";
+    // DO NOT change status to "blocked" - keep it for interview progress tracking
     schedule.blockedBy = {
       adminFirebaseUid,
       adminName,
@@ -238,13 +238,52 @@ router.post("/schedule/block/:scheduleId", async (req, res) => {
 
     await schedule.save();
 
-    // Notify all candidates
+    // Notify all candidates (non-blocking)
     if (schedule.candidates && schedule.candidates.length > 0) {
       const candidatesToNotify = schedule.candidates;
       for (const candidate of candidatesToNotify) {
-        const studentNotif = {
-          recipientFirebaseUid: candidate.studentId,
-          recipientEmail: candidate.studentEmail,
+        try {
+          const studentNotif = {
+            recipientFirebaseUid: candidate.studentId,
+            recipientEmail: candidate.studentEmail,
+            type: "interview_blocked",
+            title: "Interview Cancelled",
+            message: `Your interview for ${schedule.company} - ${schedule.position} scheduled on ${new Date(schedule.date).toLocaleDateString()} has been cancelled by admin (${adminName}). Reason: ${reason || "Not specified"}`,
+            actionType: "block",
+            affectedItemId: scheduleId,
+            affectedItemType: "InterviewSchedule",
+            metadata: {
+              company: schedule.company,
+              position: schedule.position,
+              scheduleId,
+              studentId: candidate.studentId,
+              studentName: candidate.studentName,
+              adminName,
+              reason,
+            },
+            priority: "high",
+            actionUrl: "/student/interviews",
+          };
+
+          const Notification = require("../models/Notification");
+          await Notification.create(studentNotif);
+        } catch (notifErr) {
+          console.warn(`⚠️ Failed to notify candidate ${candidate.studentId}:`, notifErr.message);
+        }
+      }
+    }
+
+    // Notify recruiter (non-blocking)
+    try {
+      const recruiter = await Recruiter.findOne({
+        firebaseUid: schedule.recruiterFirebaseUid,
+      });
+
+      if (recruiter) {
+        const Notification = require("../models/Notification");
+        await Notification.create({
+          recipientFirebaseUid: recruiter.firebaseUid,
+          recipientEmail: recruiter.email,
           type: "interview_blocked",
           title: "Interview Cancelled",
           message: `Your interview for ${schedule.company} - ${schedule.position} scheduled on ${new Date(schedule.date).toLocaleDateString()} has been cancelled by admin (${adminName}). Reason: ${reason || "Not specified"}`,
@@ -255,46 +294,15 @@ router.post("/schedule/block/:scheduleId", async (req, res) => {
             company: schedule.company,
             position: schedule.position,
             scheduleId,
-            studentId: candidate.studentId,
-            studentName: candidate.studentName,
             adminName,
             reason,
           },
           priority: "high",
-          actionUrl: "/student/interviews",
-        };
-
-        const Notification = require("../models/Notification");
-        await Notification.create(studentNotif);
+          actionUrl: "/recruiter/schedules",
+        });
       }
-    }
-
-    // Notify recruiter
-    const recruiter = await Recruiter.findOne({
-      firebaseUid: schedule.recruiterFirebaseUid,
-    });
-
-    if (recruiter) {
-      const Notification = require("../models/Notification");
-      await Notification.create({
-        recipientFirebaseUid: recruiter.firebaseUid,
-        recipientEmail: recruiter.email,
-        type: "interview_blocked",
-        title: "Interview Cancelled",
-        message: `Your interview for ${schedule.company} - ${schedule.position} scheduled on ${new Date(schedule.date).toLocaleDateString()} has been cancelled by admin (${adminName}). Reason: ${reason || "Not specified"}`,
-        actionType: "block",
-        affectedItemId: scheduleId,
-        affectedItemType: "InterviewSchedule",
-        metadata: {
-          company: schedule.company,
-          position: schedule.position,
-          scheduleId,
-          adminName,
-          reason,
-        },
-        priority: "high",
-        actionUrl: "/recruiter/schedules",
-      });
+    } catch (recruiterNotifErr) {
+      console.warn(`⚠️ Failed to notify recruiter:`, recruiterNotifErr.message);
     }
 
     res.json({
@@ -304,7 +312,128 @@ router.post("/schedule/block/:scheduleId", async (req, res) => {
     });
   } catch (err) {
     console.error("❌ Error blocking schedule:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, details: err.stack });
+  }
+});
+
+/**
+ * Delete/Remove an interview schedule (admin action)
+ * Soft-delete by setting isDeleted and status to deleted
+ */
+router.post("/schedule/delete/:scheduleId", async (req, res) => {
+  try {
+    const { scheduleId } = req.params;
+    const { adminFirebaseUid, adminName, reason } = req.body;
+
+    console.log(`\n🗑️ DELETE SCHEDULE: ${scheduleId}`);
+    console.log(`   Admin: ${adminName} (${adminFirebaseUid})`);
+
+    if (!adminFirebaseUid || !adminName) {
+      return res.status(400).json({ error: "Admin info required" });
+    }
+
+    const schedule = await InterviewSchedule.findById(scheduleId);
+
+    if (!schedule) {
+      return res.status(404).json({ error: "Schedule not found" });
+    }
+
+    // Mark schedule as deleted (soft delete - use isDeleted boolean)
+    schedule.isDeleted = true;
+    // DO NOT change status - keep it for interview progress tracking
+    schedule.deletedBy = {
+      adminUid: adminFirebaseUid,
+      adminName,
+      reason: reason || "Administrative deletion",
+      deletedAt: new Date(),
+    };
+
+    await schedule.save();
+    console.log(`✅ Schedule saved successfully`);
+
+    // Notify all candidates (non-blocking - don't let notification failures block deletion)
+    if (schedule.candidates && schedule.candidates.length > 0) {
+      console.log(`📬 Notifying ${schedule.candidates.length} candidates...`);
+      const candidatesToNotify = schedule.candidates;
+      
+      for (const candidate of candidatesToNotify) {
+        try {
+          const studentNotif = {
+            recipientFirebaseUid: candidate.studentId,
+            recipientEmail: candidate.studentEmail,
+            type: "interview_deleted",
+            title: "Interview Schedule Deleted",
+            message: `Your interview for ${schedule.company} - ${schedule.position} scheduled on ${new Date(schedule.date).toLocaleDateString()} has been deleted by admin (${adminName}). Reason: ${reason || "Not specified"}`,
+            actionType: "delete",
+            affectedItemId: scheduleId,
+            affectedItemType: "InterviewSchedule",
+            metadata: {
+              company: schedule.company,
+              position: schedule.position,
+              scheduleId,
+              studentId: candidate.studentId,
+              studentName: candidate.studentName,
+              adminName,
+              reason,
+            },
+            priority: "high",
+            actionUrl: "/student/interviews",
+          };
+
+          const Notification = require("../models/Notification");
+          await Notification.create(studentNotif);
+          console.log(`  ✓ Notified ${candidate.studentName || candidate.studentId}`);
+        } catch (notifErr) {
+          console.warn(`  ⚠️ Failed to notify candidate ${candidate.studentId}:`, notifErr.message);
+          // Continue with other candidates even if one fails
+        }
+      }
+    }
+
+    // Notify recruiter (non-blocking)
+    try {
+      const recruiter = await Recruiter.findOne({
+        firebaseUid: schedule.recruiterFirebaseUid,
+      });
+
+      if (recruiter) {
+        console.log(`📬 Notifying recruiter: ${recruiter.fullName}`);
+        const Notification = require("../models/Notification");
+        await Notification.create({
+          recipientFirebaseUid: recruiter.firebaseUid,
+          recipientEmail: recruiter.email,
+          type: "interview_deleted",
+          title: "Interview Schedule Deleted",
+          message: `Your interview for ${schedule.company} - ${schedule.position} scheduled on ${new Date(schedule.date).toLocaleDateString()} has been deleted by admin (${adminName}). Reason: ${reason || "Not specified"}`,
+          actionType: "delete",
+          affectedItemId: scheduleId,
+          affectedItemType: "InterviewSchedule",
+          metadata: {
+            company: schedule.company,
+            position: schedule.position,
+            scheduleId,
+            adminName,
+            reason,
+          },
+          priority: "high",
+          actionUrl: "/recruiter/schedules",
+        });
+        console.log(`  ✓ Recruiter notified`);
+      }
+    } catch (recruiterNotifErr) {
+      console.warn(`⚠️ Failed to notify recruiter:`, recruiterNotifErr.message);
+      // Don't block deletion if recruiter notification fails
+    }
+
+    console.log(`✅ Schedule ${scheduleId} deleted successfully`);
+    res.json({
+      success: true,
+      message: "Interview schedule deleted successfully",
+      schedule,
+    });
+  } catch (err) {
+    console.error("❌ Error deleting schedule:", err);
+    res.status(500).json({ error: err.message, details: err.stack });
   }
 });
 
@@ -561,6 +690,320 @@ router.get("/blocked-items", async (req, res) => {
     });
   } catch (err) {
     console.error("❌ Error fetching blocked items:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* =========================
+   RECRUITER MANAGEMENT
+========================= */
+
+/**
+ * Block a recruiter account
+ */
+router.post("/recruiter/block/:recruiterId", async (req, res) => {
+  try {
+    const { recruiterId } = req.params;
+    const { adminFirebaseUid, adminName, reason } = req.body;
+
+    if (!adminFirebaseUid || !adminName) {
+      return res.status(400).json({ error: "Admin info required" });
+    }
+
+    const recruiter = await Recruiter.findOne({ firebaseUid: recruiterId });
+
+    if (!recruiter) {
+      return res.status(404).json({ error: "Recruiter not found" });
+    }
+
+    // Mark recruiter as blocked
+    recruiter.isBlocked = true;
+    recruiter.blockedBy = {
+      adminFirebaseUid,
+      adminName,
+      reason: reason || "Administrative action",
+      blockedAt: new Date(),
+    };
+
+    await recruiter.save();
+
+    // Notify recruiter
+    const Notification = require("../models/Notification");
+    await Notification.create({
+      recipientFirebaseUid: recruiterId,
+      recipientEmail: recruiter.email,
+      type: "admin_action",
+      title: "Account Blocked",
+      message: `Your recruiter account has been blocked by admin (${adminName}). Reason: ${reason || "Not specified"}. Please contact the administration for more details.`,
+      actionType: "block",
+      affectedItemId: recruiter._id,
+      affectedItemType: "Recruiter",
+      metadata: {
+        recruiterId,
+        recruiterName: recruiter.fullName,
+        company: recruiter.companyName,
+        adminName,
+        reason,
+      },
+      priority: "urgent",
+      actionUrl: "/recruiter/dashboard",
+    });
+
+    res.json({
+      success: true,
+      message: "Recruiter blocked successfully",
+      recruiter,
+    });
+  } catch (err) {
+    console.error("❌ Error blocking recruiter:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Delete a recruiter account
+ */
+router.post("/recruiter/delete/:recruiterId", async (req, res) => {
+  try {
+    const { recruiterId } = req.params;
+    const { adminFirebaseUid, adminName, reason } = req.body;
+
+    if (!adminFirebaseUid || !adminName) {
+      return res.status(400).json({ error: "Admin info required" });
+    }
+
+    const recruiter = await Recruiter.findOne({ firebaseUid: recruiterId });
+
+    if (!recruiter) {
+      return res.status(404).json({ error: "Recruiter not found" });
+    }
+
+    // Mark recruiter as deleted
+    recruiter.isDeleted = true;
+    recruiter.deletedBy = {
+      adminFirebaseUid,
+      adminName,
+      reason: reason || "Administrative deletion",
+      deletedAt: new Date(),
+    };
+
+    await recruiter.save();
+
+    // Also delete/block all their job drives
+    if (recruiter.jobDrives && recruiter.jobDrives.length > 0) {
+      for (let i = 0; i < recruiter.jobDrives.length; i++) {
+        if (!recruiter.jobDrives[i].isDeleted) {
+          recruiter.jobDrives[i].isDeleted = true;
+          recruiter.jobDrives[i].deletedBy = {
+            adminFirebaseUid,
+            adminName,
+            reason: `Recruiter account deleted by admin (${adminName})`,
+            deletedAt: new Date(),
+          };
+        }
+      }
+      // Mark the array as modified so Mongoose will save the changes
+      recruiter.markModified('jobDrives');
+      await recruiter.save();
+    }
+
+    // Notify recruiter
+    const Notification = require("../models/Notification");
+    await Notification.create({
+      recipientFirebaseUid: recruiterId,
+      recipientEmail: recruiter.email,
+      type: "admin_action",
+      title: "Account Deleted",
+      message: `Your recruiter account has been deleted by admin (${adminName}). Reason: ${reason || "Not specified"}. All your job drives have been removed. Please contact the administration for more details.`,
+      actionType: "delete",
+      affectedItemId: recruiter._id,
+      affectedItemType: "Recruiter",
+      metadata: {
+        recruiterId,
+        recruiterName: recruiter.fullName,
+        company: recruiter.companyName,
+        adminName,
+        reason,
+      },
+      priority: "urgent",
+      actionUrl: "/recruiter/dashboard",
+    });
+
+    res.json({
+      success: true,
+      message: "Recruiter account deleted successfully",
+      recruiter,
+    });
+  } catch (err) {
+    console.error("❌ Error deleting recruiter:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Unblock a recruiter account
+ */
+router.post("/recruiter/unblock/:recruiterId", async (req, res) => {
+  try {
+    const { recruiterId } = req.params;
+    const { adminFirebaseUid, adminName } = req.body;
+
+    if (!adminFirebaseUid || !adminName) {
+      return res.status(400).json({ error: "Admin info required" });
+    }
+
+    const recruiter = await Recruiter.findOne({ firebaseUid: recruiterId });
+
+    if (!recruiter) {
+      return res.status(404).json({ error: "Recruiter not found" });
+    }
+
+    // Unblock recruiter
+    recruiter.isBlocked = false;
+    recruiter.blockedBy = null;
+    await recruiter.save();
+
+    // Notify recruiter
+    const Notification = require("../models/Notification");
+    await Notification.create({
+      recipientFirebaseUid: recruiterId,
+      recipientEmail: recruiter.email,
+      type: "admin_action",
+      title: "Account Unblocked",
+      message: `Your recruiter account has been unblocked by admin (${adminName}). You can now access all features again.`,
+      actionType: "update",
+      affectedItemId: recruiter._id,
+      affectedItemType: "Recruiter",
+      metadata: {
+        recruiterId,
+        recruiterName: recruiter.fullName,
+        company: recruiter.companyName,
+        adminName,
+      },
+      priority: "medium",
+      actionUrl: "/recruiter/dashboard",
+    });
+
+    res.json({
+      success: true,
+      message: "Recruiter unblocked successfully",
+      recruiter,
+    });
+  } catch (err) {
+    console.error("❌ Error unblocking recruiter:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* =========================
+   STUDENT MANAGEMENT (CONTINUED)
+========================= */
+
+/**
+ * Delete a student account
+ */
+router.post("/student/delete/:studentId", async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    const { adminFirebaseUid, adminName, reason } = req.body;
+
+    if (!adminFirebaseUid || !adminName) {
+      return res.status(400).json({ error: "Admin info required" });
+    }
+
+    const student = await Student.findOne({ firebaseUid: studentId });
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Mark student as deleted
+    student.isDeleted = true;
+    student.deletedBy = {
+      adminFirebaseUid,
+      adminName,
+      reason: reason || "Administrative deletion",
+      deletedAt: new Date(),
+    };
+
+    await student.save();
+
+    // Notify student
+    const Notification = require("../models/Notification");
+    await Notification.create({
+      recipientFirebaseUid: studentId,
+      recipientEmail: student.email,
+      type: "admin_action",
+      title: "Account Deleted",
+      message: `Your account has been deleted by admin (${adminName}). Reason: ${reason || "Not specified"}. You will no longer be able to access the platform. Please contact administration for more details.`,
+      actionType: "delete",
+      affectedItemId: student._id,
+      affectedItemType: "Student",
+      metadata: {
+        studentId,
+        studentName: student.fullName,
+        adminName,
+        reason,
+      },
+      priority: "urgent",
+      actionUrl: "/student/dashboard",
+    });
+
+    // Also remove from all interview schedules
+    const schedules = await InterviewSchedule.find({
+      "candidates.studentId": studentId,
+    });
+
+    for (const schedule of schedules) {
+      const candidateIndex = schedule.candidates.findIndex(
+        c => c.studentId === studentId
+      );
+
+      if (candidateIndex !== -1) {
+        schedule.candidates.splice(candidateIndex, 1);
+        await schedule.save();
+      }
+    }
+
+    res.json({
+      success: true,
+      message: "Student account deleted successfully",
+      student,
+    });
+  } catch (err) {
+    console.error("❌ Error deleting student:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Get all students
+ */
+router.get("/students", async (req, res) => {
+  try {
+    const students = await Student.find();
+    res.json({
+      success: true,
+      students,
+    });
+  } catch (err) {
+    console.error("❌ Error fetching students:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Get all recruiters
+ */
+router.get("/recruiters", async (req, res) => {
+  try {
+    const recruiters = await Recruiter.find();
+    res.json({
+      success: true,
+      recruiters,
+    });
+  } catch (err) {
+    console.error("❌ Error fetching recruiters:", err);
     res.status(500).json({ error: err.message });
   }
 });

@@ -81,10 +81,10 @@ export function AdminProvider({ children }) {
 
   const fetchStudents = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/admin/students`);
+      const res = await axios.get(`${API_BASE}/api/admin/manage/students`);
       
-      // Validate response is array
-      const studentsData = Array.isArray(res.data?.data) ? res.data.data : [];
+      // Handle both formats: { students: [...] } and { success: true, students: [...] }
+      const studentsData = Array.isArray(res.data?.students) ? res.data.students : [];
       setStudents(studentsData);
       setError(null);
     } catch (err) {
@@ -97,10 +97,10 @@ export function AdminProvider({ children }) {
 
   const fetchRecruiters = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/admin/recruiters`);
+      const res = await axios.get(`${API_BASE}/api/admin/manage/recruiters`);
       
-      // Validate response is array
-      const recruitersData = Array.isArray(res.data?.data) ? res.data.data : [];
+      // Handle both formats: { recruiters: [...] } and { success: true, recruiters: [...] }
+      const recruitersData = Array.isArray(res.data?.recruiters) ? res.data.recruiters : [];
       setRecruiters(recruitersData);
       setError(null);
     } catch (err) {

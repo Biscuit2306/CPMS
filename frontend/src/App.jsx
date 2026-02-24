@@ -12,6 +12,8 @@ import Home from "./pages/Home";
 import UnifiedLogin from "./pages/UnifiedLogin";
 import UnifiedRegister from "./pages/UnifiedRegister";
 import VerifyEmail from "./pages/VerifyEmail";
+import Setup2FA from "./pages/Setup2FA";
+import Verify2FA from "./pages/Verify2FA";
 
 /* ================= ERROR PAGES ================= */
 const UnauthorizedPage = () => (
@@ -37,6 +39,7 @@ import StudentApplications from "./pages/student/StudentApplications";
 import StudentSchedule from "./pages/student/StudentSchedule";
 import StudentAchievements from "./pages/student/StudentAchievements";
 import StudentProfile from "./pages/student/StudentProfile";
+import ExternalJobs from "./pages/student/ExternalJobs";
 
 /* ================= RECRUITER ================= */
 import RecruiterDashboard from "./pages/Recruiter/RecruiterDashboard";
@@ -67,9 +70,13 @@ function App() {
         <Routes>
           {/* =================== PUBLIC ROUTES =================== */}
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<UnifiedLogin role="student" />} />
           <Route path="/login/:role" element={<UnifiedLogin />} />
+          <Route path="/register" element={<UnifiedRegister />} />
           <Route path="/register/:role" element={<UnifiedRegister />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/setup-2fa" element={<Setup2FA />} />
+          <Route path="/verify-2fa" element={<Verify2FA />} />
 
           {/* =================== FEATURES =================== */}
           <Route path="/project-evaluator" element={<ProjectEvaluator />} />
@@ -82,6 +89,7 @@ function App() {
           <Route path="/student/schedule" element={<StudentProvider><StudentSchedule /></StudentProvider>} />
           <Route path="/student/achievements" element={<StudentProvider><StudentAchievements /></StudentProvider>} />
           <Route path="/student/profile" element={<StudentProvider><StudentProfile /></StudentProvider>} />
+          <Route path="/student/external-jobs" element={<StudentProvider><ExternalJobs /></StudentProvider>} />
           <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
 
           {/* =================== RECRUITER ROUTES =================== */}

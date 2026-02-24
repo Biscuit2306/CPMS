@@ -147,7 +147,7 @@ const StudentSchedule = () => {
                     <div>
                       <h3>{schedule.company}</h3>
                       <span className="student-schedule-type">{schedule.interviewType}</span>
-                      <span style={{ display: 'block', fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                      <span className='student-schedule-position'>
                         Position: {schedule.position}
                       </span>
                     </div>
@@ -246,15 +246,6 @@ const StudentSchedule = () => {
                   {!isScheduledForMe && schedule.status === 'scheduled' && (
                     <button
                       className="student-schedule-btn"
-                      style={{
-                        flex: 1,
-                        backgroundColor: '#6b7280',
-                        color: 'white',
-                        border: 'none',
-                        padding: '10px',
-                        borderRadius: '4px',
-                        cursor: 'not-allowed'
-                      }}
                       disabled
                     >
                       Not Scheduled
@@ -262,16 +253,9 @@ const StudentSchedule = () => {
                   )}
                   {schedule.description && (
                     <button
-                      className="student-schedule-btn"
+                      className="student-schedule-details-btn"
                       title={schedule.description}
-                      style={{
-                        backgroundColor: '#e5e7eb',
-                        color: '#374151',
-                        border: 'none',
-                        padding: '10px',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
+                      
                     >
                       Details
                     </button>

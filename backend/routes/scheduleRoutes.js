@@ -130,7 +130,8 @@ router.get("/recruiter/:recruiterFirebaseUid", async (req, res) => {
     const schedules = await InterviewSchedule.find({
       recruiterFirebaseUid: req.params.recruiterFirebaseUid,
       isBlocked: { $ne: true },  // Exclude blocked schedules
-      status: { $nin: ["blocked", "cancelled"] } // Exclude blocked and cancelled
+      isDeleted: { $ne: true },  // Exclude deleted schedules
+      status: { $ne: "cancelled" } // Exclude cancelled status
     }).sort({ date: 1 });
 
     console.log("✅ Found", schedules.length, "active recruiter schedules");
@@ -150,10 +151,12 @@ router.get("/student/:studentFirebaseUid", async (req, res) => {
     
     const student = await Student.findOne({ firebaseUid: req.params.studentFirebaseUid });
     if (!student) {
-      console.log("⚠️ Student not found, returning all upcoming schedules");
+      console.log("⚠️ Student not found, returning all upcoming active schedules");
       // Still return all upcoming schedules even if student not found
       const schedules = await InterviewSchedule.find({
         status: { $ne: "cancelled" },
+        isBlocked: { $ne: true },
+        isDeleted: { $ne: true },
         date: { $gte: new Date() }
       })
         .sort({ date: 1 })
@@ -166,7 +169,8 @@ router.get("/student/:studentFirebaseUid", async (req, res) => {
     const schedules = await InterviewSchedule.find({
       "candidates.studentId": req.params.studentFirebaseUid,
       isBlocked: { $ne: true },  // Exclude blocked schedules
-      status: { $nin: ["cancelled", "blocked"] } // Exclude cancelled and blocked
+      isDeleted: { $ne: true },  // Exclude deleted schedules
+      status: { $ne: "cancelled" } // Exclude cancelled status
     })
       .sort({ date: 1 })
       .populate("recruiterId", "companyName email phone");
@@ -188,12 +192,16 @@ router.get("/student/:studentFirebaseUid", async (req, res) => {
  */
 router.get("/", async (req, res) => {
   try {
-    console.log("📅 Fetching all schedules");
-    const schedules = await InterviewSchedule.find({ status: { $ne: "cancelled" } })
+    console.log("📅 Fetching all active schedules");
+    const schedules = await InterviewSchedule.find({ 
+      status: { $ne: "cancelled" },
+      isBlocked: { $ne: true },
+      isDeleted: { $ne: true }
+    })
       .sort({ date: 1 })
       .populate("recruiterId", "companyName fullName");
 
-    console.log("✅ Found", schedules.length, "total schedules");
+    console.log("✅ Found", schedules.length, "total active schedules");
     res.json({ success: true, data: schedules });
   } catch (err) {
     console.error("❌ Error fetching all schedules:", err);

@@ -293,7 +293,7 @@
 
 /* ==================== DASHBOARD CONTENT ==================== */
 .student-dashboard-content {
-  padding: 2rem;
+  padding: 1rem; /*change 2rem to 1rem*/
   flex: 1;
   background: #f8f9fa;
 }

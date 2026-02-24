@@ -1,99 +1,106 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, Shield, AlertCircle, CheckCircle, Users, Search } from 'lucide-react';
+import { Trash2, AlertCircle, CheckCircle, Users, Search, Eye, Lock, UnlockIcon } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
 import { useAdmin } from '../../context/AdminContext';
 import '../../styles/admin-css/admincandidates.css';
 import axios from 'axios';
 
 const AdminCandidates = () => {
-  const { admin, jobDrives, statsLoading } = useAdmin();
+  const { admin, students, fetchStudents, statsLoading } = useAdmin();
   const [searchTerm, setSearchTerm] = useState('');
-  // Removed unused state - selectedDrive not used in this component
-  const [candidates, setCandidates] = useState([]);
+  const [filterStatus, setFilterStatus] = useState('active'); // all, active, blocked, deleted
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [deleteModal, setDeleteModal] = useState({
+  const [actionModal, setActionModal] = useState({
     isOpen: false,
-    candidate: null,
-    driveId: null,
+    student: null,
+    action: null, // 'block', 'delete', 'unblock'
     reason: '',
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-  // Get all candidates from all visible (non-deleted/blocked) drives
   useEffect(() => {
-    const allCandidates = [];
-    const visibleDrives = jobDrives.filter(drive =>
-      !drive?.isDeleted && drive?.status !== 'deleted' && !drive?.isBlocked && drive?.status !== 'blocked'
-    );
+    let filtered = students || [];
 
-    visibleDrives.forEach(drive => {
-      if (drive.applications && drive.applications.length > 0) {
-        drive.applications.forEach(app => {
-          allCandidates.push({
-            ...app,
-            driveId: drive._id,
-            company: drive.company,
-            position: drive.position,
-          });
-        });
-      }
-    });
+    // Filter by status
+    if (filterStatus === 'active') {
+      filtered = filtered.filter(s => !s?.isBlocked && !s?.isDeleted);
+    } else if (filterStatus === 'blocked') {
+      filtered = filtered.filter(s => s?.isBlocked && !s?.isDeleted);
+    } else if (filterStatus === 'deleted') {
+      filtered = filtered.filter(s => s?.isDeleted);
+    }
 
     // Filter by search term
-    let filtered = allCandidates;
     if (searchTerm) {
-      filtered = allCandidates.filter(c =>
-        c.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.studentEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.company?.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(s =>
+        s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.rollNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.branch?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    setCandidates(filtered);
-  }, [jobDrives, searchTerm]);
+    setFilteredStudents(filtered);
+  }, [searchTerm, students, filterStatus]);
 
-  const handleRemoveCandidate = async () => {
-    if (!deleteModal.candidate || !deleteModal.driveId) return;
+  const getStatusDisplay = (student) => {
+    if (student.isDeleted) return { label: 'Deleted', color: '#ef4444' };
+    if (student.isBlocked) return { label: 'Blocked', color: '#f59e0b' };
+    return { label: 'Active', color: '#10b981' };
+  };
+
+  const getApplicationCount = (student) => {
+    return (student.applications || []).length;
+  };
+
+  const handleAction = async () => {
+    if (!actionModal.student || !actionModal.action) return;
 
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${API_BASE}/api/admin/manage/job-drive/${deleteModal.driveId}/remove-candidate/${deleteModal.candidate.studentId}`,
-        {
-          adminFirebaseUid: admin.firebaseUid,
-          adminName: admin.fullName || admin.email,
-          reason: deleteModal.reason || 'No reason specified',
-        }
-      );
+      const endpoint = actionModal.action === 'block'
+        ? `/api/admin/manage/student/block/${actionModal.student.firebaseUid}`
+        : actionModal.action === 'delete'
+        ? `/api/admin/manage/student/delete/${actionModal.student.firebaseUid}`
+        : `/api/admin/manage/student/unblock/${actionModal.student.firebaseUid}`;
+
+      const response = await axios.post(`${API_BASE}${endpoint}`, {
+        adminFirebaseUid: admin.firebaseUid,
+        adminName: admin.fullName || admin.email,
+        reason: actionModal.reason || 'No reason specified',
+      });
 
       if (response.data.success) {
-        setSuccessMessage(`Candidate ${deleteModal.candidate.studentName} removed from ${deleteModal.candidate.company}`);
-        setTimeout(() => setSuccessMessage(''), 3000);
-
-        // Refresh
-        setDeleteModal({ isOpen: false, candidate: null, driveId: null, reason: '' });
-        // In production, refresh from parent or call context update
+        const actionText = actionModal.action === 'block' ? 'blocked' 
+                          : actionModal.action === 'delete' ? 'deleted'
+                          : 'unblocked';
+        setSuccessMessage(`Student ${actionText} successfully.`);
+        setTimeout(() => setSuccessMessage(''), 4000);
+        setActionModal({ isOpen: false, student: null, action: null, reason: '' });
+        await fetchStudents();
       }
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || 'Failed to remove candidate');
-      console.error('❌ Error removing candidate:', err);
+      console.error(`Error ${actionModal.action}ing student:`, err);
+      const errMsg = err?.response?.data?.error || `Failed to ${actionModal.action} student`;
+      setErrorMessage(errMsg);
     } finally {
       setLoading(false);
     }
   };
 
-  const getStatusBadgeColor = (status) => {
-    switch (status) {
-      case 'applied': return '#0ea5e9';
-      case 'shortlisted': return '#f59e0b';
-      case 'interview-scheduled': return '#8b5cf6';
-      case 'selected': return '#10b981';
-      case 'rejected': return '#ef4444';
-      default: return '#6b7280';
-    }
+  const openActionModal = (student, action) => {
+    setActionModal({
+      isOpen: true,
+      student,
+      action,
+      reason: '',
+    });
   };
 
   return (
@@ -102,8 +109,36 @@ const AdminCandidates = () => {
         {/* Header */}
         <div className="admin-page-header">
           <div>
-            <h1>Manage Candidates</h1>
-            <p>View and manage all candidates across job drives</p>
+            <h1>Candidate Management</h1>
+            <p>Manage all students/candidates ({filteredStudents.length} candidates)</p>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <div className="admin-filter-section">
+              <button 
+                className={`admin-filter-btn ${filterStatus === 'active' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('active')}
+              >
+                Active
+              </button>
+              <button 
+                className={`admin-filter-btn ${filterStatus === 'blocked' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('blocked')}
+              >
+                Blocked
+              </button>
+              <button 
+                className={`admin-filter-btn ${filterStatus === 'deleted' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('deleted')}
+              >
+                Deleted
+              </button>
+              <button 
+                className={`admin-filter-btn ${filterStatus === 'all' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('all')}
+              >
+                All
+              </button>
+            </div>
           </div>
         </div>
 
@@ -127,7 +162,7 @@ const AdminCandidates = () => {
           <Search size={18} />
           <input
             type="text"
-            placeholder="Search by name, email, or company..."
+            placeholder="Search by name, email, roll number, or branch..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -136,7 +171,7 @@ const AdminCandidates = () => {
         {/* Candidates Table */}
         {statsLoading || loading ? (
           <div style={{ textAlign: 'center', padding: '40px' }}>Loading candidates...</div>
-        ) : candidates.length === 0 ? (
+        ) : filteredStudents.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px', color: '#9ca3af' }}>
             <Users size={40} style={{ opacity: 0.5, margin: '0 auto 10px' }} />
             <p>No candidates found</p>
@@ -148,127 +183,243 @@ const AdminCandidates = () => {
                 <tr>
                   <th>Student Name</th>
                   <th>Email</th>
-                  <th>Phone</th>
-                  <th>Company</th>
-                  <th>Position</th>
+                  <th>Roll No</th>
+                  <th>Branch</th>
+                  <th>CGPA</th>
+                  <th>Applications</th>
                   <th>Status</th>
-                  <th>Applied Date</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {candidates.map((candidate, index) => (
-                  <tr key={index}>
-                    <td>
-                      <span className="admin-candidate-name">
-                        {candidate.studentName}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="admin-candidate-email">
-                        {candidate.studentEmail}
-                      </span>
-                    </td>
-                    <td>{candidate.studentPhone || 'N/A'}</td>
-                    <td>{candidate.company}</td>
-                    <td>{candidate.position}</td>
-                    <td>
-                      <span
-                        className="admin-status-badge"
-                        style={{
-                          backgroundColor: `${getStatusBadgeColor(candidate.applicationStatus)}20`,
-                          color: getStatusBadgeColor(candidate.applicationStatus),
-                        }}
-                      >
-                        {(candidate.applicationStatus || '').replace('-', ' ').toUpperCase()}
-                      </span>
-                    </td>
-                    <td>
-                      {candidate.applicationDate
-                        ? new Date(candidate.applicationDate).toLocaleDateString()
-                        : 'N/A'}
-                    </td>
-                    <td>
-                      <button
-                        className="admin-action-btn admin-action-btn-danger"
-                        onClick={() =>
-                          setDeleteModal({
-                            isOpen: true,
-                            candidate,
-                            driveId: candidate.driveId,
-                            reason: '',
-                          })
-                        }
-                        title="Remove from application"
-                      >
-                        <Trash2 size={16} />
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {filteredStudents.map((student) => {
+                  const status = getStatusDisplay(student);
+                  return (
+                    <tr key={student._id}>
+                      <td>
+                        <span className="admin-candidate-name">
+                          {student.fullName || 'N/A'}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="admin-candidate-email">
+                          {student.email || 'N/A'}
+                        </span>
+                      </td>
+                      <td>{student.rollNo || 'N/A'}</td>
+                      <td>{student.branch || 'N/A'}</td>
+                      <td>{student.cgpa || 'N/A'}</td>
+                      <td>
+                        <span className="admin-app-count">
+                          {getApplicationCount(student)}
+                        </span>
+                      </td>
+                      <td>
+                        <span 
+                          className="admin-status-badge"
+                          style={{ backgroundColor: status.color, color: 'white' }}
+                        >
+                          {status.label}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="admin-action-buttons">
+                          <button
+                            className="admin-view-btn"
+                            onClick={() => {
+                              setSelectedStudent(student);
+                              setShowDetailsModal(true);
+                            }}
+                            title="View details"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          {!student.isDeleted && (
+                            <>
+                              {student.isBlocked ? (
+                                <button 
+                                  className="admin-unblock-btn"
+                                  onClick={() => openActionModal(student, 'unblock')}
+                                  title="Unblock student"
+                                >
+                                  <UnlockIcon size={16} />
+                                </button>
+                              ) : (
+                                <button 
+                                  className="admin-block-btn"
+                                  onClick={() => openActionModal(student, 'block')}
+                                  title="Block student"
+                                >
+                                  <Lock size={16} />
+                                </button>
+                              )}
+                              <button
+                                className="admin-delete-btn"
+                                onClick={() => openActionModal(student, 'delete')}
+                                title="Delete account"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
 
-        {/* Delete Modal */}
-        {deleteModal.isOpen && (
-          <div className="admin-modal-overlay" onClick={() => setDeleteModal({ ...deleteModal, isOpen: false })}>
-            <div
-              className="admin-modal-content"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="admin-modal-header">
-                <AlertCircle size={24} style={{ color: '#ef4444' }} />
-                <h3>Remove Candidate</h3>
-              </div>
-
+        {/* Details Modal */}
+        {showDetailsModal && selectedStudent && (
+          <div className="admin-modal-overlay" onClick={() => setShowDetailsModal(false)}>
+            <div className="admin-modal-content" onClick={(e) => e.stopPropagation()}>
+              <h2>Student Details</h2>
               <div className="admin-modal-body">
-                <p className="admin-modal-text">
-                  Are you sure you want to remove <strong>{deleteModal.candidate?.studentName}</strong> from the {' '}
-                  <strong>{deleteModal.candidate?.company}</strong> - <strong>{deleteModal.candidate?.position}</strong> application?
-                </p>
-                <p className="admin-modal-subtext">
-                  The student will be notified about this removal.
-                </p>
-
-                <div className="admin-modal-form-group">
-                  <label>Reason for removal (optional)</label>
-                  <textarea
-                    value={deleteModal.reason}
-                    onChange={(e) =>
-                      setDeleteModal({
-                        ...deleteModal,
-                        reason: e.target.value,
-                      })
-                    }
-                    placeholder="Explain why this candidate is being removed..."
-                    style={{ height: '80px' }}
-                  />
+                <div className="admin-detail-row">
+                  <label>Full Name:</label>
+                  <span>{selectedStudent.fullName || 'N/A'}</span>
                 </div>
+                <div className="admin-detail-row">
+                  <label>Email:</label>
+                  <span>{selectedStudent.email || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Phone:</label>
+                  <span>{selectedStudent.phone || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Roll Number:</label>
+                  <span>{selectedStudent.rollNo || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Branch:</label>
+                  <span>{selectedStudent.branch || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Year:</label>
+                  <span>{selectedStudent.year || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>CGPA:</label>
+                  <span>{selectedStudent.cgpa || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Date of Birth:</label>
+                  <span>{selectedStudent.dob || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Address:</label>
+                  <span>{selectedStudent.address || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>LinkedIn:</label>
+                  <span>{selectedStudent.linkedin ? <a href={selectedStudent.linkedin} target="_blank" rel="noreferrer">{selectedStudent.linkedin}</a> : 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>GitHub:</label>
+                  <span>{selectedStudent.github ? <a href={selectedStudent.github} target="_blank" rel="noreferrer">{selectedStudent.github}</a> : 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Portfolio:</label>
+                  <span>{selectedStudent.portfolio ? <a href={selectedStudent.portfolio} target="_blank" rel="noreferrer">{selectedStudent.portfolio}</a> : 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Applications:</label>
+                  <span>{getApplicationCount(selectedStudent)}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Status:</label>
+                  <span style={{ color: getStatusDisplay(selectedStudent).color }}>
+                    {getStatusDisplay(selectedStudent).label}
+                  </span>
+                </div>
+                {selectedStudent.blockedBy && (
+                  <>
+                    <div className="admin-detail-row">
+                      <label>Blocked By:</label>
+                      <span>{selectedStudent.blockedBy.adminName}</span>
+                    </div>
+                    <div className="admin-detail-row">
+                      <label>Reason:</label>
+                      <span>{selectedStudent.blockedBy.reason}</span>
+                    </div>
+                  </>
+                )}
+                {selectedStudent.deletedBy && (
+                  <>
+                    <div className="admin-detail-row">
+                      <label>Deleted By:</label>
+                      <span>{selectedStudent.deletedBy.adminName}</span>
+                    </div>
+                    <div className="admin-detail-row">
+                      <label>Reason:</label>
+                      <span>{selectedStudent.deletedBy.reason}</span>
+                    </div>
+                  </>
+                )}
               </div>
+              <div className="admin-modal-actions">
+                <button className="admin-cancel-btn" onClick={() => setShowDetailsModal(false)}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
-              <div className="admin-modal-footer">
-                <button
-                  className="admin-btn-secondary"
-                  onClick={() =>
-                    setDeleteModal({
-                      isOpen: false,
-                      candidate: null,
-                      driveId: null,
-                      reason: '',
-                    })
-                  }
+        {/* Action Modal */}
+        {actionModal.isOpen && actionModal.student && (
+          <div className="admin-modal-overlay" onClick={() => setActionModal({ isOpen: false, student: null, action: null, reason: '' })}>
+            <div className="admin-modal-content" onClick={(e) => e.stopPropagation()}>
+              <h2>
+                {actionModal.action === 'block' && 'Block Student Account'}
+                {actionModal.action === 'delete' && 'Delete Student Account'}
+                {actionModal.action === 'unblock' && 'Unblock Student Account'}
+              </h2>
+              <div className="admin-modal-body">
+                <p>
+                  {actionModal.action === 'block' && `Are you sure you want to block ${actionModal.student.fullName}? They will not be able to access their account or apply for any positions.`}
+                  {actionModal.action === 'delete' && `Are you sure you want to DELETE ${actionModal.student.fullName}'s account? This action cannot be undone. They will also be removed from all interview schedules.`}
+                  {actionModal.action === 'unblock' && `Are you sure you want to unblock ${actionModal.student.fullName}? They will be able to access their account again.`}
+                </p>
+                {(actionModal.action === 'block' || actionModal.action === 'delete') && (
+                  <textarea
+                    placeholder="Reason for this action (optional)"
+                    value={actionModal.reason}
+                    onChange={(e) => setActionModal({ ...actionModal, reason: e.target.value })}
+                    style={{
+                      width: '100%',
+                      minHeight: '80px',
+                      padding: '8px',
+                      marginTop: '15px',
+                      borderRadius: '6px',
+                      border: '1px solid #e5e7eb',
+                      fontFamily: 'inherit',
+                    }}
+                  />
+                )}
+              </div>
+              <div className="admin-modal-actions">
+                <button 
+                  className="admin-cancel-btn" 
+                  onClick={() => setActionModal({ isOpen: false, student: null, action: null, reason: '' })}
+                  disabled={loading}
                 >
                   Cancel
                 </button>
-                <button
-                  className="admin-btn-danger"
-                  onClick={handleRemoveCandidate}
+                <button 
+                  className={`admin-${actionModal.action}-btn`}
+                  onClick={handleAction}
                   disabled={loading}
                 >
-                  {loading ? 'Removing...' : 'Remove Candidate'}
+                  {loading ? 'Processing...' : (
+                    actionModal.action === 'block' ? 'Block Account' :
+                    actionModal.action === 'delete' ? 'Delete Account' :
+                    'Unblock Account'
+                  )}
                 </button>
               </div>
             </div>

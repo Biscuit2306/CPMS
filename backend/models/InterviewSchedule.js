@@ -105,7 +105,7 @@ const interviewScheduleSchema = new mongoose.Schema(
       default: "scheduled",
     },
 
-    // Block/Cancel tracking
+    // Block/Cancel/Delete tracking
     isBlocked: {
       type: Boolean,
       default: false,
@@ -128,6 +128,18 @@ const interviewScheduleSchema = new mongoose.Schema(
       adminName: String,
       reason: String,
       cancelledAt: Date,
+    },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+
+    deletedBy: {
+      adminUid: String,
+      adminName: String,
+      reason: String,
+      deletedAt: Date,
     },
 
     createdBy: {

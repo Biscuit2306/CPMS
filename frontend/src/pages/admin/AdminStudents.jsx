@@ -1,134 +1,433 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Download, Mail, Phone, Building2, Eye, MoreVertical } from 'lucide-react';
+import { Trash2, AlertCircle, CheckCircle, Users, Search, Eye, Lock, UnlockIcon } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
 import { useAdmin } from '../../context/AdminContext';
 import '../../styles/admin-css/adminstudents.css';
+import axios from 'axios';
 
-const Students = () => {
-  const { students, statsLoading } = useAdmin();
-  const [filteredStudents, setFilteredStudents] = useState([]);
+const AdminStudents = () => {
+  const { admin, students, fetchStudents, statsLoading } = useAdmin();
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('active'); // all, active, blocked, deleted
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [actionModal, setActionModal] = useState({
+    isOpen: false,
+    student: null,
+    action: null, // 'block', 'delete', 'unblock'
+    reason: '',
+  });
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
   useEffect(() => {
-    let filtered = students;
+    let filtered = students || [];
+
+    // Filter by status
+    if (filterStatus === 'active') {
+      filtered = filtered.filter(s => !s?.isBlocked && !s?.isDeleted);
+    } else if (filterStatus === 'blocked') {
+      filtered = filtered.filter(s => s?.isBlocked && !s?.isDeleted);
+    } else if (filterStatus === 'deleted') {
+      filtered = filtered.filter(s => s?.isDeleted);
+    }
+
+    // Filter by search term
     if (searchTerm) {
-      filtered = students.filter(s => 
+      filtered = filtered.filter(s =>
         s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.rollNo?.toLowerCase().includes(searchTerm.toLowerCase())
+        s.rollNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.branch?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+
     setFilteredStudents(filtered);
-  }, [searchTerm, students]);
+  }, [searchTerm, students, filterStatus]);
 
-  const getStatusBadge = (student) => {
-    if (student.applications && student.applications.length > 0) {
-      const hasPlaced = student.applications.some(a => a.applicationStatus === 'selected');
-      return hasPlaced ? 'Placed' : 'Active';
-    }
-    return 'Active';
+  const getStatusDisplay = (student) => {
+    if (student.isDeleted) return { label: 'Deleted', color: '#ef4444' };
+    if (student.isBlocked) return { label: 'Blocked', color: '#f59e0b' };
+    return { label: 'Active', color: '#10b981' };
   };
 
-  const getPlacedCompany = (student) => {
-    if (student.applications && student.applications.length > 0) {
-      const placed = student.applications.find(a => a.applicationStatus === 'selected');
-      return placed?.companyName || '-';
-    }
-    return '-';
+  const getApplicationCount = (student) => {
+    return (student.applications || []).length;
   };
 
-  const exportData = () => {
-    const dataStr = JSON.stringify(students, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'students_' + new Date().toISOString() + '.json';
-    link.click();
+  const handleAction = async () => {
+    if (!actionModal.student || !actionModal.action) return;
+
+    setLoading(true);
+    try {
+      const endpoint = actionModal.action === 'block'
+        ? `/api/admin/manage/student/block/${actionModal.student.firebaseUid}`
+        : actionModal.action === 'delete'
+        ? `/api/admin/manage/student/delete/${actionModal.student.firebaseUid}`
+        : `/api/admin/manage/student/unblock/${actionModal.student.firebaseUid}`;
+
+      const response = await axios.post(`${API_BASE}${endpoint}`, {
+        adminFirebaseUid: admin.firebaseUid,
+        adminName: admin.fullName || admin.email,
+        reason: actionModal.reason || 'No reason specified',
+      });
+
+      if (response.data.success) {
+        const actionText = actionModal.action === 'block' ? 'blocked' 
+                          : actionModal.action === 'delete' ? 'deleted'
+                          : 'unblocked';
+        setSuccessMessage(`Student ${actionText} successfully.`);
+        setTimeout(() => setSuccessMessage(''), 4000);
+        setActionModal({ isOpen: false, student: null, action: null, reason: '' });
+        await fetchStudents();
+      }
+    } catch (err) {
+      console.error(`Error ${actionModal.action}ing student:`, err);
+      const errMsg = err?.response?.data?.error || `Failed to ${actionModal.action} student`;
+      setErrorMessage(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openActionModal = (student, action) => {
+    setActionModal({
+      isOpen: true,
+      student,
+      action,
+      reason: '',
+    });
   };
 
   return (
     <AdminLayout>
-      <div className="admin-page-header">
-        <div>
-          <h1>Student Management</h1>
-          <p>Manage student profiles and placement status ({filteredStudents.length} students)</p>
+      <div className="admin-students-wrapper">
+        {/* Header */}
+        <div className="admin-page-header">
+          <div>
+            <h1>Student Management</h1>
+            <p>Manage all students ({filteredStudents.length} students)</p>
+          </div>
+          <div className="admin-filter-buttons-container">
+            <div className="admin-filter-section">
+              <button 
+                className={`admin-filter-btn ${filterStatus === 'active' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('active')}
+              >
+                Active
+              </button>
+              <button 
+                className={`admin-filter-btn ${filterStatus === 'blocked' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('blocked')}
+              >
+                Blocked
+              </button>
+              <button 
+                className={`admin-filter-btn ${filterStatus === 'deleted' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('deleted')}
+              >
+                Deleted
+              </button>
+              <button 
+                className={`admin-filter-btn ${filterStatus === 'all' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('all')}
+              >
+                All
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="admin-header-actions">
-          <input 
-            type="text" 
-            placeholder="Search students..."
+
+        {/* Messages */}
+        {successMessage && (
+          <div className="admin-success-banner">
+            <CheckCircle size={20} />
+            <span>{successMessage}</span>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="admin-error-banner">
+            <AlertCircle size={20} />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        {/* Search */}
+        <div className="admin-students-search">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search by name, email, roll number, or branch..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '6px',
-              border: '1px solid #e5e7eb',
-              marginRight: '10px',
-              width: '200px'
-            }}
           />
-          <button className="admin-export-btn" onClick={exportData}>
-            <Download size={18} />
-            Export Data
-          </button>
         </div>
-      </div>
 
-      {statsLoading ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>Loading students...</div>
-      ) : filteredStudents.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>No students found</div>
-      ) : (
-        <div className="admin-students-grid">
-          {filteredStudents.map((student) => (
-            <div key={student._id} className="admin-student-card">
-              <div className="admin-student-header">
-                <div className="admin-student-avatar">
-                  {(student.fullName || 'S').split(' ').map(n => n[0]).join('').substring(0, 2)}
+        {/* Students Table */}
+        {statsLoading || loading ? (
+          <div className="admin-loading-container">Loading students...</div>
+        ) : filteredStudents.length === 0 ? (
+          <div className="admin-empty-state">
+            <Users size={40} />
+            <p>No students found</p>
+          </div>
+        ) : (
+          <div className="admin-students-table-wrapper">
+            <table className="admin-students-table">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Email</th>
+                  <th>Roll No</th>
+                  <th>Branch</th>
+                  <th>CGPA</th>
+                  <th>Applications</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredStudents.map((student) => {
+                  const status = getStatusDisplay(student);
+                  return (
+                    <tr key={student._id}>
+                      <td>
+                        <span className="admin-student-name">
+                          {student.fullName || 'N/A'}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="admin-student-email">
+                          {student.email || 'N/A'}
+                        </span>
+                      </td>
+                      <td>{student.rollNo || 'N/A'}</td>
+                      <td>{student.branch || 'N/A'}</td>
+                      <td>{student.cgpa || 'N/A'}</td>
+                      <td>
+                        <span className="admin-app-count">
+                          {getApplicationCount(student)}
+                        </span>
+                      </td>
+                      <td>
+                        <span 
+                          className="admin-status-badge"
+                          style={{ backgroundColor: status.color }}
+                        >
+                          {status.label}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="admin-action-buttons">
+                          <button
+                            className="admin-view-btn"
+                            onClick={() => {
+                              setSelectedStudent(student);
+                              setShowDetailsModal(true);
+                            }}
+                            title="View details"
+                          >
+                            <Eye size={16} />
+                          </button>
+                          {!student.isDeleted && (
+                            <>
+                              {student.isBlocked ? (
+                                <button 
+                                  className="admin-unblock-btn"
+                                  onClick={() => openActionModal(student, 'unblock')}
+                                  title="Unblock student"
+                                >
+                                  <UnlockIcon size={16} />
+                                </button>
+                              ) : (
+                                <button 
+                                  className="admin-block-btn"
+                                  onClick={() => openActionModal(student, 'block')}
+                                  title="Block student"
+                                >
+                                  <Lock size={16} />
+                                </button>
+                              )}
+                              <button
+                                className="admin-delete-btn"
+                                onClick={() => openActionModal(student, 'delete')}
+                                title="Delete account"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Details Modal */}
+        {showDetailsModal && selectedStudent && (
+          <div className="admin-modal-overlay" onClick={() => setShowDetailsModal(false)}>
+            <div className="admin-modal-content" onClick={(e) => e.stopPropagation()}>
+              <h2>Student Details</h2>
+              <div className="admin-modal-body">
+                <div className="admin-detail-row">
+                  <label>Full Name:</label>
+                  <span>{selectedStudent.fullName || 'N/A'}</span>
                 </div>
-                <div className="admin-student-info">
-                  <h3>{student.fullName || 'N/A'}</h3>
-                  <p>{student.branch || 'N/A'} • {student.year || 'N/A'}</p>
-                  <span className="admin-cgpa-badge">CGPA: {student.cgpa || '0.0'}</span>
+                <div className="admin-detail-row">
+                  <label>Email:</label>
+                  <span>{selectedStudent.email || 'N/A'}</span>
                 </div>
-              </div>
-              <div className="admin-student-details">
-                <div className="admin-student-row">
-                  <Mail size={16} />
-                  <span>{student.email || 'N/A'}</span>
+                <div className="admin-detail-row">
+                  <label>Phone:</label>
+                  <span>{selectedStudent.phone || 'N/A'}</span>
                 </div>
-                <div className="admin-student-row">
-                  <Phone size={16} />
-                  <span>{student.phone || 'N/A'}</span>
+                <div className="admin-detail-row">
+                  <label>Roll Number:</label>
+                  <span>{selectedStudent.rollNo || 'N/A'}</span>
                 </div>
-                <div className="admin-student-row">
-                  <Building2 size={16} />
-                  <span>{getPlacedCompany(student)}</span>
+                <div className="admin-detail-row">
+                  <label>Branch:</label>
+                  <span>{selectedStudent.branch || 'N/A'}</span>
                 </div>
-                <div className="admin-student-row">
-                  <span className="admin-label">Status:</span>
-                  <span className={`admin-status-badge admin-status-${getStatusBadge(student).toLowerCase()}`}>
-                    {getStatusBadge(student)}
+                <div className="admin-detail-row">
+                  <label>Year:</label>
+                  <span>{selectedStudent.year || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>CGPA:</label>
+                  <span>{selectedStudent.cgpa || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Date of Birth:</label>
+                  <span>{selectedStudent.dob || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Address:</label>
+                  <span>{selectedStudent.address || 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>LinkedIn:</label>
+                  <span>{selectedStudent.linkedin ? <a href={selectedStudent.linkedin} target="_blank" rel="noreferrer">{selectedStudent.linkedin}</a> : 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>GitHub:</label>
+                  <span>{selectedStudent.github ? <a href={selectedStudent.github} target="_blank" rel="noreferrer">{selectedStudent.github}</a> : 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Portfolio:</label>
+                  <span>{selectedStudent.portfolio ? <a href={selectedStudent.portfolio} target="_blank" rel="noreferrer">{selectedStudent.portfolio}</a> : 'N/A'}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Applications:</label>
+                  <span>{getApplicationCount(selectedStudent)}</span>
+                </div>
+                <div className="admin-detail-row">
+                  <label>Status:</label>
+                  <span style={{ color: getStatusDisplay(selectedStudent).color }}>
+                    {getStatusDisplay(selectedStudent).label}
                   </span>
                 </div>
+                {selectedStudent.blockedBy && (
+                  <>
+                    <div className="admin-detail-row">
+                      <label>Blocked By:</label>
+                      <span>{selectedStudent.blockedBy.adminName}</span>
+                    </div>
+                    <div className="admin-detail-row">
+                      <label>Reason:</label>
+                      <span>{selectedStudent.blockedBy.reason}</span>
+                    </div>
+                  </>
+                )}
+                {selectedStudent.deletedBy && (
+                  <>
+                    <div className="admin-detail-row">
+                      <label>Deleted By:</label>
+                      <span>{selectedStudent.deletedBy.adminName}</span>
+                    </div>
+                    <div className="admin-detail-row">
+                      <label>Reason:</label>
+                      <span>{selectedStudent.deletedBy.reason}</span>
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="admin-student-actions">
-                <button className="admin-view-btn">
-                  <Eye size={16} />
-                  View Profile
-                </button>
-                <button className="admin-action-menu-btn">
-                  <MoreVertical size={16} />
-                  Actions
+              <div className="admin-modal-actions">
+                <button className="admin-cancel-btn" onClick={() => setShowDetailsModal(false)}>
+                  Close
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        )}
+
+        {/* Action Modal */}
+        {actionModal.isOpen && actionModal.student && (
+          <div className="admin-modal-overlay" onClick={() => setActionModal({ isOpen: false, student: null, action: null, reason: '' })}>
+            <div className="admin-modal-content" onClick={(e) => e.stopPropagation()}>
+              <h2>
+                {actionModal.action === 'block' && 'Block Student Account'}
+                {actionModal.action === 'delete' && 'Delete Student Account'}
+                {actionModal.action === 'unblock' && 'Unblock Student Account'}
+              </h2>
+              <div className="admin-modal-body">
+                <p>
+                  {actionModal.action === 'block' && `Are you sure you want to block ${actionModal.student.fullName}? They will not be able to access their account or apply for any positions.`}
+                  {actionModal.action === 'delete' && `Are you sure you want to DELETE ${actionModal.student.fullName}'s account? This action cannot be undone. They will also be removed from all interview schedules.`}
+                  {actionModal.action === 'unblock' && `Are you sure you want to unblock ${actionModal.student.fullName}? They will be able to access their account again.`}
+                </p>
+                {(actionModal.action === 'block' || actionModal.action === 'delete') && (
+                  <textarea
+                    placeholder="Reason for this action (optional)"
+                    value={actionModal.reason}
+                    onChange={(e) => setActionModal({ ...actionModal, reason: e.target.value })}
+                    style={{
+                      width: '100%',
+                      minHeight: '80px',
+                      padding: '8px',
+                      marginTop: '15px',
+                      borderRadius: '6px',
+                      border: '1px solid #e5e7eb',
+                      fontFamily: 'inherit',
+                    }}
+                  />
+                )}
+              </div>
+              <div className="admin-modal-actions">
+                <button 
+                  className="admin-cancel-btn" 
+                  onClick={() => setActionModal({ isOpen: false, student: null, action: null, reason: '' })}
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className={`admin-${actionModal.action}-btn`}
+                  onClick={handleAction}
+                  disabled={loading}
+                >
+                  {loading ? 'Processing...' : (
+                    actionModal.action === 'block' ? 'Block Account' :
+                    actionModal.action === 'delete' ? 'Delete Account' :
+                    'Unblock Account'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </AdminLayout>
   );
 };
 
-export default Students;
+export default AdminStudents;

@@ -135,6 +135,142 @@
   transform: scale(1.02);
 }
 
+/* Empty state */
+.company-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.company-empty-icon {
+  margin-bottom: 16px;
+  color: #d1d5db;
+}
+
+.company-empty-title {
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.company-empty-subtitle {
+  color: #9ca3af;
+}
+
+/* Company Details Modal */
+.company-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.company-modal-content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.company-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.company-modal-title {
+  margin: 0;
+}
+
+.company-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.company-modal-body {
+  display: grid;
+  gap: 15px;
+}
+
+.company-modal-status-row {
+  padding: 12px;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.company-modal-status-label {
+  font-weight: bold;
+}
+
+.company-modal-status-value {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.company-modal-stat-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.company-modal-stat-number {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.company-modal-stat-blue {
+  color: #0ea5e9;
+}
+
+.company-modal-stat-amber {
+  color: #f59e0b;
+}
+
+.company-modal-stat-purple {
+  color: #8b5cf6;
+}
+
+.company-modal-website-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.company-modal-size-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.company-modal-icon {
+  color: #0ea5e9;
+}
+
+.company-modal-link {
+  color: #0ea5e9;
+  text-decoration: none;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .recruiter-companies-grid {

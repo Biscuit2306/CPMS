@@ -1,8 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cron = require("node-cron");
 require("dotenv").config();
 const path = require("path");
+
+// Import job scraping service
+const {
+  fetchAndStoreJobsFromRapidAPI,
+} = require("./services/scrapedJobsService");
 
 const app = express();
 
@@ -50,6 +56,7 @@ app.use((req, res, next) => {
 ========================= */
 const authRoutes = require("./routes/authRoutes");
 const studentRoutes = require("./routes/studentRoutes");
+const achievementsRoutes = require("./routes/achievementsRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const adminManagementRoutes = require("./routes/adminManagementRoutes");
 const recruiterRoutes = require("./routes/recruiterRoutes");
@@ -61,9 +68,12 @@ const scheduleRoutes = require("./routes/scheduleRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const scrapedJobRoutes = require("./routes/scrapedJobRoutes");
+const reportRoutes = require("./routes/reportRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/achievements", achievementsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/manage", adminManagementRoutes);
 app.use("/api/recruiter", recruiterRoutes);
@@ -73,9 +83,11 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/drives", jobDriveRoutes);
 app.use("/api/schedules", scheduleRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/reports", reportRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/resume", resumeRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/scraped-jobs", scrapedJobRoutes);
 
 
 /* =========================
@@ -132,6 +144,27 @@ mongoose
       console.log("\n🚀 Server running");
       console.log(`📍 http://localhost:${PORT}`);
       console.log(`📍 Health: http://localhost:${PORT}/api/health\n`);
+
+      /* =========================
+         SETUP CRON JOB FOR JOB SCRAPING
+      ========================= */
+      if (process.env.RAPID_API_KEY) {
+        console.log("✅ RapidAPI job scraping is enabled");
+
+        // Schedule job fetch every 6 hours (0 */6 * * * means every 6 hours)
+        cron.schedule("0 */6 * * *", () => {
+          console.log("\n⏰ Cron job triggered - Fetching jobs from RapidAPI...");
+          fetchAndStoreJobsFromRapidAPI().catch((err) => {
+            console.error("❌ Cron fetch failed:", err.message);
+          });
+        });
+
+        console.log("⏱️  Next job scrape will run at the scheduled time\n");
+      } else {
+        console.log(
+          "⚠️  RAPID_API_KEY not set - Job scraping disabled\n"
+        );
+      }
     });
   })
   .catch((err) => {

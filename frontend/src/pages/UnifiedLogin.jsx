@@ -6,10 +6,10 @@ import { auth, googleProvider } from "../firebase";
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const UnifiedLogin = ({ role: propRole, isModal = false }) => {
   const navigate = useNavigate();
@@ -63,6 +63,35 @@ const UnifiedLogin = ({ role: propRole, isModal = false }) => {
   };
 
   // ------------------------
+  // FORGOT PASSWORD
+  // ------------------------
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+
+    const email = formData.email.trim();
+
+    if (!email) {
+      alert("Please enter your email first.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Password reset email sent! Please check your inbox.");
+    } catch (err) {
+      console.error("Reset password failed:", err);
+
+      // Firebase sometimes hides user-not-found for security
+      if (err.code === "auth/user-not-found") {
+        alert("No account found with this email.");
+        return;
+      }
+
+      alert("Failed to send reset email. Try again.");
+    }
+  };
+
+  // ------------------------
   // EMAIL + PASSWORD LOGIN
   // ------------------------
   const handleSubmit = async (e) => {
@@ -75,92 +104,107 @@ const UnifiedLogin = ({ role: propRole, isModal = false }) => {
         formData.password
       );
 
-      if (!cred.user.emailVerified) {
-        alert("Please verify your email before logging in.");
-        return;
-      }
+      // ⚠️ Email verification check removed - not mandatory for CPMS
+      // Users can login and verify email later if needed
 
-      const firebaseUid = cred.user.uid;
+      // ✅ reset 2FA session every login (SESSION ONLY)
+      sessionStorage.setItem("twoFactorVerified", "false");
 
-      // ✅ FIXED: requestedRole added
+      const idToken = await cred.user.getIdToken();
+
       const res = await axios.post(
         `${API_BASE}/api/auth/resolve-login`,
         {
-          firebaseUid,
           requestedRole: role,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
         }
       );
 
       const backendRole = res.data.role;
       const userData = res.data.user;
+      const twoFactorEnabled = res.data.twoFactorEnabled;
 
       localStorage.setItem("userRole", backendRole);
       localStorage.setItem("userData", JSON.stringify(userData));
 
-      if (backendRole === "student") navigate("/student");
-      else if (backendRole === "recruiter") navigate("/recruiter");
-      else if (backendRole === "admin") navigate("/admin");
-      else navigate("/");
+      // 🔥 MANDATORY 2FA FLOW
+      if (!twoFactorEnabled) {
+        navigate("/setup-2fa");
+        return;
+      }
 
+      navigate("/verify-2fa");
     } catch (err) {
-      console.error("Login failed:", err.response?.data || err.message);
-      alert(err.response?.data?.error || "Login failed");
+      console.error("Login failed:", err);
+
+      // 🔥 Fix: handle Firebase login errors properly
+      if (
+        err.code === "auth/invalid-credential" ||
+        err.code === "auth/user-not-found" ||
+        err.code === "auth/wrong-password"
+      ) {
+        alert(
+          "Invalid email/password.\n\nIf you signed up using Google, please login with Google OR use 'Forgot Password' to create a password."
+        );
+        return;
+      }
+
+      alert("Login failed. Try again.");
     }
   };
 
-// ------------------------
-// GOOGLE LOGIN (FINAL)
-// ------------------------
-const handleGoogleLogin = async () => {
-  try {
-    // 1️⃣ Firebase popup
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
+  // ------------------------
+  // GOOGLE LOGIN
+  // ------------------------
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
 
-    // 2️⃣ Extract safe data
-    const payload = {
-      firebaseUid: user.uid,
-      requestedRole: role, // role selected on UI
-      email: user.email || "",
-      fullName: user.displayName || "",
-      phone: user.phoneNumber || "",
-    };
-console.log("🚀 Google login payload:", payload);
+      // ✅ reset 2FA session every login (SESSION ONLY)
+      sessionStorage.setItem("twoFactorVerified", "false");
 
-    // 3️⃣ Call backend
-    const res = await axios.post(
-  `${API_BASE}/api/auth/google-login`,
-  payload,
-  { headers: { "Content-Type": "application/json" } }
-);
+      const idToken = await user.getIdToken();
 
-    // 4️⃣ Save session
-    const { role: backendRole, user: userData } = res.data;
+      const payload = {
+        requestedRole: role,
+        email: user.email || "",
+        fullName: user.displayName || "",
+        phone: user.phoneNumber || "",
+      };
 
-    localStorage.setItem("userRole", backendRole);
-    localStorage.setItem("userData", JSON.stringify(userData));
+      const res = await axios.post(`${API_BASE}/api/auth/google-login`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
 
-    // 5️⃣ Redirect (NO router ❌)
-    if (backendRole === "student") navigate("/student");
-    else if (backendRole === "recruiter") navigate("/recruiter");
-    else if (backendRole === "admin") navigate("/admin");
-    else navigate("/");
+      const { role: backendRole, user: userData, twoFactorEnabled } = res.data;
 
-  } catch (err) {
-    // User closed popup — ignore
-    if (err.code === "auth/popup-closed-by-user") return;
+      localStorage.setItem("userRole", backendRole);
+      localStorage.setItem("userData", JSON.stringify(userData));
 
-    console.error(
-      "Google login failed:",
-      err.response?.data || err.message
-    );
+      // 🔥 MANDATORY 2FA FLOW
+      if (!twoFactorEnabled) {
+        navigate("/setup-2fa");
+        return;
+      }
 
-    alert(err.response?.data?.error || "Google login failed");
-  }
-};
+      navigate("/verify-2fa");
+    } catch (err) {
+      if (err.code === "auth/popup-closed-by-user") return;
 
+      console.error("Google login failed:", err.response?.data || err.message);
+      alert(err.response?.data?.error || "Google login failed");
+    }
+  };
 
-    return (
+  return (
     <div
       className={`unified-login-container unified-login-container-${role} ${
         isModal ? "unified-login-modal-mode" : ""
@@ -218,12 +262,19 @@ console.log("🚀 Google login payload:", payload);
               </div>
 
               <div className="unified-forgot-password">
-                <a href="#" className={`unified-forgot-link unified-forgot-link-${role}`}>
+                <a
+                  href="#"
+                  onClick={handleForgotPassword}
+                  className={`unified-forgot-link unified-forgot-link-${role}`}
+                >
                   {config.forgotPasswordText}
                 </a>
               </div>
 
-              <button type="submit" className={`unified-login-btn unified-login-btn-${role}`}>
+              <button
+                type="submit"
+                className={`unified-login-btn unified-login-btn-${role}`}
+              >
                 {config.loginButtonText}
               </button>
 

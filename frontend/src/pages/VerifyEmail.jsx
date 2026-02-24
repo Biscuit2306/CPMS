@@ -3,6 +3,7 @@ import { auth } from "../firebase";
 import { reload } from "firebase/auth";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../styles/verifyemail.css";
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -45,7 +46,7 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div style={{ padding: "40px", textAlign: "center", maxWidth: "600px", margin: "0 auto" }}>
+    <div className="verify-email-container">
       <h2>Verify your email</h2>
       <p>
         We've sent a verification link to your email.<br />
@@ -53,14 +54,7 @@ const VerifyEmail = () => {
       </p>
 
       {error && (
-        <div style={{
-          backgroundColor: "#fee",
-          color: "#c33",
-          padding: "12px",
-          borderRadius: "4px",
-          marginBottom: "20px",
-          border: "1px solid #fcc"
-        }}>
+        <div className="verify-email-error">
           {error}
         </div>
       )}
@@ -68,14 +62,7 @@ const VerifyEmail = () => {
       <button 
         onClick={handleVerifyAndContinue}
         disabled={isLoading}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: isLoading ? "#ccc" : "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: isLoading ? "not-allowed" : "pointer"
-        }}
+        className="verify-email-btn"
       >
         {isLoading ? "Verifying..." : "I have verified my email"}
       </button>

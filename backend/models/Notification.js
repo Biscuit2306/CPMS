@@ -22,6 +22,7 @@ const NotificationSchema = new mongoose.Schema(
         "job_drive_deleted",
         "interview_cancelled",
         "interview_blocked",
+        "interview_deleted",
         "candidate_removed",
         "application_rejected",
         "schedule_updated",

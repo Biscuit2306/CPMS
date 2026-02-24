@@ -1,5 +1,10 @@
 /* Dashboard Page Styles */
 
+/* Dashboard Content Wrapper */
+.recruiter-dashboard-content {
+  padding: 2rem;
+}
+
 /* Welcome Banner */
 .recruiter-welcome-banner {
   background: linear-gradient(135deg, #4F1C51 0%, #6b2870 100%);
@@ -320,23 +325,34 @@
 .recruiter-action-btn {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 1.1rem;
-  background: #faf5fb;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.2rem 1rem;
+  background: white;
   border: 2px solid #e9d5f0;
   border-radius: 12px;
   color: #4F1C51;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  flex-direction: column;
+  text-align: center;
 }
 
 .recruiter-action-btn:hover {
   background: #4F1C51;
   color: white;
   border-color: #4F1C51;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(79, 28, 81, 0.2);
+}
+
+.recruiter-action-btn span {
+  font-size: 1rem;
+  font-weight: 600;
+  display: block;
 }
 
 /* Analytics Summary */
@@ -555,4 +571,147 @@
   .recruiter-analytics-item p {
     font-size: 1rem;
   }
+}
+
+/* Create Drive Modal Styles */
+.recruiter-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.recruiter-modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 95%;
+  padding: 2rem;
+  cursor: default;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.recruiter-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.recruiter-modal-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.recruiter-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #64748b;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.recruiter-modal-close-btn:hover {
+  color: #1f2937;
+  transform: scale(1.1);
+}
+
+.recruiter-modal-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.recruiter-modal-input,
+.recruiter-modal-textarea,
+.recruiter-modal-select {
+  padding: 0.85rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background-color: #fafafa;
+  color: #1f2937;
+  transition: all 0.3s ease;
+}
+
+.recruiter-modal-input:focus,
+.recruiter-modal-textarea:focus,
+.recruiter-modal-select:focus {
+  outline: none;
+  border-color: #4F1C51;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(79, 28, 81, 0.1);
+}
+
+.recruiter-modal-input::placeholder,
+.recruiter-modal-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.recruiter-modal-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.recruiter-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.recruiter-modal-cancel-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #e9d5f0;
+  background: #f1f5f9;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.recruiter-modal-cancel-btn:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+.recruiter-modal-submit-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  background: #4F1C51;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.recruiter-modal-submit-btn:hover:not(:disabled) {
+  background: #3d1640;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 28, 81, 0.3);
+}
+
+.recruiter-modal-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

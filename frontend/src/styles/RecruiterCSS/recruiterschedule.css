@@ -40,6 +40,54 @@
   box-shadow: 0 10px 30px rgba(79, 28, 81, 0.2);
 }
 
+/* Blocked card state */
+.schedule-card-blocked {
+  opacity: 0.6;
+  position: relative;
+}
+
+/* Blocked overlay */
+.schedule-blocked-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15px;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.schedule-blocked-badge {
+  background-color: #fff;
+  padding: 12px 10px;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.schedule-blocked-icon {
+  color: #ef4444;
+  margin-bottom: 4px;
+}
+
+.schedule-blocked-title {
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 2px;
+  font-size: 12px;
+}
+
+.schedule-blocked-subtitle {
+  font-size: 10px;
+  color: #666;
+}
+
 .recruiter-schedule-header {
   display: flex;
   justify-content: space-between;
@@ -75,6 +123,43 @@
 .recruiter-schedule-type {
   color: #64748b;
   font-size: 0.85rem;
+}
+
+/* Position text under interview type */
+.schedule-position-text {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Status badge base */
+.schedule-status-badge {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.schedule-status-scheduled {
+  background-color: #dbeafe;
+  color: #0284c7;
+}
+
+.schedule-status-completed {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.schedule-status-ongoing {
+  background-color: #fef08a;
+  color: #b45309;
+}
+
+.schedule-status-cancelled {
+  background-color: #fee2e2;
+  color: #dc2626;
 }
 
 .recruiter-schedule-status {
@@ -113,6 +198,44 @@
   color: #4F1C51;
 }
 
+/* Candidates section */
+.schedule-candidates-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.schedule-candidates-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.schedule-candidates-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.schedule-candidate-item {
+  padding: 8px;
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.schedule-candidate-name {
+  margin: 0 0 3px 0;
+  font-weight: 500;
+}
+
+.schedule-candidate-email {
+  margin: 0;
+  color: #6b7280;
+}
+
 .recruiter-schedule-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -138,6 +261,54 @@
 .recruiter-edit-schedule-btn:hover {
   background: white;
 }
+
+/* Delete button override */
+.schedule-delete-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+}
+
+/* Loading text */
+.schedule-loading-text {
+  text-align: center;
+  padding: 40px;
+}
+
+/* Empty state */
+.schedule-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.schedule-empty-icon {
+  margin-bottom: 16px;
+  color: #d1d5db;
+}
+
+.schedule-empty-title {
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.schedule-empty-subtitle {
+  color: #9ca3af;
+  margin-bottom: 20px;
+}
+
+.schedule-empty-create-btn {
+  padding: 10px 20px;
+  background-color: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
 /* Schedule Modal Form Styles */
 .schedule-modal-overlay {
   position: fixed;
@@ -319,6 +490,7 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
 .recruiter-notify-btn {
   display: inline-flex;
   align-items: center;

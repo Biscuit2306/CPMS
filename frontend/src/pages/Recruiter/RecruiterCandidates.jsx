@@ -12,6 +12,8 @@ const Candidates = () => {
   const [loading, setLoading] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showResumeModal, setShowResumeModal] = useState(false);
+  const [selectedResume, setSelectedResume] = useState(null);
 
   // Fetch all candidates
   useEffect(() => {
@@ -59,17 +61,24 @@ const Candidates = () => {
 
   const handleStatusChange = async (driveId, candidateId, newStatus) => {
     try {
+      console.log('🔄 STATUS UPDATE REQUEST:');
+      console.log('  Drive ID:', driveId);
+      console.log('  Candidate ID:', candidateId);
+      console.log('  New Status:', newStatus);
+      
       await updateApplicationStatus(driveId, candidateId, newStatus);
-      // Update the local state
-      setAllApplications(allApplications.map(app => 
-        app.studentId === candidateId && app.driveId === driveId 
-          ? {...app, applicationStatus: newStatus} 
-          : app
-      ));
-      alert(`Application status updated to: ${newStatus}`);
+      
+      // 🔥 CRITICAL: Refresh all candidates after status update
+      console.log('🔄 Refreshing candidates to reflect status change...');
+      const refreshedCandidates = await getAllCandidates();
+      setAllApplications(refreshedCandidates);
+      
+      console.log('✅ Status updated and candidates refreshed');
+      alert(`✅ Application status updated to: ${newStatus}`);
     } catch (err) {
-      console.error('Error updating status:', err);
-      alert('Failed to update status');
+      console.error('❌ Error updating status:', err);
+      console.error('   Full error details:', err.response || err.message);
+      alert(`❌ Failed to update status: ${err.response?.data?.error || err.message}`);
     }
   };
 
@@ -102,7 +111,7 @@ const Candidates = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 1000
+        zIndex: 9999
       }}>
         <div style={{
           backgroundColor: 'white',
@@ -152,14 +161,30 @@ const Candidates = () => {
                 gap: '10px'
               }}>
                 <FileText size={18} color="#0ea5e9" />
-                <a 
-                  href={candidate.studentResume} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={{ color: '#0ea5e9', textDecoration: 'none', fontWeight: '500' }}
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log('👀 View Resume clicked for:', {
+                      studentName: candidate.studentName,
+                      studentId: candidate.studentId,
+                      resumePath: candidate.studentResume,
+                      hasResume: !!candidate.studentResume
+                    });
+                    setSelectedResume(candidate.studentResume);
+                    setShowResumeModal(true);
+                  }}
+                  style={{ 
+                    color: '#0ea5e9', 
+                    textDecoration: 'none', 
+                    fontWeight: '500',
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: 'inherit'
+                  }}
                 >
-                  Download Resume
-                </a>
+                  View Resume
+                </button>
               </div>
             )}
 
@@ -211,6 +236,184 @@ const Candidates = () => {
       </div>
     );
   };
+
+  const ResumeModal = ({ resumeUrl, onClose }) => {
+    // Convert relative path to full URL
+    let fullResumeUrl = resumeUrl;
+    if (resumeUrl && !resumeUrl.startsWith('http')) {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      fullResumeUrl = `${API_BASE}${resumeUrl}`;
+    }
+    
+    console.log('🔍 ResumeModal Debug:', {
+      originalUrl: resumeUrl,
+      fullUrl: fullResumeUrl,
+      isEmpty: !resumeUrl,
+      isPdfPath: resumeUrl?.toLowerCase().includes('.pdf')
+    });
+    
+    if (!resumeUrl) {
+      return (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '40px',
+            maxWidth: '500px',
+            width: '90%',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
+            textAlign: 'center'
+          }}>
+            <h3 style={{ margin: '0 0 10px 0', color: '#ef4444', fontSize: '1.2rem' }}>Resume Not Available</h3>
+            <p style={{ margin: '0 0 20px 0', color: '#6b7280', fontSize: '0.95rem' }}>The student has not uploaded a resume yet.</p>
+            <button
+              onClick={onClose}
+              style={{
+                padding: '10px 24px',
+                backgroundColor: '#0ea5e9',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: '600'
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      );
+    }
+    
+    // Check if it's a PDF URL
+    const isPdf = fullResumeUrl.toLowerCase().includes('.pdf') || fullResumeUrl.includes('application/pdf');
+    
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        padding: '10px'
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '0',
+          width: '95vw',
+          height: '95vh',
+          maxWidth: '100vw',
+          maxHeight: '100vh',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', borderBottom: '1px solid #e5e7eb', backgroundColor: '#f9fafb' }}>
+            <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '700', color: '#1f2937' }}>Resume Preview</h2>
+            <button 
+              onClick={onClose}
+              style={{ background: 'none', border: 'none', fontSize: '32px', cursor: 'pointer', color: '#6b7280', fontWeight: 'bold', padding: '0', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              ×
+            </button>
+          </div>
+
+          {isPdf ? (
+            <iframe
+              src={fullResumeUrl}
+              style={{
+                flex: 1,
+                width: '100%',
+                border: 'none',
+                borderRadius: '0px'
+              }}
+              title="Resume"
+              onError={() => {
+                console.error('❌ Failed to load PDF:', fullResumeUrl);
+                alert('Error loading PDF. Please try downloading instead.');
+              }}
+            />
+          ) : (
+            <div style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: '40px',
+              backgroundColor: '#ffffff',
+              textAlign: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <img 
+                src={fullResumeUrl} 
+                alt="Resume" 
+                style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                onError={(e) => {
+                  console.error('❌ Failed to load image:', fullResumeUrl);
+                  alert('Unable to load resume. The file may not exist or is in an unsupported format.');
+                }}
+              />
+            </div>
+          )}
+
+          <div style={{ padding: '20px', borderTop: '1px solid #e5e7eb', backgroundColor: '#f9fafb', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+            <button 
+              onClick={onClose}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#6b7280',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '0.95rem'
+              }}
+            >
+              Close
+            </button>
+            <a 
+              href={fullResumeUrl} 
+              download
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#0ea5e9',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                textDecoration: 'none',
+                display: 'inline-block'
+              }}
+            >
+              Download
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
 
   return (
     <RecruiterLayout activeMenu={activeMenu} setActiveMenu={setActiveMenu}>
@@ -332,11 +535,21 @@ const Candidates = () => {
                       <p style={{margin: '0 0 8px 0', fontSize: '12px', fontWeight: '600', color: '#666'}}>Application Links:</p>
                       <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
                         {candidate.studentResume && (
-                          <a href={candidate.studentResume} target="_blank" rel="noopener noreferrer" 
-                            style={{padding: '6px 12px', backgroundColor: '#f0f0f0', borderRadius: '4px', fontSize: '12px', color: '#0ea5e9', textDecoration: 'none', border: '1px solid #ddd'}}
+                          <button 
+                            onClick={() => {
+                              console.log('📄 Resume button clicked for:', {
+                                studentName: candidate.studentName,
+                                studentId: candidate.studentId,
+                                resumePath: candidate.studentResume,
+                                hasResume: !!candidate.studentResume
+                              });
+                              setSelectedResume(candidate.studentResume);
+                              setShowResumeModal(true);
+                            }}
+                            style={{padding: '6px 12px', backgroundColor: '#f0f0f0', borderRadius: '4px', fontSize: '12px', color: '#0ea5e9', textDecoration: 'none', border: '1px solid #ddd', cursor: 'pointer'}}
                           >
                             📄 Resume
-                          </a>
+                          </button>
                         )}
                         {candidate.studentPortfolio && (
                           <a href={candidate.studentPortfolio} target="_blank" rel="noopener noreferrer"
@@ -406,6 +619,15 @@ const Candidates = () => {
           onClose={() => {
             setShowModal(false);
             setSelectedCandidate(null);
+          }}
+        />
+      )}
+      {showResumeModal && (
+        <ResumeModal 
+          resumeUrl={selectedResume}
+          onClose={() => {
+            setShowResumeModal(false);
+            setSelectedResume(null);
           }}
         />
       )}

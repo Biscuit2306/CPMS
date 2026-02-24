@@ -10,6 +10,15 @@ router.get("/dashboard/:uid", async (req, res) => {
       firebaseUid: req.params.uid,
     });
 
+    // ✅ CHECK IF RECRUITER IS BLOCKED OR DELETED
+    if (recruiter && (recruiter.isBlocked || recruiter.isDeleted)) {
+      return res.status(403).json({ 
+        error: "Your account has been " + (recruiter.isDeleted ? "deleted" : "blocked") + " by the administration. You cannot access this platform.",
+        isBlocked: recruiter.isBlocked,
+        isDeleted: recruiter.isDeleted
+      });
+    }
+
     // If recruiter doesn't exist, create a default one
     if (!recruiter) {
       try {
@@ -63,6 +72,15 @@ router.get("/profile/:uid", async (req, res) => {
       return res.status(404).json({ error: "Recruiter not found" });
     }
 
+    // ✅ CHECK IF RECRUITER IS BLOCKED OR DELETED
+    if (recruiter.isBlocked || recruiter.isDeleted) {
+      return res.status(403).json({ 
+        error: "Your account has been " + (recruiter.isDeleted ? "deleted" : "blocked") + " by the administration.",
+        isBlocked: recruiter.isBlocked,
+        isDeleted: recruiter.isDeleted
+      });
+    }
+
     // Hide deleted/blocked drives in profile response
     const recObj = recruiter && typeof recruiter.toObject === 'function' ? recruiter.toObject() : recruiter;
     if (recObj && Array.isArray(recObj.jobDrives)) {
@@ -77,15 +95,26 @@ router.get("/profile/:uid", async (req, res) => {
 // Update recruiter profile
 router.put("/profile/:uid", async (req, res) => {
   try {
-    const recruiter = await Recruiter.findOneAndUpdate(
+    const recruiter = await Recruiter.findOne({ firebaseUid: req.params.uid });
+
+    // ✅ CHECK IF RECRUITER IS BLOCKED OR DELETED
+    if (recruiter && (recruiter.isBlocked || recruiter.isDeleted)) {
+      return res.status(403).json({ 
+        error: "Your account has been " + (recruiter.isDeleted ? "deleted" : "blocked") + ". You cannot update your profile.",
+        isBlocked: recruiter.isBlocked,
+        isDeleted: recruiter.isDeleted
+      });
+    }
+
+    const updatedRecruiter = await Recruiter.findOneAndUpdate(
       { firebaseUid: req.params.uid },
       req.body,
       { new: true, runValidators: true }
     );
-    if (!recruiter) {
+    if (!updatedRecruiter) {
       return res.status(404).json({ error: "Recruiter not found" });
     }
-    res.json({ success: true, data: recruiter });
+    res.json({ success: true, data: updatedRecruiter });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
