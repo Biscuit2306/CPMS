@@ -168,6 +168,70 @@ const Home = () => {
     };
   }, [!showPreloader]);
 
+  // Text Scramble Effect for Hero Title
+  useEffect(() => {
+    if (showPreloader) return;
+
+    const scrambleText = () => {
+      const element = document.getElementById('trial-scrambleText');
+      if (!element) return;
+
+      const originalText = element.textContent;
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+      let iterations = 0;
+      
+      const interval = setInterval(() => {
+        element.textContent = originalText
+          .split('')
+          .map((char, index) => {
+            if (index < iterations) {
+              return originalText[index];
+            }
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join('');
+        
+        if (iterations >= originalText.length) {
+          clearInterval(interval);
+        }
+        
+        iterations += 1/3;
+      }, 30);
+    };
+
+    const timer = setTimeout(() => {
+      scrambleText();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [showPreloader]);
+  useEffect(() => {
+    if (showPreloader) return;
+
+    const animateElements = () => {
+      const elements = document.querySelectorAll(
+        '.trial-section-title, .trial-section-subtitle, .trial-feature-card, .trial-process-step, .trial-cta-card'
+      );
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.animation = entry.target.getAttribute('data-animation') || 'trial-slideInUp 0.8s ease-out forwards';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      elements.forEach(el => {
+        const delay = el.style.animationDelay || '0s';
+        el.setAttribute('data-animation', `trial-slideInUp 0.8s ease-out ${delay}`);
+        observer.observe(el);
+      });
+    };
+
+    animateElements();
+  }, [showPreloader]);
+
   const stats = [
     { number: '500', label: 'Companies' },
     { number: '50', label: 'Colleges' },
