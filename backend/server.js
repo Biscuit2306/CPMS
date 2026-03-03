@@ -95,12 +95,14 @@ const resumeRoutes = require("./routes/resumeRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const scrapedJobRoutes = require("./routes/scrapedJobRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const riskRoutes = require("./routes/riskRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/achievements", achievementsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/manage", adminManagementRoutes);
+app.use("/api/admin/risk", riskRoutes);
 app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/interview", interviewRoutes);
 app.use("/api/projects", projectRoutes);

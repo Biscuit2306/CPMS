@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Briefcase, Eye, MoreVertical, Download, CheckCircle, X, FileText } from 'lucide-react';
 import RecruiterLayout from '../../components/RecruiterLayout';
+import SkillRankingModal from '../../components/SkillRankingModal';
 import { useRecruiter } from '../../context/RecruiterContext';
 import '../../styles/RecruiterCSS/recruitercandidates.css';
 
@@ -631,6 +632,8 @@ const Candidates = () => {
           }}
         />
       )}
+      {/* Skill Ranking Modal */}
+      <SkillRankingModal />
     </RecruiterLayout>
   );
 };
