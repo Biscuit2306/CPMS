@@ -87,7 +87,7 @@ const Home = () => {
 
     observer.observe(statsSection);
     return () => observer.disconnect();
-  }, [showPreloader]);
+  }, []);
 
   // Feature Card 3D Tilt Effect
   useEffect(() => {
@@ -119,7 +119,7 @@ const Home = () => {
         card.removeEventListener('mouseleave', () => {});
       });
     };
-  }, [!showPreloader]);
+  }, []);
 
   // Mirror Button Magnetic Effect
   useEffect(() => {
@@ -145,12 +145,10 @@ const Home = () => {
         btn.removeEventListener('mouseleave', () => {});
       });
     };
-  }, [!showPreloader]);
+  }, []);
 
   // Text Scramble Effect for Hero Title
   useEffect(() => {
-    if (showPreloader) return;
-
     const scrambleText = () => {
       const element = document.getElementById('trial-scrambleText');
       if (!element) return;
@@ -183,9 +181,8 @@ const Home = () => {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [showPreloader]);
+  }, []);
   useEffect(() => {
-    if (showPreloader) return;
 
     const animateElements = () => {
       const elements = document.querySelectorAll(
@@ -209,7 +206,7 @@ const Home = () => {
     };
 
     animateElements();
-  }, [showPreloader]);
+  }, []);
 
   const stats = [
     { number: '500', label: 'Companies' },
