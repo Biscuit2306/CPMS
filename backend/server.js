@@ -179,17 +179,21 @@ mongoose
         const RiskEngine = require("./services/riskEngine");
         const DriveRiskEngine = require("./services/driveRiskEngine");
         
-        RiskEngine.analyzeAllAccounts().catch(err => {
-          console.error("❌ Risk Engine Error:", err.message);
+        RiskEngine.reevaluateAllStudents().catch(err => {
+          console.error("❌ Student Risk Engine Error:", err.message);
         });
 
-        DriveRiskEngine.analyzeAllDrives().catch(err => {
+        RiskEngine.reevaluateAllRecruiters().catch(err => {
+          console.error("❌ Recruiter Risk Engine Error:", err.message);
+        });
+
+        DriveRiskEngine.reevaluateAllDrives().catch(err => {
           console.error("❌ Drive Risk Engine Error:", err.message);
         });
 
         console.log("✅ Risk engines initialized\n");
       } catch (err) {
-        console.warn("⚠️ Risk engines error:", err.message);
+        console.warn("⚠️ Risk engines setup error:", err.message);
       }
 
       /* =========================
