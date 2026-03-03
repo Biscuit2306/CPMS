@@ -9,28 +9,7 @@ import '../styles/trial-home.css';
 const Home = () => {
   const [isPortalModalOpen, setIsPortalModalOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [showPreloader, setShowPreloader] = useState(true);
-  const [preloadProgress, setPreloadProgress] = useState(0);
   const [navbarScrolled, setNavbarScrolled] = useState(false);
-  const [statsInView, setStatsInView] = useState(false);
-
-  // Preloader Effect
-  useEffect(() => {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.random() * 15;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-        setTimeout(() => {
-          setShowPreloader(false);
-        }, 500);
-      }
-      setPreloadProgress(progress);
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, []);
 
   // Mouse Follower Effect
   useEffect(() => {
@@ -322,25 +301,6 @@ const Home = () => {
 
   return (
     <div className="trial-home-page">
-      {/* Preloader */}
-      {showPreloader && (
-        <div className="trial-preloader">
-          <div className="trial-loader-ring">
-            <div className="trial-loader-core"></div>
-          </div>
-          <div className="text-center space-y-2">
-            <div className="text-sm text-gray-400 tracking-widest uppercase">Initializing Portal</div>
-            <div className="trial-progress-container">
-              <div 
-                className="trial-progress-bar"
-                style={{ width: `${preloadProgress}%` }}
-              ></div>
-            </div>
-            <div className="trial-progress-text">{Math.floor(preloadProgress)}%</div>
-          </div>
-        </div>
-      )}
-
       {/* Background */}
       <div className="trial-bg-wrapper">
         <div className="trial-grid-pattern"></div>
@@ -390,9 +350,8 @@ const Home = () => {
       </nav>
 
       {/* Main Content */}
-      {!showPreloader && (
-        <main className="opacity-100 transition-opacity duration-500">
-          {/* Hero Section */}
+      <main className="opacity-100 transition-opacity duration-500">
+        {/* Hero Section */}
           <section id="home" className="trial-hero">
             <div className="trial-hero-container">
               <div className="trial-hero-content">
@@ -539,7 +498,6 @@ const Home = () => {
             </div>
           </section>
         </main>
-      )}
 
       {/* Footer */}
       <Footer />
