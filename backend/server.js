@@ -173,6 +173,36 @@ mongoose
       console.log(`📍 Health: http://localhost:${PORT}/api/health\n`);
 
       /* =========================
+         INITIALIZE RISK ENGINES
+      ========================= */
+      try {
+        const RiskEngine = require("./services/riskEngine");
+        const DriveRiskEngine = require("./services/driveRiskEngine");
+        
+        RiskEngine.analyzeAllAccounts().catch(err => {
+          console.error("❌ Risk Engine Error:", err.message);
+        });
+
+        DriveRiskEngine.analyzeAllDrives().catch(err => {
+          console.error("❌ Drive Risk Engine Error:", err.message);
+        });
+
+        console.log("✅ Risk engines initialized\n");
+      } catch (err) {
+        console.warn("⚠️ Risk engines error:", err.message);
+      }
+
+      /* =========================
+         INITIALIZE NOTIFICATIONS
+      ========================= */
+      try {
+        const notificationScheduler = require("./utils/notificationScheduler");
+        console.log("✅ Notification scheduler initialized\n");
+      } catch (err) {
+        console.warn("⚠️ Notification scheduler error:", err.message);
+      }
+
+      /* =========================
          SETUP CRON JOB FOR JOB SCRAPING
       ========================= */
       if (process.env.RAPID_API_KEY) {
