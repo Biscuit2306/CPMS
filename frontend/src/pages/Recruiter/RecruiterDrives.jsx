@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
   Calendar, MapPin, Users, DollarSign,
-  Eye, Trash2, Plus, Lock, ChevronDown
+  Eye, Trash2, Plus, Lock, ChevronDown, Building2,
+  X, Briefcase, Clock, GraduationCap, CheckCircle2
 } from 'lucide-react';
 import RecruiterLayout from '../../components/RecruiterLayout';
 import { useRecruiter } from '../../context/RecruiterContext';
@@ -9,7 +10,7 @@ import '../../styles/RecruiterCSS/recruiterdrives.css';
 
 const RecruiterDrives = () => {
   const [activeMenu, setActiveMenu] = useState('drives');
-  const { drives, drivesLoading, createDrive, deleteDrive, updateApplicationStatus, fetchDrives, recruiter } = useRecruiter();
+  const { drives, drivesLoading, createDrive, deleteDrive, updateApplicationStatus, fetchDrives, recruiter, searchQuery } = useRecruiter();
 
   // ─── UI State ─────────────────────────────────────────────────
   const [showAddDrive, setShowAddDrive] = useState(false);
@@ -80,13 +81,11 @@ const RecruiterDrives = () => {
 
       await updateApplicationStatus(selectedDrive._id, applicantId, newStatus);
 
-      // 🔥 Refresh drives context after status change
       console.log('🔄 Refreshing drives after status change...');
       if (recruiter?.firebaseUid) {
         await fetchDrives(recruiter.firebaseUid);
       }
 
-      // Sync selectedDrive with fresh data
       const updatedDrive = drives.find(d => d._id === selectedDrive._id);
       if (updatedDrive) setSelectedDrive(updatedDrive);
 
@@ -108,19 +107,22 @@ const RecruiterDrives = () => {
     return 'Active';
   };
 
+  // derive filtered drives based on the global search query
+  const queryString = (searchQuery || '').trim().toLowerCase();
+  const filteredDrives = queryString
+    ? drives.filter(d =>
+        (d.company || '').toLowerCase().includes(queryString) ||
+        (d.position || '').toLowerCase().includes(queryString) ||
+        (d.location || '').toLowerCase().includes(queryString)
+      )
+    : drives;
+
   // ─── Shared styles ────────────────────────────────────────────
   const blockedOverlayStyle = {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '8px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     zIndex: 10, backdropFilter: 'blur(2px)',
-  };
-  const applicantStatusColors = {
-    rejected:             { bg: '#fee2e2', color: '#991b1b' },
-    selected:             { bg: '#dcfce7', color: '#166534' },
-    shortlisted:          { bg: '#fef3c7', color: '#92400e' },
-    'interview-scheduled':{ bg: '#dbeafe', color: '#0c4a6e' },
-    applied:              { bg: '#e0e7ff', color: '#312e81' },
   };
 
   // ─── Loading State ────────────────────────────────────────────
@@ -137,18 +139,19 @@ const RecruiterDrives = () => {
   // ─── Render ───────────────────────────────────────────────────
   return (
     <RecruiterLayout activeMenu={activeMenu} setActiveMenu={setActiveMenu}>
-      <div className="recruiter-dashboard-content">
 
         {/* Page Header */}
         <div className="recruiter-page-header">
-          <div>
+          <div className='student-driver-banner-header'>
             <h1>Placement Drives</h1>
             <p>Manage and track ongoing recruitment drives</p>
           </div>
-          <button className="recruiter-add-drive-btn" onClick={() => setShowAddDrive(!showAddDrive)}>
-            <Plus size={20} />
-            {showAddDrive ? 'Cancel' : 'Add Drive'}
-          </button>
+          <div className='recruiter-filter-section'>
+            <button className="recruiter-add-drive-btn" onClick={() => setShowAddDrive(!showAddDrive)}>
+              <Plus size={20} />
+              {showAddDrive ? 'Cancel' : 'Add Drive'}
+            </button>
+          </div>
         </div>
 
         {/* Add Drive Form */}
@@ -214,8 +217,8 @@ const RecruiterDrives = () => {
 
         {/* Drives Grid */}
         <div className="recruiter-drives-grid">
-          {drives && drives.length > 0 ? (
-            drives.map((drive) => (
+          {filteredDrives.length > 0 ? (
+            filteredDrives.map((drive) => (
               <div
                 key={drive._id}
                 className="recruiter-drive-card"
@@ -232,16 +235,31 @@ const RecruiterDrives = () => {
                   </div>
                 )}
 
-                <div className="recruiter-drive-card-header">
-                  <div className="recruiter-company-logo-large">{drive.position?.charAt(0) || 'J'}</div>
-                  <div className="recruiter-drive-title">
-                    <h3>{drive.position}</h3>
-                    <span className={`recruiter-drive-status-badge ${drive.status}`}>{getStatusLabel(drive.status)}</span>
+                {/* Status pill — direct child of card, positioned top-right */}
+                <span className={`rd-status-pill rd-status-pill--${drive.status || 'active'}`}>
+                  <span className="rd-status-dot" />
+                  {getStatusLabel(drive.status)}
+                </span>
+
+                {/* Card Header */}
+                <div className="rd-card-header">
+                  <div className="rd-identity">
+                    <div className="rd-avatar">
+                      {drive.position?.charAt(0)?.toUpperCase() || 'J'}
+                    </div>
+                    <div className="rd-title-block">
+                      <h3 className="rd-position">{drive.position}</h3>
+                      {drive.company && (
+                        <p className="rd-company">
+                          <Building2 size={12} />
+                          {drive.company}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <p className="recruiter-job-role">{drive.salary}</p>
-
+                {/* Details & Actions */}
                 <div className="recruiter-drive-details">
                   <div className="recruiter-drive-detail-item"><Calendar size={16} />{new Date(drive.date).toLocaleDateString()}</div>
                   <div className="recruiter-drive-detail-item"><MapPin size={16} />{drive.location}</div>
@@ -257,87 +275,133 @@ const RecruiterDrives = () => {
                     <Trash2 size={16} /> Delete
                   </button>
                 </div>
+
               </div>
             ))
           ) : (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>
-              <p>No drives created yet. Click "Add Drive" to create one!</p>
+            <div className="rd-empty-state">
+              <p>
+                {queryString
+                  ? `No drives match "${searchQuery}"`
+                  : 'No drives created yet. Click "Add Drive" to create one!'}
+              </p>
             </div>
           )}
         </div>
 
-        {/* ═══════════════════════════════════════════════════════ */}
-        {/* Drive Details Modal                                     */}
-        {/* ═══════════════════════════════════════════════════════ */}
+        {/* ══════════════════════════════════════════════════════
+            Drive Details Modal — NO INLINE STYLES
+            ══════════════════════════════════════════════════════ */}
         {selectedDrive && (
-          <div
-            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
-            onClick={() => setSelectedDrive(null)}
-          >
-            <div
-              style={{ background: 'white', borderRadius: '12px', maxWidth: '600px', width: '95%', padding: '2rem', cursor: 'default', maxHeight: '85vh', overflowY: 'auto' }}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.3rem', fontWeight: '700', color: '#1f2937' }}>Drive Details</h3>
-                <button onClick={() => setSelectedDrive(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>×</button>
+          <div className="rdm-backdrop" onClick={() => setSelectedDrive(null)}>
+            <div className="rdm-container" onClick={e => e.stopPropagation()}>
+
+              {/* ── Modal Header ── */}
+              <div className="rdm-header">
+                <h3 className="rdm-header-title">Drive Details</h3>
+                <button className="rdm-close-btn" onClick={() => setSelectedDrive(null)}>
+                  <X size={20} />
+                </button>
               </div>
 
-              {/* Drive Hero */}
-              <div style={{ background: '#f9f5fb', borderRadius: '10px', padding: '1.5rem', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem' }}>
-                  <div style={{ width: '60px', height: '60px', borderRadius: '10px', background: '#4F1C51', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: '700', flexShrink: 0 }}>
-                    {selectedDrive.position?.charAt(0) || 'J'}
+              {/* ── Drive Hero ── */}
+              <div className="rdm-hero">
+                <div className="rdm-hero-avatar">
+                  {selectedDrive.position?.charAt(0)?.toUpperCase() || 'J'}
+                </div>
+                <div className="rdm-hero-info">
+                  <h2 className="rdm-hero-position">{selectedDrive.position}</h2>
+                  <p className="rdm-hero-company">
+                    <Building2 size={14} />
+                    {selectedDrive.company}
+                  </p>
+                </div>
+                <span className={`rdm-hero-status rdm-hero-status--${selectedDrive.status || 'active'}`}>
+                  <span className="rdm-hero-status-dot" />
+                  {getStatusLabel(selectedDrive.status)}
+                </span>
+              </div>
+
+              {/* ── Stats Grid ── */}
+              <div className="rdm-stats-grid">
+                <div className="rdm-stat-card">
+                  <div className="rdm-stat-icon rdm-stat-icon--salary">
+                    <DollarSign size={16} />
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <h2 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem', fontWeight: '700', color: '#1f2937' }}>{selectedDrive.position}</h2>
-                    <p style={{ margin: '0 0 0.8rem 0', fontSize: '0.95rem', color: '#64748b' }}>{selectedDrive.company}</p>
-                    <span style={{
-                      display: 'inline-block', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '600',
-                      backgroundColor: selectedDrive.status === 'active' ? '#d1fae5' : '#fef3c7',
-                      color: selectedDrive.status === 'active' ? '#047857' : '#92400e',
-                    }}>
-                      {getStatusLabel(selectedDrive.status)}
-                    </span>
+                  <div className="rdm-stat-body">
+                    <span className="rdm-stat-label">Salary</span>
+                    <span className="rdm-stat-value">{selectedDrive.salary}</span>
+                  </div>
+                </div>
+                <div className="rdm-stat-card">
+                  <div className="rdm-stat-icon rdm-stat-icon--location">
+                    <MapPin size={16} />
+                  </div>
+                  <div className="rdm-stat-body">
+                    <span className="rdm-stat-label">Location</span>
+                    <span className="rdm-stat-value">{selectedDrive.location}</span>
+                  </div>
+                </div>
+                <div className="rdm-stat-card">
+                  <div className="rdm-stat-icon rdm-stat-icon--date">
+                    <Calendar size={16} />
+                  </div>
+                  <div className="rdm-stat-body">
+                    <span className="rdm-stat-label">Drive Date</span>
+                    <span className="rdm-stat-value">{new Date(selectedDrive.date).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <div className="rdm-stat-card">
+                  <div className="rdm-stat-icon rdm-stat-icon--deadline">
+                    <Clock size={16} />
+                  </div>
+                  <div className="rdm-stat-body">
+                    <span className="rdm-stat-label">Application Deadline</span>
+                    <span className="rdm-stat-value">{new Date(selectedDrive.applicationDeadline).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <div className="rdm-stat-card">
+                  <div className="rdm-stat-icon rdm-stat-icon--applicants">
+                    <Users size={16} />
+                  </div>
+                  <div className="rdm-stat-body">
+                    <span className="rdm-stat-label">Total Applicants</span>
+                    <span className="rdm-stat-value">{selectedDrive.applicants?.length || 0}</span>
+                  </div>
+                </div>
+                <div className="rdm-stat-card">
+                  <div className="rdm-stat-icon rdm-stat-icon--cgpa">
+                    <GraduationCap size={16} />
+                  </div>
+                  <div className="rdm-stat-body">
+                    <span className="rdm-stat-label">Min CGPA</span>
+                    <span className="rdm-stat-value">{selectedDrive.eligibilityCriteria?.minCGPA || 'N/A'}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Drive Stats Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-                {[
-                  { label: 'Salary',               value: selectedDrive.salary },
-                  { label: 'Location',             value: selectedDrive.location },
-                  { label: 'Drive Date',           value: new Date(selectedDrive.date).toLocaleDateString() },
-                  { label: 'Application Deadline', value: new Date(selectedDrive.applicationDeadline).toLocaleDateString() },
-                  { label: 'Total Applicants',     value: selectedDrive.applicants?.length || 0 },
-                  { label: 'Min CGPA',             value: selectedDrive.eligibilityCriteria?.minCGPA || 'N/A' },
-                ].map(({ label, value }) => (
-                  <div key={label} style={{ background: '#f1f5f9', padding: '1.2rem', borderRadius: '8px' }}>
-                    <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', color: '#64748b', fontWeight: '600' }}>{label}</p>
-                    <p style={{ margin: 0, fontSize: '1.2rem', fontWeight: '700', color: '#1f2937' }}>{value}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Job Description */}
+              {/* ── Job Description ── */}
               {selectedDrive.jobDescription && (
-                <div style={{ marginBottom: '2rem' }}>
-                  <h4 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: '700', color: '#1f2937' }}>Job Description</h4>
-                  <p style={{ margin: 0, padding: '1rem', background: '#f9f5fb', borderRadius: '8px', color: '#1f2937', lineHeight: '1.6', fontSize: '0.95rem' }}>
-                    {selectedDrive.jobDescription}
-                  </p>
+                <div className="rdm-section">
+                  <h4 className="rdm-section-title">
+                    <Briefcase size={16} />
+                    Job Description
+                  </h4>
+                  <p className="rdm-jd-text">{selectedDrive.jobDescription}</p>
                 </div>
               )}
 
-              {/* Interview Rounds */}
+              {/* ── Interview Rounds ── */}
               {selectedDrive.rounds?.length > 0 && (
-                <div style={{ marginBottom: '2rem' }}>
-                  <h4 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: '700', color: '#1f2937' }}>Interview Rounds</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
+                <div className="rdm-section">
+                  <h4 className="rdm-section-title">
+                    <CheckCircle2 size={16} />
+                    Interview Rounds
+                  </h4>
+                  <div className="rdm-tags-row">
                     {selectedDrive.rounds.map((round, idx) => (
-                      <span key={idx} style={{ padding: '0.5rem 1rem', background: '#e9d5f0', color: '#4F1C51', borderRadius: '6px', fontSize: '0.9rem', fontWeight: '500' }}>
+                      <span key={idx} className="rdm-tag rdm-tag--round">
+                        <span className="rdm-tag-num">{idx + 1}</span>
                         {round}
                       </span>
                     ))}
@@ -345,125 +409,111 @@ const RecruiterDrives = () => {
                 </div>
               )}
 
-              {/* Eligible Branches */}
+              {/* ── Eligible Branches ── */}
               {selectedDrive.eligibilityCriteria?.allowedBranches?.length > 0 && (
-                <div style={{ marginBottom: '2rem' }}>
-                  <h4 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: '700', color: '#1f2937' }}>Eligible Branches</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
+                <div className="rdm-section">
+                  <h4 className="rdm-section-title">
+                    <GraduationCap size={16} />
+                    Eligible Branches
+                  </h4>
+                  <div className="rdm-tags-row">
                     {selectedDrive.eligibilityCriteria.allowedBranches.map((branch, idx) => (
-                      <span key={idx} style={{ padding: '0.5rem 1rem', background: '#d1fae5', color: '#047857', borderRadius: '6px', fontSize: '0.9rem', fontWeight: '500' }}>
-                        {branch}
-                      </span>
+                      <span key={idx} className="rdm-tag rdm-tag--branch">{branch}</span>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Eligible Years */}
+              {/* ── Eligible Years ── */}
               {selectedDrive.eligibilityCriteria?.yearsEligible?.length > 0 && (
-                <div style={{ marginBottom: '2rem' }}>
-                  <h4 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: '700', color: '#1f2937' }}>Eligible Years</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
+                <div className="rdm-section">
+                  <h4 className="rdm-section-title">
+                    <Calendar size={16} />
+                    Eligible Years
+                  </h4>
+                  <div className="rdm-tags-row">
                     {selectedDrive.eligibilityCriteria.yearsEligible.map((year, idx) => (
-                      <span key={idx} style={{ padding: '0.5rem 1rem', background: '#fef3c7', color: '#92400e', borderRadius: '6px', fontSize: '0.9rem', fontWeight: '500' }}>
-                        {year}
-                      </span>
+                      <span key={idx} className="rdm-tag rdm-tag--year">{year}</span>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Applicants Section */}
-              <div style={{ marginTop: '2rem', borderTop: '1px solid #e9d5f0', paddingTop: '2rem' }}>
-                <h4 style={{ margin: '0 0 1.5rem 0', fontSize: '1rem', fontWeight: '700', color: '#1f2937' }}>
-                  Applicants ({selectedDrive.applicants?.length || 0})
-                </h4>
+              {/* ── Applicants ── */}
+              <div className="rdm-applicants-section">
+                <div className="rdm-applicants-header">
+                  <h4 className="rdm-section-title">
+                    <Users size={16} />
+                    Applicants
+                  </h4>
+                  <span className="rdm-applicants-count">{selectedDrive.applicants?.length || 0}</span>
+                </div>
 
                 {selectedDrive.applicants?.length > 0 ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    {selectedDrive.applicants.map((applicant) => {
-                      const statusStyle = applicantStatusColors[applicant.applicationStatus] || applicantStatusColors.applied;
-                      return (
-                        <div
-                          key={applicant._id || applicant.studentId}
-                          style={{ padding: '1rem', borderRadius: '8px', border: '1px solid #e9d5f0', background: '#f9f5fb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                        >
-                          <div style={{ flex: 1 }}>
-                            <p style={{ margin: '0 0 0.25rem 0', fontWeight: '600', color: '#1f2937' }}>{applicant.studentName || 'N/A'}</p>
-                            <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.9rem', color: '#64748b' }}>{applicant.studentEmail}</p>
-                            <p style={{
-                              margin: '0.5rem 0 0 0', fontSize: '0.85rem', padding: '0.4rem 0.8rem',
-                              borderRadius: '4px', display: 'inline-block', fontWeight: '500',
-                              backgroundColor: statusStyle.bg, color: statusStyle.color,
-                            }}>
-                              {applicant.applicationStatus || 'applied'}
-                            </p>
-                          </div>
-
-                          {/* Status Dropdown */}
-                          <div style={{ position: 'relative', marginLeft: '1rem' }}>
-                            <button
-                              onClick={() => setApplicantStatusDropdown(applicantStatusDropdown === applicant._id ? null : applicant._id)}
-                              disabled={updatingApplicantId === applicant._id}
-                              style={{
-                                padding: '0.6rem 1rem', borderRadius: '6px', border: '1px solid #e9d5f0',
-                                background: '#f1f5f9', cursor: updatingApplicantId === applicant._id ? 'not-allowed' : 'pointer',
-                                fontWeight: '600', color: '#1f2937', display: 'flex', alignItems: 'center',
-                                gap: '0.5rem', opacity: updatingApplicantId === applicant._id ? 0.6 : 1,
-                              }}
-                            >
-                              Update Status <ChevronDown size={16} />
-                            </button>
-
-                            {applicantStatusDropdown === applicant._id && (
-                              <div style={{
-                                position: 'absolute', top: '100%', right: 0, background: 'white',
-                                border: '1px solid #e9d5f0', borderRadius: '6px', marginTop: '0.5rem',
-                                zIndex: 10000, minWidth: '180px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                              }}>
-                                {[
-                                  { value: 'applied',              label: '📝 Applied' },
-                                  { value: 'shortlisted',          label: '✨ Shortlisted' },
-                                  { value: 'interview-scheduled',  label: '📅 Interview Scheduled' },
-                                  { value: 'selected',             label: '🎉 Selected' },
-                                  { value: 'rejected',             label: '❌ Rejected' },
-                                ].map(({ value, label }, i, arr) => (
-                                  <button
-                                    key={value}
-                                    onClick={() => handleApplicantStatusChange(applicant._id || applicant.studentId, value)}
-                                    style={{
-                                      width: '100%', padding: '0.75rem 1rem', border: 'none', background: 'none',
-                                      cursor: 'pointer', textAlign: 'left', fontSize: '0.9rem', color: '#1f2937',
-                                      borderBottom: i < arr.length - 1 ? '1px solid #f1f5f9' : 'none',
-                                      transition: 'background-color 0.2s',
-                                    }}
-                                    onMouseEnter={e => e.target.style.backgroundColor = '#f1f5f9'}
-                                    onMouseLeave={e => e.target.style.backgroundColor = 'transparent'}
-                                  >
-                                    {label}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                  <div className="rdm-applicants-list">
+                    {selectedDrive.applicants.map((applicant) => (
+                      <div key={applicant._id || applicant.studentId} className="rdm-applicant-card">
+                        <div className="rdm-applicant-avatar">
+                          {(applicant.studentName || 'N')?.charAt(0)?.toUpperCase()}
                         </div>
-                      );
-                    })}
+                        <div className="rdm-applicant-info">
+                          <p className="rdm-applicant-name">{applicant.studentName || 'N/A'}</p>
+                          <p className="rdm-applicant-email">{applicant.studentEmail}</p>
+                          <span className={`rdm-applicant-status rdm-applicant-status--${applicant.applicationStatus || 'applied'}`}>
+                            {applicant.applicationStatus || 'applied'}
+                          </span>
+                        </div>
+
+                        {/* Status Dropdown */}
+                        <div className="rdm-status-dropdown-wrapper">
+                          <button
+                            className={`rdm-status-update-btn${updatingApplicantId === applicant._id ? ' rdm-status-update-btn--loading' : ''}`}
+                            onClick={() => setApplicantStatusDropdown(applicantStatusDropdown === applicant._id ? null : applicant._id)}
+                            disabled={updatingApplicantId === applicant._id}
+                          >
+                            {updatingApplicantId === applicant._id ? 'Updating…' : 'Update Status'}
+                            <ChevronDown size={15} />
+                          </button>
+
+                          {applicantStatusDropdown === applicant._id && (
+                            <div className="rdm-dropdown-menu">
+                              {[
+                                { value: 'applied',              label: '📝 Applied' },
+                                { value: 'shortlisted',          label: '✨ Shortlisted' },
+                                { value: 'interview-scheduled',  label: '📅 Interview Scheduled' },
+                                { value: 'selected',             label: '🎉 Selected' },
+                                { value: 'rejected',             label: '❌ Rejected' },
+                              ].map(({ value, label }) => (
+                                <button
+                                  key={value}
+                                  className="rdm-dropdown-item"
+                                  onClick={() => handleApplicantStatusChange(applicant._id || applicant.studentId, value)}
+                                >
+                                  {label}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ) : (
-                  <p style={{ color: '#64748b', fontStyle: 'italic' }}>No applicants yet</p>
+                  <p className="rdm-no-applicants">No applicants yet</p>
                 )}
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '2rem' }}>
-                <button onClick={() => setSelectedDrive(null)} style={{ padding: '0.7rem 1.5rem', borderRadius: '8px', border: '1px solid #e9d5f0', background: '#f1f5f9', cursor: 'pointer', fontWeight: '600', color: '#1f2937' }}>
+              {/* ── Footer ── */}
+              <div className="rdm-footer">
+                <button className="rdm-footer-close-btn" onClick={() => setSelectedDrive(null)}>
                   Close
                 </button>
               </div>
+
             </div>
           </div>
         )}
-      </div>
+
     </RecruiterLayout>
   );
 };

@@ -1,0 +1,341 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   RISK MANAGEMENT MODAL TRIGGER BUTTON
+   ────────────────────────────────────────────────────────────────────────── */
+
+.risk-modal-trigger {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #3d1f5c 0%, #5a2d82 100%);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(61, 31, 92, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 999;
+  font-size: 28px;
+}
+
+.risk-modal-trigger:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(61, 31, 92, 0.4);
+}
+
+.risk-modal-trigger:active {
+  transform: scale(0.95);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   MODAL OVERLAY
+   ────────────────────────────────────────────────────────────────────────── */
+
+.risk-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  animation: risk-modal-fade-in 0.3s ease;
+}
+
+@keyframes risk-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   MODAL CONTAINER
+   ────────────────────────────────────────────────────────────────────────── */
+
+.risk-modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 95vw;
+  max-height: 92vh;
+  width: 1400px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: risk-modal-slide-up 0.3s ease;
+}
+
+@keyframes risk-modal-slide-up {
+  from {
+    transform: translate(-50%, -40%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   MODAL HEADER
+   ────────────────────────────────────────────────────────────────────────── */
+
+.risk-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 25px;
+  background: linear-gradient(135deg, #3d1f5c 0%, #5a2d82 100%);
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.risk-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.risk-modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.risk-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   MODAL TABS
+   ────────────────────────────────────────────────────────────────────────── */
+
+.risk-modal-tabs {
+  display: flex;
+  gap: 0;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 0 25px;
+  overflow-x: auto;
+}
+
+.risk-modal-tab {
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.risk-modal-tab:hover {
+  color: #1f2937;
+}
+
+.risk-modal-tab.active {
+  color: #3d1f5c;
+  border-bottom-color: #3d1f5c;
+}
+
+.risk-modal-tab-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   MODAL CONTENT
+   ────────────────────────────────────────────────────────────────────────── */
+
+.risk-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 25px;
+  background-color: #f8f9fa;
+}
+
+/* ─── Scrollbar Styling ─── */
+
+.risk-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.risk-modal-content::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+
+.risk-modal-content::-webkit-scrollbar-thumb {
+  background: #3d1f5c;
+  border-radius: 10px;
+}
+
+.risk-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #5a2d82;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   RESPONSIVE DESIGN
+   ────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1400px) {
+  .risk-modal-container {
+    width: 90vw;
+  }
+}
+
+@media (max-width: 1024px) {
+  .risk-modal-container {
+    width: 95vw;
+    max-height: 95vh;
+  }
+
+  .risk-modal-trigger {
+    padding: 12px 20px;
+    font-size: 13px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .risk-modal-container {
+    width: 98vw;
+    max-height: 98vh;
+    border-radius: 12px;
+  }
+
+  .risk-modal-header {
+    padding: 16px 20px;
+  }
+
+  .risk-modal-title {
+    font-size: 16px;
+  }
+
+  .risk-modal-tabs {
+    padding: 0 20px;
+  }
+
+  .risk-modal-tab {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+
+  .risk-modal-close {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+
+  .risk-modal-content {
+    padding: 15px 20px;
+  }
+
+  .risk-modal-trigger {
+    padding: 10px 16px;
+    font-size: 12px;
+    bottom: 15px;
+    right: 15px;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .risk-modal-container {
+    width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    top: auto;
+    bottom: 0;
+    transform: translate(0, 0);
+    animation: risk-modal-slide-up-mobile 0.3s ease;
+  }
+
+  @keyframes risk-modal-slide-up-mobile {
+    from {
+      bottom: -100%;
+    }
+    to {
+      bottom: 0;
+    }
+  }
+
+  .risk-modal-header {
+    padding: 14px 16px;
+  }
+
+  .risk-modal-title {
+    font-size: 14px;
+  }
+
+  .risk-modal-tabs {
+    padding: 0 16px;
+  }
+
+  .risk-modal-tab {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+
+  .risk-modal-tab-icon {
+    display: none;
+  }
+
+  .risk-modal-content {
+    padding: 12px 16px;
+  }
+
+  .risk-modal-trigger {
+    width: calc(100vw - 20px);
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    justify-content: center;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PRINT STYLES
+   ────────────────────────────────────────────────────────────────────────── */
+
+@media print {
+  .risk-modal-trigger,
+  .risk-modal-overlay,
+  .risk-modal-container {
+    display: none !important;
+  }
+}

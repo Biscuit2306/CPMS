@@ -326,7 +326,7 @@ const Home = () => {
               </svg>
             </div>
             <span className="trial-logo-text trial-font-display">
-              Campus<span className="trial-gradient-text">Portal</span>
+              <span className="trial-gradient-text">NextRoute</span>
             </span>
           </div>
 
@@ -355,7 +355,7 @@ const Home = () => {
                 {/* Badge */}
                 <div className="trial-hero-badge trial-glass-card">
                   <Sparkles size={16} className="text-purple-400 animate-pulse" />
-                  <span className="text-sm text-purple-200 tracking-wide">Welcome to Campus Placement Portal</span>
+                  <span className="text-sm text-purple-200 tracking-wide">Welcome to NextRoute</span>
                 </div>
 
                 {/* Title */}
@@ -403,25 +403,6 @@ const Home = () => {
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
-            </div>
-          </section>
-
-          {/* Stats Section */}
-          <section id="stats" className="trial-stats">
-            <div className="trial-hero-container">
-              <div className="trial-stats-grid">
-                {stats.map((stat, index) => (
-                  <div key={index} className="trial-stat-card trial-glass-card">
-                    <div className="trial-stat-value">
-                      <span className="trial-stat-number" data-target={parseInt(stat.number)}>0</span>
-                      <span className="trial-stat-suffix">
-                        {stat.number === '95' ? '%' : stat.number === '10000' ? '+' : '+'}
-                      </span>
-                    </div>
-                    <div className="trial-stat-label">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
             </div>
           </section>
 
@@ -485,109 +466,6 @@ const Home = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Benefits Section */}
-          <section className="trial-benefits">
-            <div className="trial-hero-container">
-              <div className="trial-section-header">
-                <h2 className="trial-section-title trial-font-display">
-                  Why Students <span className="trial-gradient-text">Love Us</span>
-                </h2>
-                <p className="trial-section-subtitle">
-                  Join thousands of successful graduates who found their dream jobs through our platform
-                </p>
-              </div>
-
-              <div className="trial-benefits-grid">
-                <div className="trial-benefit-item trial-glass-card">
-                  <div className="trial-benefit-icon">
-                    <Zap size={28} />
-                  </div>
-                  <h3>Lightning Fast Matching</h3>
-                  <p>Get matched with the right opportunities in seconds, not days</p>
-                </div>
-                <div className="trial-benefit-item trial-glass-card">
-                  <div className="trial-benefit-icon">
-                    <Shield size={28} />
-                  </div>
-                  <h3>100% Secure & Private</h3>
-                  <p>Your data is encrypted and protected with enterprise-grade security</p>
-                </div>
-                <div className="trial-benefit-item trial-glass-card">
-                  <div className="trial-benefit-icon">
-                    <BookMarked size={28} />
-                  </div>
-                  <h3>Expert Guidance</h3>
-                  <p>Access resources, tips, and mentorship from industry professionals</p>
-                </div>
-                <div className="trial-benefit-item trial-glass-card">
-                  <div className="trial-benefit-icon">
-                    <BarChart size={28} />
-                  </div>
-                  <h3>Track Everything</h3>
-                  <p>Monitor your progress and get real-time insights on your applications</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Testimonials Section */}
-          <section className="trial-testimonials">
-            <div className="trial-hero-container">
-              <div className="trial-section-header">
-                <h2 className="trial-section-title trial-font-display">
-                  Success <span className="trial-gradient-text">Stories</span>
-                </h2>
-                <p className="trial-section-subtitle">
-                  Hear from students who transformed their careers
-                </p>
-              </div>
-
-              <div className="trial-testimonials-grid">
-                <div className="trial-testimonial-card trial-glass-card">
-                  <div className="trial-testimonial-header">
-                    <div className="trial-testimonial-avatar">🎓</div>
-                    <div>
-                      <div className="trial-testimonial-name">Sarah Johnson</div>
-                      <div className="trial-testimonial-role">Software Engineer @ Google</div>
-                    </div>
-                  </div>
-                  <p className="trial-testimonial-text">
-                    "CampusPortal helped me find the perfect job match within 2 weeks. The AI matching is incredibly accurate!"
-                  </p>
-                  <div className="trial-testimonial-rating">⭐⭐⭐⭐⭐</div>
-                </div>
-
-                <div className="trial-testimonial-card trial-glass-card">
-                  <div className="trial-testimonial-header">
-                    <div className="trial-testimonial-avatar">💼</div>
-                    <div>
-                      <div className="trial-testimonial-name">Rahul Patel</div>
-                      <div className="trial-testimonial-role">Data Analyst @ Microsoft</div>
-                    </div>
-                  </div>
-                  <p className="trial-testimonial-text">
-                    "The platform's guidance and resources made me interview-ready. I got 3 offers in a month!"
-                  </p>
-                  <div className="trial-testimonial-rating">⭐⭐⭐⭐⭐</div>
-                </div>
-
-                <div className="trial-testimonial-card trial-glass-card">
-                  <div className="trial-testimonial-header">
-                    <div className="trial-testimonial-avatar">🚀</div>
-                    <div>
-                      <div className="trial-testimonial-name">Priya Singh</div>
-                      <div className="trial-testimonial-role">Product Manager @ Amazon</div>
-                    </div>
-                  </div>
-                  <p className="trial-testimonial-text">
-                    "Best platform for campus placements. The security and tracking features are top-notch!"
-                  </p>
-                  <div className="trial-testimonial-rating">⭐⭐⭐⭐⭐</div>
-                </div>
               </div>
             </div>
           </section>

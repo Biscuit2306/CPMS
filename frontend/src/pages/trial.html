@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Placement Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-glow: #8b5cf6;
+            --secondary-glow: #06b6d4;
+            --accent-glow: #f472b6;
+            --dark-bg: #0a0a0f;
+            --card-bg: rgba(20, 20, 30, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--dark-bg);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .loader-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            animation: spin 2s linear infinite;
+        }
+
+        .loader-ring::before,
+        .loader-ring::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+        }
+
+        .loader-ring::before {
+            inset: 0;
+            border-top-color: #8b5cf6;
+            border-right-color: #06b6d4;
+            animation: spin 1s linear infinite reverse;
+        }
+
+        .loader-ring::after {
+            inset: 10px;
+            border-bottom-color: #f472b6;
+            border-left-color: #8b5cf6;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loader-core {
+            position: absolute;
+            inset: 25px;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+            filter: blur(8px);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .progress-container {
+            width: 300px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4, #f472b6);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Background Effects */
+        .bg-wrapper {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #8b5cf6, transparent);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #06b6d4, transparent);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #f472b6, transparent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -10s;
+        }
+
+        .mouse-follower {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease-out;
+            filter: blur(60px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(30px, 50px) scale(1.05); }
+        }
+
+        /* Grid Pattern */
+        .grid-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Mirror/Glossy Buttons */
+        .mirror-btn {
+            position: relative;
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.1), 
+                rgba(255,255,255,0.05),
+                rgba(139, 92, 246, 0.2),
+                rgba(6, 182, 212, 0.2)
+            );
+            border: 1px solid rgba(255,255,255,0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mirror-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255,255,255,0.3) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg) translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .mirror-btn:hover::before {
+            transform: rotate(45deg) translateX(100%);
+        }
+
+        .mirror-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 10px 40px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        .mirror-btn-primary {
+            background: linear-gradient(135deg, 
+                rgba(139, 92, 246, 0.4), 
+                rgba(6, 182, 212, 0.4),
+                rgba(139, 92, 246, 0.2)
+            );
+            box-shadow: 
+                0 0 30px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        /* Text Gradients */
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.5),
+                0 0 30px rgba(139, 92, 246, 0.2);
+        }
+
+        .feature-icon {
+            background: linear-gradient(135deg, 
+                rgba(139, 92, 246, 0.2), 
+                rgba(6, 182, 212, 0.2)
+            );
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* Process Steps */
+        .process-step {
+            position: relative;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            font-size: 4rem;
+            line-height: 1;
+            opacity: 0.3;
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            z-index: 0;
+        }
+
+        .step-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(139, 92, 246, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 10s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #8b5cf6, #06b6d4);
+            border-radius: 4px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, 
+                rgba(20,20,30,0.95), 
+                rgba(10,10,15,0.98)
+            );
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.5),
+                0 0 50px rgba(139, 92, 246, 0.2);
+        }
+
+        .portal-option {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .portal-option:hover {
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Nav Link Hover */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Stat Card Glow */
+        .stat-card {
+            position: relative;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4, #f472b6);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover::before {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-ring">
+            <div class="loader-core"></div>
+        </div>
+        <div class="text-center space-y-2">
+            <div class="text-sm text-gray-400 tracking-widest uppercase">Initializing Portal</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="text-xs text-gray-500" id="progressText">0%</div>
+        </div>
+    </div>
+
+    <!-- Background -->
+    <div class="bg-wrapper">
+        <div class="grid-pattern"></div>
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="mouse-follower" id="mouseFollower"></div>
+    </div>
+
+    <!-- Particles Container -->
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-6">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-10 h-10 rounded-xl mirror-btn flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <span class="font-display text-2xl font-bold tracking-tight">
+                    Campus<span class="gradient-text">Portal</span>
+                </span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="nav-link text-sm text-gray-300 hover:text-white transition-colors">Home</a>
+                <a href="#features" class="nav-link text-sm text-gray-300 hover:text-white transition-colors">Features</a>
+                <a href="#process" class="nav-link text-sm text-gray-300 hover:text-white transition-colors">How It Works</a>
+                <a href="#stats" class="nav-link text-sm text-gray-300 hover:text-white transition-colors">Statistics</a>
+            </div>
+
+            <button onclick="openModal()" class="mirror-btn mirror-btn-primary px-6 py-2.5 rounded-full text-sm font-medium text-white">
+                Get Started
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="opacity-0">
+        
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="max-w-4xl mx-auto text-center space-y-8">
+                    
+                    <!-- Badge -->
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-purple-500/30 hero-badge opacity-0">
+                        <svg class="w-4 h-4 text-purple-400 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 5a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1V8a1 1 0 011-1zm5-5a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0V6h-1a1 1 0 110-2h1V3a1 1 0 011-1zm0 5a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1V8a1 1 0 011-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-sm text-purple-200 tracking-wide">Welcome to Campus Placement Portal</span>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="font-display text-6xl md:text-8xl font-bold leading-tight hero-title opacity-0">
+                        Connect Your
+                        <br>
+                        <span class="gradient-text" id="scrambleText">Future</span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed hero-subtitle opacity-0">
+                        Bridging the gap between talent and opportunity. 
+                        Your journey to a successful career starts here with AI-powered matching and real-time tracking.
+                    </p>
+
+                    <!-- CTA -->
+                    <div class="flex flex-wrap justify-center gap-4 hero-cta opacity-0">
+                        <button onclick="openModal()" class="mirror-btn mirror-btn-primary px-8 py-4 rounded-full text-base font-semibold flex items-center gap-2 group">
+                            Get Started Now
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </button>
+                        <button class="mirror-btn px-8 py-4 rounded-full text-base font-semibold flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Watch Demo
+                        </button>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 hero-stats opacity-0" id="stats">
+                        <div class="stat-card glass-card rounded-2xl p-6 text-center group cursor-pointer">
+                            <div class="text-3xl md:text-4xl font-bold gradient-text mb-1 stat-number" data-target="500">0</div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wider">Companies</div>
+                        </div>
+                        <div class="stat-card glass-card rounded-2xl p-6 text-center group cursor-pointer">
+                            <div class="text-3xl md:text-4xl font-bold gradient-text mb-1 stat-number" data-target="50">0</div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wider">Colleges</div>
+                        </div>
+                        <div class="stat-card glass-card rounded-2xl p-6 text-center group cursor-pointer">
+                            <div class="text-3xl md:text-4xl font-bold gradient-text mb-1 stat-number" data-target="10000">0</div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wider">Students</div>
+                        </div>
+                        <div class="stat-card glass-card rounded-2xl p-6 text-center group cursor-pointer">
+                            <div class="text-3xl md:text-4xl font-bold gradient-text mb-1 stat-number" data-target="95">0</div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wider">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-32 relative">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-20">
+                    <h2 class="font-display text-4xl md:text-5xl font-bold mb-4 section-title opacity-0">
+                        Why Choose <span class="gradient-text">Us?</span>
+                    </h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto section-subtitle opacity-0">
+                        Experience the next generation of campus placement with cutting-edge technology
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Feature 1 -->
+                    <div class="feature-card glass-card rounded-3xl p-8 feature-item opacity-0">
+                        <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Smart Matching</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            AI-powered job matching based on skills, interests, and career goals with 95% accuracy.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="feature-card glass-card rounded-3xl p-8 feature-item opacity-0">
+                        <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Real-time Tracking</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Track your application status and get instant updates on opportunities as they happen.
+                        </p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="feature-card glass-card rounded-3xl p-8 feature-item opacity-0">
+                        <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Secure Platform</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Enterprise-grade security with end-to-end encryption to protect your data and privacy.
+                        </p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="feature-card glass-card rounded-3xl p-8 feature-item opacity-0">
+                        <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Career Resources</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Access resume templates, interview tips, and personalized career guidance from experts.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section id="process" class="py-32 relative overflow-hidden">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-20">
+                    <h2 class="font-display text-4xl md:text-5xl font-bold mb-4 section-title opacity-0">
+                        How It <span class="gradient-text">Works</span>
+                    </h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto section-subtitle opacity-0">
+                        Three simple steps to launch your career
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8 relative">
+                    <!-- Connection Lines -->
+                    <div class="hidden md:block absolute top-1/2 left-1/3 right-1/3 h-px bg-gradient-to-r from-purple-500/50 to-cyan-500/50 transform -translate-y-1/2"></div>
+
+                    <!-- Step 1 -->
+                    <div class="process-step glass-card rounded-3xl p-8 relative process-item opacity-0">
+                        <div class="step-number">01</div>
+                        <div class="step-content pt-8">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center mb-6 text-white font-bold">
+                                1
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">Create Your Profile</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Sign up and build your comprehensive profile with your skills, education, and career preferences. Our AI analyzes your strengths.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="process-step glass-card rounded-3xl p-8 relative process-item opacity-0">
+                        <div class="step-number">02</div>
+                        <div class="step-content pt-8">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center mb-6 text-white font-bold">
+                                2
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">Get Matched</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Our AI algorithm matches you with the best opportunities based on your profile, skills, and career aspirations automatically.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="process-step glass-card rounded-3xl p-8 relative process-item opacity-0">
+                        <div class="step-number">03</div>
+                        <div class="step-content pt-8">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center mb-6 text-white font-bold">
+                                3
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">Apply & Succeed</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                Apply to positions with one click, track your applications in real-time, and land your dream job with our support.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-32 relative">
+            <div class="container mx-auto px-6">
+                <div class="glass-card rounded-3xl p-12 md:p-20 text-center relative overflow-hidden cta-section opacity-0">
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20"></div>
+                    <div class="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/30 rounded-full blur-3xl"></div>
+                    <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-cyan-500/30 rounded-full blur-3xl"></div>
+                    
+                    <div class="relative z-10 space-y-6">
+                        <h2 class="font-display text-4xl md:text-6xl font-bold">
+                            Ready to Start Your <span class="gradient-text">Journey?</span>
+                        </h2>
+                        <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                            Join thousands of students who have already transformed their careers with our placement management system.
+                        </p>
+                        <button onclick="openModal()" class="mirror-btn mirror-btn-primary px-10 py-4 rounded-full text-lg font-semibold mt-8 inline-flex items-center gap-2">
+                            Get Started Now
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-white/10 py-12">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg mirror-btn flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <span class="font-display text-xl font-bold">Campus<span class="gradient-text">Portal</span></span>
+                    </div>
+                    
+                    <div class="flex gap-6 text-sm text-gray-500">
+                        <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                        <a href="#" class="hover:text-white transition-colors">Contact</a>
+                    </div>
+
+                    <div class="text-sm text-gray-600">
+                        © 2024 NextRoute. All rights reserved.
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Portal Modal -->
+    <div id="portalModal" class="fixed inset-0 z-[100] hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-6">
+            <div class="modal-content rounded-3xl p-8 max-w-2xl w-full relative transform scale-95 opacity-0 transition-all duration-300" id="modalContent">
+                <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full glass-card flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+
+                <div class="text-center mb-8">
+                    <h3 class="font-display text-3xl font-bold mb-2">Choose Your Portal</h3>
+                    <p class="text-gray-400">Select your role to continue</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <button class="portal-option glass-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                            <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold mb-1">Student</h4>
+                        <p class="text-xs text-gray-500">Apply for jobs and track applications</p>
+                    </button>
+
+                    <button class="portal-option glass-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                            <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold mb-1">Recruiter</h4>
+                        <p class="text-xs text-gray-500">Post jobs and find talent</p>
+                    </button>
+
+                    <button class="portal-option glass-card rounded-2xl p-6 text-center group">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                            <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold mb-1">College TPO</h4>
+                        <p class="text-xs text-gray-500">Manage placements and reports</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preloader
+        let progress = 0;
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const preloader = document.getElementById('preloader');
+        const mainContent = document.getElementById('mainContent');
+
+        const loadingInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loadingInterval);
+                
+                setTimeout(() => {
+                    gsap.to(preloader, {
+                        opacity: 0,
+                        duration: 0.8,
+                        ease: "power2.inOut",
+                        onComplete: () => {
+                            preloader.style.display = 'none';
+                            mainContent.classList.remove('opacity-0');
+                            initAnimations();
+                        }
+                    });
+                }, 500);
+            }
+            progressBar.style.width = progress + '%';
+            progressText.textContent = Math.floor(progress) + '%';
+        }, 100);
+
+        // Mouse Follower
+        const mouseFollower = document.getElementById('mouseFollower');
+        let mouseX = 0, mouseY = 0;
+        let currentX = 0, currentY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 100;
+            mouseY = (e.clientY / window.innerHeight) * 100;
+        });
+
+        function animateFollower() {
+            currentX += (mouseX - currentX) * 0.1;
+            currentY += (mouseY - currentY) * 0.1;
+            
+            mouseFollower.style.left = currentX + '%';
+            mouseFollower.style.top = currentY + '%';
+            
+            requestAnimationFrame(animateFollower);
+        }
+        animateFollower();
+
+        // Create Particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Initialize Animations
+        function initAnimations() {
+            // Hero animations
+            const tl = gsap.timeline();
+            
+            tl.to('.hero-badge', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            })
+            .to('.hero-title', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            }, "-=0.4")
+            .to('.hero-subtitle', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            }, "-=0.6")
+            .to('.hero-cta', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            }, "-=0.4")
+            .to('.hero-stats', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            }, "-=0.4");
+
+            // Text Scramble Effect
+            scrambleText();
+
+            // Scroll Animations
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Section titles
+            gsap.utils.toArray('.section-title').forEach(title => {
+                gsap.to(title, {
+                    scrollTrigger: {
+                        trigger: title,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power3.out"
+                });
+            });
+
+            gsap.utils.toArray('.section-subtitle').forEach(sub => {
+                gsap.to(sub, {
+                    scrollTrigger: {
+                        trigger: sub,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: 0.2,
+                    ease: "power3.out"
+                });
+            });
+
+            // Feature cards
+            gsap.utils.toArray('.feature-item').forEach((card, i) => {
+                gsap.to(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    opacity: 1,
+                    y: 0,
+                    rotateX: 0,
+                    duration: 0.8,
+                    delay: i * 0.1,
+                    ease: "power3.out"
+                });
+            });
+
+            // Process steps
+            gsap.utils.toArray('.process-item').forEach((step, i) => {
+                gsap.to(step, {
+                    scrollTrigger: {
+                        trigger: step,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: i * 0.2,
+                    ease: "power3.out"
+                });
+            });
+
+            // CTA Section
+            gsap.to('.cta-section', {
+                scrollTrigger: {
+                    trigger: '.cta-section',
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            // Stats Counter Animation
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counters = entry.target.querySelectorAll('.stat-number');
+                        counters.forEach(counter => {
+                            const target = parseInt(counter.getAttribute('data-target'));
+                            const duration = 2000;
+                            const step = target / (duration / 16);
+                            let current = 0;
+                            
+                            const updateCounter = () => {
+                                current += step;
+                                if (current < target) {
+                                    counter.textContent = Math.floor(current).toLocaleString() + (target === 95 ? '%' : target === 10000 ? '+' : '+');
+                                    requestAnimationFrame(updateCounter);
+                                } else {
+                                    counter.textContent = target.toLocaleString() + (target === 95 ? '%' : target === 10000 ? '+' : '+');
+                                }
+                            };
+                            updateCounter();
+                        });
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            const statsSection = document.getElementById('stats');
+            if (statsSection) {
+                statsObserver.observe(statsSection);
+            }
+        }
+
+        // Text Scramble Effect
+        function scrambleText() {
+            const element = document.getElementById('scrambleText');
+            const originalText = element.textContent;
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let iterations = 0;
+            
+            const interval = setInterval(() => {
+                element.textContent = originalText
+                    .split('')
+                    .map((char, index) => {
+                        if (index < iterations) {
+                            return originalText[index];
+                        }
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join('');
+                
+                if (iterations >= originalText.length) {
+                    clearInterval(interval);
+                }
+                
+                iterations += 1/3;
+            }, 30);
+        }
+
+        // Modal Functions
+        function openModal() {
+            const modal = document.getElementById('portalModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-1');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('portalModal');
+            const content = document.getElementById('modalContent');
+            
+            content.classList.remove('scale-100', 'opacity-1');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Navbar scroll effect
+        let lastScroll = 0;
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.classList.add('glass-card', 'border-b', 'border-white/10');
+                navbar.classList.remove('py-6');
+                navbar.classList.add('py-4');
+            } else {
+                navbar.classList.remove('glass-card', 'border-b', 'border-white/10');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('py-6');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // 3D Tilt Effect for Feature Cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+
+        // Magnetic Button Effect
+        document.querySelectorAll('.mirror-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0, 0)';
+            });
+        });
+    </script>
+</body>
+</html>

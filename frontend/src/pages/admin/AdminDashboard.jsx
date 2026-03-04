@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Shield, Users, UserCheck, Building2, TrendingUp, CheckCircle, Activity, AlertCircle, BarChart3, Target, Zap, Award, UserPlus, FileText, Calendar, Mail, Download, Send, X } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
-import RiskManagementModal from '../../components/RiskManagementModal';
 import { useAdmin } from '../../context/AdminContext';
 import API from '../../services/api';
 import '../../styles/admin-css/admindashboard.css';
@@ -661,8 +660,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
-        {/* Risk Management Modal */}
-        <RiskManagementModal />
       </div>
     </AdminLayout>
   );

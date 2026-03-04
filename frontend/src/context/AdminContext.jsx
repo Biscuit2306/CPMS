@@ -18,6 +18,7 @@ export function AdminProvider({ children }) {
   const [jobDrives, setJobDrives] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [schedulesLoading, setSchedulesLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [stats, setStats] = useState({
     totalStudents: 0,
     activeRecruiters: 0,
@@ -205,9 +206,17 @@ export function AdminProvider({ children }) {
         throw new Error("No changes provided for profile update");
       }
 
+      // Get Firebase ID token for authentication
+      const idToken = await user.getIdToken();
+
       const res = await axios.put(
         `${API_BASE}/api/admin/profile/${user.uid}`,
-        updatedData
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
       );
       // Handle response format: { success: true, data: admin }
       const adminData = res.data?.data || res.data;
@@ -239,6 +248,8 @@ export function AdminProvider({ children }) {
       jobDrives,
       schedules,
       schedulesLoading,
+      searchQuery,
+      setSearchQuery,
       stats,
       statsLoading,
       fetchStudents,

@@ -21,16 +21,26 @@ const Dashboard = () => {
   const [showCreateDriveModal, setShowCreateDriveModal] = useState(false);
   const [showReportPreview, setShowReportPreview] = useState(false);
 
-  const { recruiter, drives = [], drivesLoading, createDrive } = useRecruiter();
+  const { recruiter, drives = [], drivesLoading, createDrive, searchQuery } = useRecruiter();
   const recruiterName = recruiter?.fullName || 'Recruiter';
 
   // ─── Stats Calculation ────────────────────────────────────────
   const drivesArray = Array.isArray(drives) ? drives : [];
-  const totalApplicants = drivesArray.reduce((sum, drive) => sum + (drive?.applicants?.length || 0), 0);
-  const selectedCandidates = drivesArray.reduce((sum, drive) =>
+  const queryLower = (searchQuery || '').trim().toLowerCase();
+  // compute filtered drives when query present
+  const filteredDrivesArray = queryLower
+    ? drivesArray.filter(d =>
+        (d.company || '').toLowerCase().includes(queryLower) ||
+        (d.position || '').toLowerCase().includes(queryLower) ||
+        (d.location || '').toLowerCase().includes(queryLower)
+      )
+    : drivesArray;
+  // statistics should apply to whatever subset the recruiter is currently viewing
+  const totalApplicants = filteredDrivesArray.reduce((sum, drive) => sum + (drive?.applicants?.length || 0), 0);
+  const selectedCandidates = filteredDrivesArray.reduce((sum, drive) =>
     sum + (drive?.applicants?.filter(a => a?.applicationStatus === 'selected').length || 0), 0
   );
-  const activeDrivesCount = drivesArray.filter(d => d?.status === 'active').length;
+  const activeDrivesCount = filteredDrivesArray.filter(d => d?.status === 'active').length;
   const successRate = totalApplicants > 0 ? Math.round((selectedCandidates / totalApplicants) * 100) : 0;
 
   const recruitmentStats = [
@@ -56,6 +66,15 @@ const Dashboard = () => {
       return dateB - dateA;
     })
     .slice(0, 5);
+
+  // filter applications by query as well
+  const filteredRecentApplications = queryLower
+    ? recentApplications.filter(app =>
+        (app.studentName || '').toLowerCase().includes(queryLower) ||
+        (app.company || '').toLowerCase().includes(queryLower) ||
+        (app.role || '').toLowerCase().includes(queryLower)
+      )
+    : recentApplications;
 
   // ─── Form State ───────────────────────────────────────────────
   const [scheduleForm, setScheduleForm] = useState({
@@ -258,7 +277,7 @@ const Dashboard = () => {
   // ─── Render ───────────────────────────────────────────────────
   return (
     <RecruiterLayout activeMenu={activeMenu} setActiveMenu={setActiveMenu}>
-      <div className="recruiter-dashboard-content">
+      
 
         {/* Welcome Banner */}
         <div className="recruiter-welcome-banner">
@@ -297,11 +316,15 @@ const Dashboard = () => {
             </div>
             <div className="recruiter-drives-list">
               {drivesLoading ? (
-                <div style={{ padding: '20px', textAlign: 'center' }}>Loading drives...</div>
-              ) : drivesArray.length === 0 ? (
-                <div style={{ padding: '20px', textAlign: 'center' }}>No drives yet</div>
+                <div className="dashboard-placeholder">Loading drives...</div>
+              ) : filteredDrivesArray.length === 0 ? (
+                <div className="dashboard-placeholder">
+                  {queryLower
+                    ? `No drives match "${searchQuery}"`
+                    : 'No drives yet'}
+                </div>
               ) : (
-                drivesArray.slice(0, 3).map((drive) => (
+                filteredDrivesArray.slice(0, 3).map((drive) => (
                   <div key={drive?._id} className="recruiter-drive-item">
                     <div className="recruiter-drive-icon"><Building2 size={24} /></div>
                     <div className="recruiter-drive-info">
@@ -325,10 +348,14 @@ const Dashboard = () => {
               <Link to="/recruiter/candidates" className="recruiter-see-all">See all</Link>
             </div>
             <div className="recruiter-applications-list">
-              {recentApplications.length === 0 ? (
-                <div style={{ padding: '20px', textAlign: 'center' }}>No applications yet</div>
+              {filteredRecentApplications.length === 0 ? (
+                <div className="dashboard-placeholder">
+                  {queryLower
+                    ? `No applications match "${searchQuery}"`
+                    : 'No applications yet'}
+                </div>
               ) : (
-                recentApplications.map((app, index) => (
+                filteredRecentApplications.map((app, index) => (
                   <div key={index} className="recruiter-application-item">
                     <div className="recruiter-app-candidate">
                       <div className="recruiter-candidate-avatar">
@@ -357,13 +384,13 @@ const Dashboard = () => {
               <button className="recruiter-action-btn" onClick={() => setShowScheduleModal(true)} title="Schedule interviews with candidates">
                 <UserPlus size={20} /><span>Schedule Interview</span>
               </button>
-              <button className="recruiter-action-btn" onClick={() => setShowNotificationModal(true)} title="Send notifications to candidates">
+              <button className="recruiter-notification-action-btn" onClick={() => setShowNotificationModal(true)} title="Send notifications to candidates">
                 <Mail size={20} /><span>Send Notification</span>
               </button>
-              <button className="recruiter-action-btn" onClick={() => setShowReportModal(true)} title="Generate placement report">
+              <button className="recruiter-generate-action-btn" onClick={() => setShowReportModal(true)} title="Generate placement report">
                 <FileText size={20} /><span>Generate Report</span>
               </button>
-              <button className="recruiter-action-btn" onClick={() => setShowCreateDriveModal(true)} title="Create a new placement drive">
+              <button className="recruiter-drive-action-btn" onClick={() => setShowCreateDriveModal(true)} title="Create a new placement drive">
                 <Calendar size={20} /><span>Create Drive</span>
               </button>
             </div>
@@ -387,7 +414,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </div>
+      
 
       {/* ═══════════════════════════════════════════════════════ */}
       {/* MODALS                                                  */}

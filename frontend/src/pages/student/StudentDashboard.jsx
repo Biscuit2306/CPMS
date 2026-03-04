@@ -11,7 +11,7 @@ import axios from 'axios';
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const StudentDashboard = () => {
-  const { student, jobDrives, schedules, getDriveDetails, syncStudentSchedules } = useStudent();
+  const { student, jobDrives, schedules, getDriveDetails, syncStudentSchedules, searchQuery } = useStudent();
   const [stats, setStats] = useState({
     companiesRegistered: 0,
     studentsPlaced: 0,
@@ -21,6 +21,25 @@ const StudentDashboard = () => {
   const [upcomingDrives, setUpcomingDrives] = useState([]);
   const [appliedCompanies, setAppliedCompanies] = useState([]);
   const [upcomingSchedules, setUpcomingSchedules] = useState([]);
+
+  // derived filtered arrays based on search
+  const query = searchQuery.toLowerCase();
+  const filteredUpcomingDrives = upcomingDrives.filter(d =>
+    query === '' ||
+    (d.company || '').toLowerCase().includes(query) ||
+    (d.role || '').toLowerCase().includes(query) ||
+    (d.package || '').toLowerCase().includes(query)
+  );
+  const filteredAppliedCompanies = appliedCompanies.filter(a =>
+    query === '' ||
+    (a.company || '').toLowerCase().includes(query) ||
+    (a.status || '').toLowerCase().includes(query)
+  );
+  const filteredUpcomingSchedules = upcomingSchedules.filter(s =>
+    query === '' ||
+    (s.company || '').toLowerCase().includes(query) ||
+    (s.position || '').toLowerCase().includes(query)
+  );
 
   // Fetch stats when component mounts
   useEffect(() => {
@@ -224,10 +243,10 @@ const StudentDashboard = () => {
             <Link to="/student/job-drives" className="student-see-all">See all</Link>
           </div>
           <div className="student-drives-list">
-            {upcomingDrives.length === 0 ? (
-              <div style={{ padding: '20px', textAlign: 'center' }}>No upcoming drives</div>
+            {filteredUpcomingDrives.length === 0 ? (
+              <div className="empty-message">No upcoming drives</div>
             ) : (
-              upcomingDrives.map((drive, index) => (
+              filteredUpcomingDrives.map((drive, index) => (
                 <div key={index} className="student-drive-item">
                   <div className="student-drive-icon">
                     <Building2 size={24} />
@@ -253,10 +272,10 @@ const StudentDashboard = () => {
             <Link to="/student/applications" className="student-see-all">See all</Link>
           </div>
           <div className="student-applications-list">
-            {appliedCompanies.length === 0 ? (
-              <div style={{ padding: '20px', textAlign: 'center' }}>No applications yet</div>
+            {filteredAppliedCompanies.length === 0 ? (
+              <div className="empty-message">No applications yet</div>
             ) : (
-              appliedCompanies.map((app, index) => (
+              filteredAppliedCompanies.map((app, index) => (
                 <div key={index} className="student-application-item">
                   <div className="student-app-company">
                     <div className="student-company-logo">
@@ -281,25 +300,17 @@ const StudentDashboard = () => {
           <Link to="/student/schedule" className="student-see-all">See all</Link>
         </div>
         <div className="student-schedules-list">
-          {upcomingSchedules.length === 0 ? (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
-              <Calendar size={20} style={{ marginBottom: '8px', opacity: 0.5 }} />
+          {filteredUpcomingSchedules.length === 0 ? (
+            <div className="empty-message">
+              <Calendar size={20} className="dashboard-schedule-icon" />
               <p>No upcoming schedules</p>
             </div>
           ) : (
             upcomingSchedules.map((schedule, index) => (
-              <div key={index} className="student-schedule-row" style={{
-                padding: '12px',
-                borderBottom: index < upcomingSchedules.length - 1 ? '1px solid #e5e7eb' : 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <Calendar size={20} style={{ color: '#0ea5e9', flexShrink: 0 }} />
-                <div style={{ flex: 1 }}>
-                  <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: '600' }}>
-                    {schedule.company} - {schedule.type}
-                  </h4>
+              <div key={index} className="student-schedule-row">
+                <Calendar size={20} className="dashboard-schedule-icon" />
+                <div className="schedule-info-text">
+                  <h4>{schedule.company} - {schedule.type}</h4>
                   <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
                     {schedule.date} at {schedule.time} • {schedule.venue}
                   </p>
@@ -308,7 +319,8 @@ const StudentDashboard = () => {
             ))
           )}
         </div>
-      </div>      </div>
+      </div>
+      </div>
 
       <div className="student-card">
         <div className="student-card-header">

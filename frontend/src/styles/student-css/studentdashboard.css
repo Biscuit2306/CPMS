@@ -137,6 +137,38 @@
   gap: 1rem;
 }
 
+.empty-message {
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.schedule-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dashboard-schedule-icon {
+  color: #0ea5e9;
+  flex-shrink: 0;
+  margin-bottom: 8px;
+}
+
+.schedule-info-text h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.schedule-info-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
 .student-drive-item {
   display: flex;
   align-items: center;

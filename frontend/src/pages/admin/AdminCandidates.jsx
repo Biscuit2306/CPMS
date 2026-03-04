@@ -6,8 +6,7 @@ import '../../styles/admin-css/admincandidates.css';
 import axios from 'axios';
 
 const AdminCandidates = () => {
-  const { admin, students, fetchStudents, statsLoading } = useAdmin();
-  const [searchTerm, setSearchTerm] = useState('');
+  const { admin, students, fetchStudents, statsLoading, searchQuery } = useAdmin();
   const [filterStatus, setFilterStatus] = useState('active'); // all, active, blocked, deleted
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,17 +36,17 @@ const AdminCandidates = () => {
     }
 
     // Filter by search term
-    if (searchTerm) {
+    if (searchQuery) {
       filtered = filtered.filter(s =>
-        s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.rollNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.branch?.toLowerCase().includes(searchTerm.toLowerCase())
+        s.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.rollNo?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.branch?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     setFilteredStudents(filtered);
-  }, [searchTerm, students, filterStatus]);
+  }, [searchQuery, students, filterStatus]);
 
   const getStatusDisplay = (student) => {
     if (student.isDeleted) return { label: 'Deleted', color: '#ef4444' };
@@ -106,13 +105,26 @@ const AdminCandidates = () => {
   return (
     <AdminLayout>
       <div className="admin-candidates-wrapper">
-        {/* Header */}
-        <div className="admin-page-header">
+        {/* Banner with Title */}
+        <div className="admin-banner">
+          <div className="admin-banner-content">
+            <div className="admin-banner-text">
+              <h1>Candidate Management</h1>
+              <p>Manage all students/candidates ({filteredStudents.length} candidates)</p>
+            </div>
+            <div className="admin-banner-icon">
+              <Users size={80} />
+            </div>
+          </div>
+        </div>
+
+        {/* Header - removed, content moved to banner */}
+        <div className="admin-page-header" style={{display: 'none'}}>
           <div>
             <h1>Candidate Management</h1>
             <p>Manage all students/candidates ({filteredStudents.length} candidates)</p>
           </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <div className="admin-filter-buttons-container">
             <div className="admin-filter-section">
               <button 
                 className={`admin-filter-btn ${filterStatus === 'active' ? 'active' : ''}`}
@@ -157,23 +169,12 @@ const AdminCandidates = () => {
           </div>
         )}
 
-        {/* Search */}
-        <div className="admin-candidates-search">
-          <Search size={18} />
-          <input
-            type="text"
-            placeholder="Search by name, email, roll number, or branch..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        {/* Candidates Table */}
+        {/* Candidates Table */}}
         {statsLoading || loading ? (
-          <div style={{ textAlign: 'center', padding: '40px' }}>Loading candidates...</div>
+          <div className="admin-loading-container">Loading candidates...</div>
         ) : filteredStudents.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#9ca3af' }}>
-            <Users size={40} style={{ opacity: 0.5, margin: '0 auto 10px' }} />
+          <div className="admin-empty-state">
+            <Users size={40} />
             <p>No candidates found</p>
           </div>
         ) : (
@@ -390,15 +391,7 @@ const AdminCandidates = () => {
                     placeholder="Reason for this action (optional)"
                     value={actionModal.reason}
                     onChange={(e) => setActionModal({ ...actionModal, reason: e.target.value })}
-                    style={{
-                      width: '100%',
-                      minHeight: '80px',
-                      padding: '8px',
-                      marginTop: '15px',
-                      borderRadius: '6px',
-                      border: '1px solid #e5e7eb',
-                      fontFamily: 'inherit',
-                    }}
+                    className="admin-modal-reason-textarea"
                   />
                 )}
               </div>

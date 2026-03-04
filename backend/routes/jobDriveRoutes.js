@@ -191,6 +191,16 @@ router.post("/", async (req, res) => {
     await recruiter.save();
     console.log("✅ [11] Drive created successfully:", newDrive._id);
 
+    // 🔔 Send notifications to all students and admins about the new job drive
+    try {
+      const NotificationManager = require("../utils/notificationManager");
+      const notifMgr = new NotificationManager();
+      await notifMgr.jobDriveCreated(recruiter, newDrive);
+      console.log("✅ [12] Notifications sent for new job drive");
+    } catch (notifErr) {
+      console.warn("⚠️ Notification error (non-critical):", notifErr.message);
+    }
+
     res.json({ success: true, data: newDrive, message: "Job drive created successfully" });
   } catch (err) {
     console.error("❌ [ERROR] Error creating drive:", {
@@ -447,6 +457,23 @@ router.put("/:recruiterId/:driveId/applicant/:studentId", async (req, res) => {
     }
 
     console.log("  ✅ Status update complete and saved to database");
+
+    // 🔔 Send notification based on application status
+    try {
+      const NotificationManager = require("../utils/notificationManager");
+      const notifMgr = new NotificationManager();
+      
+      if (status === "accepted") {
+        await notifMgr.applicationAccepted(student, { _id: req.params.driveId, position: student.applications[studentAppIndex].position }, recruiter);
+        console.log("  ✅ Acceptance notification sent to student");
+      } else if (status === "rejected") {
+        await notifMgr.applicationRejected(student, { _id: req.params.driveId, position: student.applications[studentAppIndex].position }, recruiter, "After careful review of your application");
+        console.log("  ✅ Rejection notification sent to student");
+      }
+    } catch (notifErr) {
+      console.warn("  ⚠️ Notification error (non-critical):", notifErr.message);
+    }
+
     res.json({ success: true, message: "Status updated successfully", status });
   } catch (err) {
     console.error("  ❌ ERROR:", err.message);

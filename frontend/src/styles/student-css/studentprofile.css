@@ -1,3 +1,49 @@
+.student-profile-field input,
+.student-profile-value input,
+.student-profile-field input:focus,
+.student-profile-value input:focus {
+  background: #fff !important;
+  color: #222 !important;
+  border: 1.5px solid var(--sp-border);
+  box-shadow: none !important;
+}
+
+/* Skill and certificate section alignment and style */
+.student-skills-list,
+.student-certificates-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.student-skill-item,
+.student-certificate-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--sp-white);
+  color: #1f2937;
+  border: 1.5px solid var(--sp-border);
+  border-radius: var(--sp-radius-sm);
+  padding: 0.5rem 0.75rem;
+  font-size: var(--sp-font-base);
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  flex: 1;
+  min-width: 200px;
+  box-sizing: border-box;
+}
+/* Universal input override for student profile */
+.student-profile-field input,
+.student-profile-value input,
+.student-profile-field input:focus,
+.student-profile-value input:focus {
+  background: #fff !important;
+  color: #222 !important;
+  border: 1.5px solid var(--sp-border);
+  box-shadow: none !important;
+}
 
 
 /* StudentProfile.css - Redesigned: Professional, Compact, Consistent */
@@ -253,11 +299,11 @@
 
 /* Unified input field */
 .student-profile-field input {
-  color: var(--sp-text-dark);
+  color: #222 !important;
   font-size: var(--sp-font-base);
   padding: 0 0.625rem;
   height: var(--sp-input-height);
-  background: var(--sp-bg-light);
+  background: #fff !important;
   border-radius: var(--sp-radius-sm);
   border: 1.5px solid var(--sp-border);
   outline: none;
@@ -268,8 +314,9 @@
 
 .student-profile-field input:focus {
   border-color: var(--sp-primary);
-  background: var(--sp-white);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+  background: #fff;
+  color: #222;
+  box-shadow: none;
 }
 
 /* Value row with icon */
@@ -279,7 +326,7 @@
   gap: 0.5rem;
   height: var(--sp-input-height);
   padding: 0 0.5rem;
-  background: var(--sp-bg-light);
+  background: transparent !important;
   border-radius: var(--sp-radius-sm);
   border: 1px solid transparent;
 }
@@ -295,17 +342,19 @@
 .student-profile-value input[type="email"],
 .student-profile-value input[type="tel"] {
   padding: 0 !important;
-  background: transparent !important;
+  background: #fff !important;
   border: none !important;
   height: auto !important;
   box-shadow: none !important;
   width: 100%;
+  color: #222 !important;
 }
 
 .student-profile-value input:focus {
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  background: #fff !important;
+  border: none !important;
+  color: #222 !important;
+  box-shadow: none !important;
 }
 
 /* When value row is in edit mode — show border */
@@ -853,9 +902,144 @@
 }
 
 .student-certifications-list {
-  display: grid;
-  gap: 0.875rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-top: 0.625rem;
+}
+
+/* Certificate Item Container */
+.student-certificate-item {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  background: var(--sp-white);
+  border: 1.5px solid var(--sp-border);
+  border-radius: var(--sp-radius-sm);
+  padding: 0.75rem;
+  flex: 1;
+  min-width: 300px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Certificate Edit Form Column */
+.cert-edit-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.cert-edit-col input {
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--sp-border);
+  border-radius: var(--sp-radius-sm);
+  font-size: var(--sp-font-base);
+  background: var(--sp-white);
+  color: var(--sp-text-dark);
+  outline: none;
+  transition: var(--sp-transition);
+}
+
+.cert-edit-col input:focus {
+  border-color: var(--sp-primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+/* Certificate Display Row */
+.cert-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex: 1;
+  color: #1f2937;
+}
+
+/* Certificate Main Content */
+.cert-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #1f2937;
+}
+
+/* Certificate Title */
+.cert-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--sp-font-md);
+  font-weight: 700;
+  color: var(--sp-text-dark);
+}
+
+/* Certificate Actions */
+.cert-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Button Outline for Certificate Edit */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  height: 28px;
+  background: var(--sp-bg-medium);
+  color: var(--sp-primary);
+  border: 1.5px solid var(--sp-border);
+  border-radius: var(--sp-radius-sm);
+  font-size: var(--sp-font-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--sp-transition);
+  white-space: nowrap;
+}
+
+.btn-outline:hover {
+  background: var(--sp-primary-light);
+  border-color: var(--sp-primary);
+  color: var(--sp-primary-dark);
+}
+
+.btn-outline.small {
+  padding: 0.35rem 0.75rem;
+  height: 28px;
+}
+
+/* Form Column for Adding Certificates */
+.form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Default Input for Certificate Form */
+.input-default {
+  padding: 0.5rem 0.75rem !important;
+  border: 1.5px solid var(--sp-border) !important;
+  border-radius: var(--sp-radius-sm) !important;
+  font-size: var(--sp-font-base) !important;
+  background: var(--sp-white) !important;
+  color: var(--sp-text-dark) !important;
+  outline: none;
+  transition: var(--sp-transition);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-default:focus {
+  border-color: var(--sp-primary) !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08) !important;
 }
 
 .student-certification-top {
@@ -951,4 +1135,210 @@
 /* Normalize inline buttons inside profile card */
 .student-profile-card button[style] {
   font-family: inherit;
+}
+
+/* ==================== FORM STYLING FOR SKILLS/PROJECTS/CERTS ==================== */
+
+/* Form Card Container */
+.form-card {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: var(--sp-bg-light);
+  border-radius: var(--sp-radius-md);
+  border: 1px solid var(--sp-border);
+}
+
+.form-card .subheading {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--sp-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Form Row Container */
+.form-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* Full Width Input */
+.input-full {
+  flex: 1;
+  min-width: 200px;
+  padding: 0 0.625rem;
+  height: var(--sp-input-height);
+  border-radius: var(--sp-radius-sm);
+  border: 1.5px solid var(--sp-border);
+  font-size: var(--sp-font-base);
+  background: var(--sp-white);
+  color: var(--sp-text-dark);
+  outline: none;
+  transition: var(--sp-transition);
+  box-sizing: border-box;
+}
+
+.input-full:focus {
+  border-color: var(--sp-primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+/* Primary Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  height: var(--sp-input-height);
+  background: var(--sp-primary);
+  color: var(--sp-white);
+  border: none;
+  border-radius: var(--sp-radius-sm);
+  font-size: var(--sp-font-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--sp-transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-primary:hover {
+  background: var(--sp-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* Small variant for other contexts */
+.btn-primary.small {
+  padding: 0.35rem 0.75rem;
+  font-size: var(--sp-font-sm);
+  height: 28px;
+}
+
+/* Ensure button in form-row matches input height */
+.form-row .btn-primary {
+  height: var(--sp-input-height);
+  padding: 0.5rem 1rem;
+  font-size: var(--sp-font-base);
+}
+
+/* Skill Actions Container */
+.skill-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Edit Button */
+.btn-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  height: 28px;
+  background: var(--sp-bg-medium);
+  color: var(--sp-primary);
+  border: 1.5px solid var(--sp-border);
+  border-radius: var(--sp-radius-sm);
+  font-size: var(--sp-font-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--sp-transition);
+  white-space: nowrap;
+}
+
+.btn-edit:hover {
+  background: var(--sp-primary-light);
+  border-color: var(--sp-primary);
+  color: var(--sp-primary-dark);
+}
+
+/* Confirm/Accept Button */
+.btn-accept {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  height: 28px;
+  background: #d1fae5;
+  color: #047857;
+  border: 1.5px solid #a7f3d0;
+  border-radius: var(--sp-radius-sm);
+  font-size: var(--sp-font-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--sp-transition);
+}
+
+.btn-accept:hover {
+  background: #10b981;
+  color: var(--sp-white);
+  border-color: #10b981;
+  transform: translateY(-1px);
+}
+
+/* Delete Button */
+.btn-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  height: 28px;
+  background: #fee2e2;
+  color: var(--sp-danger);
+  border: 1.5px solid #fca5a5;
+  border-radius: var(--sp-radius-sm);
+  cursor: pointer;
+  transition: var(--sp-transition);
+}
+
+.btn-delete:hover {
+  background: var(--sp-danger);
+  color: var(--sp-white);
+  border-color: var(--sp-danger);
+  transform: translateY(-1px);
+}
+
+/* Skill Item Input (when editing) */
+.student-skill-item[type="text"],
+.student-certificate-item[type="text"] {
+  padding: 0.5rem 0.75rem !important;
+  height: auto !important;
+  min-height: var(--sp-input-height) !important;
+  border: 1.5px solid var(--sp-primary) !important;
+  background: var(--sp-white) !important;
+  color: var(--sp-text-dark) !important;
+  font-size: var(--sp-font-base) !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08) !important;
+}
+
+/* Content inside student-skill-item (input or span) */
+.student-skill-item input {
+  flex: 1;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: var(--sp-font-base) !important;
+  color: #1f2937 !important;
+  outline: none;
+}
+
+.student-skill-item input:focus {
+  outline: none;
+}
+
+.student-skill-item span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #1f2937;
 }

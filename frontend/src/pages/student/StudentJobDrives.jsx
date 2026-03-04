@@ -18,6 +18,7 @@ const StudentJobDrives = () => {
     getDriveDetails,
     student,
     fetchApplications,
+    searchQuery,
   } = useStudent();
 
   const [appliedDriveIds, setAppliedDriveIds] = useState(
@@ -153,11 +154,21 @@ const StudentJobDrives = () => {
 
   // ─── Filter drives ───────────────────────────────────────────────────────────
   const filteredDrives = enrichedDrives.filter(drive => {
-    if (filterCategory === 'all') return true;
-    if (filterCategory === 'on-campus') return drive.type === 'On Campus';
-    if (filterCategory === 'off-campus') return drive.type === 'Off Campus';
-    if (filterCategory === 'applied') return appliedDriveIds.includes(drive._id);
-    return true;
+    const matchesCategory = 
+      filterCategory === 'all' ? true :
+      filterCategory === 'on-campus' ? drive.type === 'On Campus' :
+      filterCategory === 'off-campus' ? drive.type === 'Off Campus' :
+      filterCategory === 'applied' ? appliedDriveIds.includes(drive._id) :
+      true;
+
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = query === '' || 
+      (drive.company || drive.companyName || '').toLowerCase().includes(query) ||
+      (drive.position || '').toLowerCase().includes(query) ||
+      (drive.location || '').toLowerCase().includes(query) ||
+      (drive.salary || '').toLowerCase().includes(query);
+
+    return matchesCategory && matchesSearch;
   });
 
   // ─── Render ──────────────────────────────────────────────────────────────────

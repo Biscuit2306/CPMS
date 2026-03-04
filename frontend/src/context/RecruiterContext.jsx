@@ -18,6 +18,9 @@ export function RecruiterProvider({ children }) {
   const [drivesLoading, setDrivesLoading] = useState(false);
   const [schedulesLoading, setSchedulesLoading] = useState(false);
 
+  // global search term used by the top‑bar search input
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -134,9 +137,17 @@ export function RecruiterProvider({ children }) {
         throw new Error("No changes provided for profile update");
       }
 
+      // Get Firebase ID token for authentication
+      const idToken = await user.getIdToken();
+
       const res = await axios.put(
         `${API_BASE}/api/recruiter/profile/${user.uid}`,
-        updatedData
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
       );
 
       const recruiterData = res.data?.data || res.data;
@@ -599,6 +610,8 @@ export function RecruiterProvider({ children }) {
         recruiter,
         loading,
         error,
+        searchQuery,
+        setSearchQuery,
         updateRecruiter,
         drives,
         drivesLoading,

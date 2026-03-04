@@ -195,10 +195,12 @@ const UnifiedRegister = () => {
 
   return (
     <div className={`register-container role-${role}`}>
-      {/* Decorative Elements */}
-      <div className="decorative-circle circle-1"></div>
-      <div className="decorative-circle circle-2"></div>
-      <div className="decorative-circle circle-3"></div>
+      {/* Animated Background Orbs */}
+      <div className="register-bg-orbs">
+        <div className="register-orb register-orb-1"></div>
+        <div className="register-orb register-orb-2"></div>
+        <div className="register-orb register-orb-3"></div>
+      </div>
 
       <div className="register-wrapper">
         <div className="register-card">
@@ -574,6 +576,11 @@ const UnifiedRegister = () => {
                 </div>
               </form>
             </div>
+
+            {/* Floating Shapes */}
+            <div className="register-floating-shape register-shape-1"></div>
+            <div className="register-floating-shape register-shape-2"></div>
+            <div className="register-floating-shape register-shape-3"></div>
           </div>
         </div>
       </div>

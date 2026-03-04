@@ -7,7 +7,7 @@ import ProjectEvaluator from '../ProjectEvaluator';
 import '../../styles/student-css/studentschedule.css';
 
 const StudentSchedule = () => {
-  const { schedules, schedulesLoading, fetchAllSchedules, student } = useStudent();
+  const { schedules, schedulesLoading, fetchAllSchedules, student, searchQuery } = useStudent();
   const [loading, setLoading] = useState(true);
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -37,8 +37,18 @@ const StudentSchedule = () => {
       filtered = filtered.filter(s => s.status === 'completed');
     }
 
+    // apply global search
+    if (searchQuery && searchQuery.trim() !== '') {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(s =>
+        (s.company || '').toLowerCase().includes(q) ||
+        (s.position || '').toLowerCase().includes(q) ||
+        (s.interviewType || '').toLowerCase().includes(q)
+      );
+    }
+
     setFilteredSchedules(filtered);
-  }, [schedules, selectedFilter]);
+  }, [schedules, selectedFilter, searchQuery]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -71,26 +81,12 @@ const StudentSchedule = () => {
       </div>
 
       {/* Filter Buttons */}
-      <div style={{
-        display: 'flex',
-        gap: '10px',
-        marginBottom: '25px',
-        flexWrap: 'wrap'
-      }}>
+      <div className="schedule-filter-container">
         {['all', 'upcoming', 'completed'].map(filter => (
           <button
             key={filter}
             onClick={() => setSelectedFilter(filter)}
-            style={{
-              padding: '8px 16px',
-              border: '1px solid #ddd',
-              borderRadius: '5px',
-              backgroundColor: selectedFilter === filter ? '#0284c7' : 'white',
-              color: selectedFilter === filter ? 'white' : 'black',
-              cursor: 'pointer',
-              fontWeight: selectedFilter === filter ? '600' : '400',
-              textTransform: 'capitalize'
-            }}
+            className={`schedule-filter-btn ${selectedFilter === filter ? 'active' : ''}`}
           >
             {filter}
           </button>
@@ -98,7 +94,7 @@ const StudentSchedule = () => {
       </div>
 
       {loading || schedulesLoading ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>
+        <div className="centered-loading">
           <p>Loading schedules...</p>
         </div>
       ) : filteredSchedules.length > 0 ? (

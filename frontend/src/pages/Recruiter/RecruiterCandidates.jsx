@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, Briefcase, Eye, MoreVertical, Download, CheckCircle, X, FileText } from 'lucide-react';
+import { Mail, Phone, Briefcase, Eye, MoreVertical, Download, CheckCircle, X, FileText, Sparkles } from 'lucide-react';
 import RecruiterLayout from '../../components/RecruiterLayout';
 import SkillRankingModal from '../../components/SkillRankingModal';
 import { useRecruiter } from '../../context/RecruiterContext';
@@ -7,7 +7,7 @@ import '../../styles/RecruiterCSS/recruitercandidates.css';
 
 const Candidates = () => {
   const [activeMenu, setActiveMenu] = useState('candidates');
-  const { drives, getApplications, updateApplicationStatus, getAllCandidates, fetchDrives, recruiter } = useRecruiter();
+  const { drives, getApplications, updateApplicationStatus, getAllCandidates, fetchDrives, recruiter, searchQuery } = useRecruiter();
   const [allApplications, setAllApplications] = useState([]);
   const [selectedDrive, setSelectedDrive] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -15,6 +15,9 @@ const Candidates = () => {
   const [showModal, setShowModal] = useState(false);
   const [showResumeModal, setShowResumeModal] = useState(false);
   const [selectedResume, setSelectedResume] = useState(null);
+  const [showSkillRanking, setShowSkillRanking] = useState(false);
+  const [selectedDriveForRanking, setSelectedDriveForRanking] = useState(null);
+
 
   // Fetch all candidates
   useEffect(() => {
@@ -23,11 +26,11 @@ const Candidates = () => {
         setLoading(true);
         console.log('📋 DEBUG: Drives available:', drives.length);
         console.log('📋 DEBUG: Drives data:', JSON.stringify(drives, null, 2));
-        
+
         const combined = await getAllCandidates();
         console.log('✅ Got candidates:', combined.length);
         console.log('📋 DEBUG: Candidates data:', JSON.stringify(combined, null, 2));
-        
+
         setAllApplications(combined);
         if (drives.length > 0 && !selectedDrive) {
           setSelectedDrive(drives[0]._id);
@@ -66,14 +69,14 @@ const Candidates = () => {
       console.log('  Drive ID:', driveId);
       console.log('  Candidate ID:', candidateId);
       console.log('  New Status:', newStatus);
-      
+
       await updateApplicationStatus(driveId, candidateId, newStatus);
-      
+
       // 🔥 CRITICAL: Refresh all candidates after status update
       console.log('🔄 Refreshing candidates to reflect status change...');
       const refreshedCandidates = await getAllCandidates();
       setAllApplications(refreshedCandidates);
-      
+
       console.log('✅ Status updated and candidates refreshed');
       alert(`✅ Application status updated to: ${newStatus}`);
     } catch (err) {
@@ -84,7 +87,7 @@ const Candidates = () => {
   };
 
   const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
       case 'shortlisted': return '#10b981';
       case 'interview-scheduled': return '#f59e0b';
       case 'selected': return '#8b5cf6';
@@ -97,44 +100,28 @@ const Candidates = () => {
   if (selectedDrive) {
     displayedCandidates = allApplications.filter(app => app.driveId === selectedDrive);
   }
+  // apply global search filter
+  const query = (searchQuery || '').trim().toLowerCase();
+  if (query) {
+    displayedCandidates = displayedCandidates.filter(c =>
+      (c.studentName || '').toLowerCase().includes(query) ||
+      (c.studentEmail || '').toLowerCase().includes(query) ||
+      (c.position || '').toLowerCase().includes(query)
+    );
+  }
 
   const CandidateModal = ({ candidate, onClose }) => {
     if (!candidate) return null;
-    
+
     return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          padding: '30px',
-          maxWidth: '500px',
-          width: '90%',
-          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-          maxHeight: '80vh',
-          overflowY: 'auto'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ margin: 0 }}>{candidate.studentName}</h2>
-            <button 
-              onClick={onClose}
-              style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}
-            >
-              ×
-            </button>
+      <div className="rc-modal-overlay">
+        <div className="rc-modal-box">
+          <div className="rc-modal-header">
+            <h2 className="rc-modal-title">{candidate.studentName}</h2>
+            <button onClick={onClose} className="rc-modal-close-btn">×</button>
           </div>
 
-          <div style={{ display: 'grid', gap: '15px' }}>
+          <div className="rc-modal-body">
             <div className="recruiter-candidate-row">
               <Mail size={16} />
               <span>{candidate.studentEmail}</span>
@@ -148,21 +135,14 @@ const Candidates = () => {
               <span>{candidate.studentBranch} • CGPA: {candidate.studentCGPA}</span>
             </div>
             <div className="recruiter-candidate-row">
-              <span style={{ fontWeight: 'bold' }}>Position:</span>
+              <span className="rc-modal-label">Position:</span>
               <span>{candidate.position}</span>
             </div>
-            
+
             {candidate.studentResume && (
-              <div style={{
-                padding: '12px',
-                backgroundColor: '#f3f4f6',
-                borderRadius: '6px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px'
-              }}>
+              <div className="rc-modal-resume-row">
                 <FileText size={18} color="#0ea5e9" />
-                <button 
+                <button
                   onClick={(e) => {
                     e.preventDefault();
                     console.log('👀 View Resume clicked for:', {
@@ -174,15 +154,7 @@ const Candidates = () => {
                     setSelectedResume(candidate.studentResume);
                     setShowResumeModal(true);
                   }}
-                  style={{ 
-                    color: '#0ea5e9', 
-                    textDecoration: 'none', 
-                    fontWeight: '500',
-                    border: 'none',
-                    background: 'none',
-                    cursor: 'pointer',
-                    fontSize: 'inherit'
-                  }}
+                  className="rc-modal-resume-btn"
                 >
                   View Resume
                 </button>
@@ -192,7 +164,7 @@ const Candidates = () => {
             {candidate.studentGithub && (
               <div>
                 <strong>GitHub:</strong>{' '}
-                <a href={candidate.studentGithub} target="_blank" rel="noopener noreferrer" style={{ color: '#0ea5e9' }}>
+                <a href={candidate.studentGithub} target="_blank" rel="noopener noreferrer" className="rc-modal-link">
                   {candidate.studentGithub}
                 </a>
               </div>
@@ -201,29 +173,21 @@ const Candidates = () => {
             {candidate.studentLinkedin && (
               <div>
                 <strong>LinkedIn:</strong>{' '}
-                <a href={candidate.studentLinkedin} target="_blank" rel="noopener noreferrer" style={{ color: '#0ea5e9' }}>
+                <a href={candidate.studentLinkedin} target="_blank" rel="noopener noreferrer" className="rc-modal-link">
                   {candidate.studentLinkedin}
                 </a>
               </div>
             )}
 
-            <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e5e7eb' }}>
-              <label style={{ display: 'block', marginBottom: '10px', fontWeight: '500' }}>
-                Update Status:
-              </label>
-              <select 
+            <div className="rc-modal-status-section">
+              <label className="rc-modal-status-label">Update Status:</label>
+              <select
                 onChange={(e) => {
                   handleStatusChange(candidate.driveId, candidate.studentId, e.target.value);
                   onClose();
                 }}
                 defaultValue={candidate.applicationStatus}
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '14px'
-                }}
+                className="rc-modal-status-select"
               >
                 <option value="applied">Applied</option>
                 <option value="shortlisted">Shortlisted</option>
@@ -245,107 +209,41 @@ const Candidates = () => {
       const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
       fullResumeUrl = `${API_BASE}${resumeUrl}`;
     }
-    
+
     console.log('🔍 ResumeModal Debug:', {
       originalUrl: resumeUrl,
       fullUrl: fullResumeUrl,
       isEmpty: !resumeUrl,
       isPdfPath: resumeUrl?.toLowerCase().includes('.pdf')
     });
-    
+
     if (!resumeUrl) {
       return (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: '40px',
-            maxWidth: '500px',
-            width: '90%',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
-            textAlign: 'center'
-          }}>
-            <h3 style={{ margin: '0 0 10px 0', color: '#ef4444', fontSize: '1.2rem' }}>Resume Not Available</h3>
-            <p style={{ margin: '0 0 20px 0', color: '#6b7280', fontSize: '0.95rem' }}>The student has not uploaded a resume yet.</p>
-            <button
-              onClick={onClose}
-              style={{
-                padding: '10px 24px',
-                backgroundColor: '#0ea5e9',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
-            >
-              Close
-            </button>
+        <div className="rc-modal-overlay rc-modal-overlay--dark">
+          <div className="rc-resume-empty-box">
+            <h3 className="rc-resume-empty-title">Resume Not Available</h3>
+            <p className="rc-resume-empty-desc">The student has not uploaded a resume yet.</p>
+            <button onClick={onClose} className="rc-resume-empty-close-btn">Close</button>
           </div>
         </div>
       );
     }
-    
+
     // Check if it's a PDF URL
     const isPdf = fullResumeUrl.toLowerCase().includes('.pdf') || fullResumeUrl.includes('application/pdf');
-    
+
     return (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '10px'
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '12px',
-          padding: '0',
-          width: '95vw',
-          height: '95vh',
-          maxWidth: '100vw',
-          maxHeight: '100vh',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', borderBottom: '1px solid #e5e7eb', backgroundColor: '#f9fafb' }}>
-            <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '700', color: '#1f2937' }}>Resume Preview</h2>
-            <button 
-              onClick={onClose}
-              style={{ background: 'none', border: 'none', fontSize: '32px', cursor: 'pointer', color: '#6b7280', fontWeight: 'bold', padding: '0', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              ×
-            </button>
+      <div className="rc-modal-overlay rc-modal-overlay--dark rc-modal-overlay--padded">
+        <div className="rc-resume-viewer-box">
+          <div className="rc-resume-viewer-header">
+            <h2 className="rc-resume-viewer-title">Resume Preview</h2>
+            <button onClick={onClose} className="rc-resume-viewer-close-btn">×</button>
           </div>
 
           {isPdf ? (
             <iframe
               src={fullResumeUrl}
-              style={{
-                flex: 1,
-                width: '100%',
-                border: 'none',
-                borderRadius: '0px'
-              }}
+              className="rc-resume-iframe"
               title="Resume"
               onError={() => {
                 console.error('❌ Failed to load PDF:', fullResumeUrl);
@@ -353,20 +251,11 @@ const Candidates = () => {
               }}
             />
           ) : (
-            <div style={{
-              flex: 1,
-              overflowY: 'auto',
-              padding: '40px',
-              backgroundColor: '#ffffff',
-              textAlign: 'center',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <img 
-                src={fullResumeUrl} 
-                alt="Resume" 
-                style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+            <div className="rc-resume-img-wrapper">
+              <img
+                src={fullResumeUrl}
+                alt="Resume"
+                className="rc-resume-img"
                 onError={(e) => {
                   console.error('❌ Failed to load image:', fullResumeUrl);
                   alert('Unable to load resume. The file may not exist or is in an unsupported format.');
@@ -375,47 +264,16 @@ const Candidates = () => {
             </div>
           )}
 
-          <div style={{ padding: '20px', borderTop: '1px solid #e5e7eb', backgroundColor: '#f9fafb', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-            <button 
-              onClick={onClose}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#6b7280',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                fontSize: '0.95rem'
-              }}
-            >
-              Close
-            </button>
-            <a 
-              href={fullResumeUrl} 
-              download
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#0ea5e9',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                fontSize: '0.95rem',
-                textDecoration: 'none',
-                display: 'inline-block'
-              }}
-            >
-              Download
-            </a>
+          <div className="rc-resume-viewer-footer">
+            <button onClick={onClose} className="rc-resume-footer-close-btn">Close</button>
+            <a href={fullResumeUrl} download className="rc-resume-footer-download-btn">Download</a>
           </div>
         </div>
       </div>
     );
   };
 
-
+  // New Modal: AI Ranking Results
   return (
     <RecruiterLayout activeMenu={activeMenu} setActiveMenu={setActiveMenu}>
       <div className="recruiter-dashboard-content">
@@ -425,21 +283,7 @@ const Candidates = () => {
             <p>Review and manage student applications</p>
           </div>
           <div className="recruiter-header-actions">
-            <button 
-              onClick={handleRefreshCandidates}
-              disabled={loading}
-              style={{
-                padding: '10px 16px',
-                backgroundColor: '#10b981',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                marginRight: '10px',
-                fontSize: '14px',
-                fontWeight: '600'
-              }}
-            >
+            <button className="rc-refresh-btn" onClick={handleRefreshCandidates} disabled={loading}>
               {loading ? '⏳ Refreshing...' : '🔄 Refresh Candidates'}
             </button>
             <button className="recruiter-export-btn">
@@ -448,40 +292,36 @@ const Candidates = () => {
             </button>
           </div>
         </div>
-
         {/* Drive Filter */}
-        <div style={{marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
-          <button 
-            className={`recruiter-filter-btn ${!selectedDrive ? 'active' : ''}`}
+        <div className="rc-drive-filter-bar">
+          <button
+            className={`rc-drive-filter-btn ${!selectedDrive ? ' rc-drive-filter-btn--active' : ''}`}
             onClick={() => setSelectedDrive(null)}
-            style={{
-              padding: '8px 16px',
-              border: '1px solid #ddd',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              backgroundColor: !selectedDrive ? '#0ea5e9' : 'white',
-              color: !selectedDrive ? 'white' : 'black'
-            }}
           >
             All Drives ({allApplications.length})
           </button>
           {drives.map(drive => (
-            <button 
+            <button
               key={drive._id}
-              className={`recruiter-filter-btn ${selectedDrive === drive._id ? 'active' : ''}`}
+              className={`rc-drive-filter-btn${selectedDrive === drive._id ? ' rc-drive-filter-btn--active' : ''}`}
               onClick={() => setSelectedDrive(drive._id)}
-              style={{
-                padding: '8px 16px',
-                border: '1px solid #ddd',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                backgroundColor: selectedDrive === drive._id ? '#0ea5e9' : 'white',
-                color: selectedDrive === drive._id ? 'white' : 'black'
-              }}
             >
               {drive.position} ({displayedCandidates.filter(c => c.driveId === drive._id).length})
             </button>
           ))}
+
+          {/* AI Rank Candidates Button */}
+          {selectedDrive && displayedCandidates.length > 0 && (
+            <button className="rc-ai-rank-btn" onClick={() => {
+              const driveData = drives.find(d => d._id === selectedDrive);
+              const candidatesForDrive = displayedCandidates.filter(c => c.driveId === selectedDrive);
+              setSelectedDriveForRanking({ ...driveData, filterCandidates: candidatesForDrive });
+              setShowSkillRanking(true);
+            }}>
+              <Sparkles size={16} />
+              AI Rank Candidates
+            </button>
+          )}
         </div>
 
         {loading ? (
@@ -489,8 +329,9 @@ const Candidates = () => {
         ) : (
           <div className="recruiter-candidates-grid">
             {displayedCandidates && displayedCandidates.length > 0 ? (
-              displayedCandidates.map((candidate) => (
-                <div key={candidate._id || candidate.studentId} className="recruiter-candidate-card">
+              displayedCandidates.map((candidate, index) => (
+                <div key={candidate._id || candidate.studentId || `candidate-${index}`}
+                  className="recruiter-candidate-card">
                   <div className="recruiter-candidate-header">
                     <div className="recruiter-candidate-avatar-large">
                       {candidate.studentName.split(' ').map(n => n[0]).join('')}
@@ -524,19 +365,16 @@ const Candidates = () => {
                     </div>
                     <div className="recruiter-candidate-row">
                       <span className="recruiter-label">Status:</span>
-                      <span 
-                        className={`recruiter-status-badge recruiter-status-${candidate.applicationStatus.toLowerCase().replace(' ', '-')}`}
-                        style={{color: getStatusColor(candidate.applicationStatus), padding: '4px 8px', borderRadius: '4px', backgroundColor: getStatusColor(candidate.applicationStatus) + '20'}}
-                      >
+                      <span className={`recruiter-status-badge recruiter-status-${candidate.applicationStatus.toLowerCase().replace(' ', '-')}`}>
                         {candidate.applicationStatus}
                       </span>
                     </div>
                     {/* Student Application Links */}
-                    <div style={{marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #e5e7eb'}}>
-                      <p style={{margin: '0 0 8px 0', fontSize: '12px', fontWeight: '600', color: '#666'}}>Application Links:</p>
-                      <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
+                    <div className="rc-card-links-section">
+                      <p className="rc-card-links-label">Application Links:</p>
+                      <div className="rc-card-links-row">
                         {candidate.studentResume && (
-                          <button 
+                          <button
                             onClick={() => {
                               console.log('📄 Resume button clicked for:', {
                                 studentName: candidate.studentName,
@@ -547,46 +385,34 @@ const Candidates = () => {
                               setSelectedResume(candidate.studentResume);
                               setShowResumeModal(true);
                             }}
-                            style={{padding: '6px 12px', backgroundColor: '#f0f0f0', borderRadius: '4px', fontSize: '12px', color: '#0ea5e9', textDecoration: 'none', border: '1px solid #ddd', cursor: 'pointer'}}
+                            className="rc-card-link-btn"
                           >
                             📄 Resume
                           </button>
                         )}
                         {candidate.studentPortfolio && (
-                          <a href={candidate.studentPortfolio} target="_blank" rel="noopener noreferrer"
-                            style={{padding: '6px 12px', backgroundColor: '#f0f0f0', borderRadius: '4px', fontSize: '12px', color: '#0ea5e9', textDecoration: 'none', border: '1px solid #ddd'}}
-                          >
+                          <a href={candidate.studentPortfolio} target="_blank" rel="noopener noreferrer" className="rc-card-link-btn rc-card-link-btn--anchor">
                             🌐 Portfolio
                           </a>
                         )}
                         {candidate.studentGithub && (
-                          <a href={candidate.studentGithub} target="_blank" rel="noopener noreferrer"
-                            style={{padding: '6px 12px', backgroundColor: '#f0f0f0', borderRadius: '4px', fontSize: '12px', color: '#0ea5e9', textDecoration: 'none', border: '1px solid #ddd'}}
-                          >
+                          <a href={candidate.studentGithub} target="_blank" rel="noopener noreferrer" className="rc-card-link-btn rc-card-link-btn--anchor">
                             🔗 GitHub
                           </a>
                         )}
                         {candidate.studentLinkedin && (
-                          <a href={candidate.studentLinkedin} target="_blank" rel="noopener noreferrer"
-                            style={{padding: '6px 12px', backgroundColor: '#f0f0f0', borderRadius: '4px', fontSize: '12px', color: '#0ea5e9', textDecoration: 'none', border: '1px solid #ddd'}}
-                          >
+                          <a href={candidate.studentLinkedin} target="_blank" rel="noopener noreferrer" className="rc-card-link-btn rc-card-link-btn--anchor">
                             💼 LinkedIn
                           </a>
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className="recruiter-candidate-actions" style={{display: 'flex', gap: '10px', marginTop: '10px'}}>
-                    <select 
+                  <div className="recruiter-candidate-actions rc-card-actions">
+                    <select
                       onChange={(e) => handleStatusChange(candidate.driveId, candidate.studentId, e.target.value)}
                       defaultValue={candidate.applicationStatus}
-                      style={{
-                        flex: 1,
-                        padding: '8px',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        fontSize: '14px'
-                      }}
+                      className="rc-card-status-select"
                     >
                       <option value="applied">Applied</option>
                       <option value="shortlisted">Shortlisted</option>
@@ -594,7 +420,7 @@ const Candidates = () => {
                       <option value="selected">Selected</option>
                       <option value="rejected">Rejected</option>
                     </select>
-                    <button 
+                    <button
                       className="recruiter-view-profile-btn"
                       onClick={() => {
                         setSelectedCandidate(candidate);
@@ -606,17 +432,24 @@ const Candidates = () => {
                   </div>
                 </div>
               ))
-            ) : (
-              <div style={{gridColumn: '1 / -1', textAlign: 'center', padding: '40px'}}>
-                <p>No applications yet for this drive.</p>
+                ) : (
+              <div className="rc-empty-state">
+                <p>{query
+                    ? `No candidates match "${searchQuery}"`
+                    : 'No applications yet for this drive.'}
+                </p>
               </div>
             )}
           </div>
         )}
+
+
       </div>
+
+
       {showModal && (
-        <CandidateModal 
-          candidate={selectedCandidate} 
+        <CandidateModal
+          candidate={selectedCandidate}
           onClose={() => {
             setShowModal(false);
             setSelectedCandidate(null);
@@ -624,7 +457,7 @@ const Candidates = () => {
         />
       )}
       {showResumeModal && (
-        <ResumeModal 
+        <ResumeModal
           resumeUrl={selectedResume}
           onClose={() => {
             setShowResumeModal(false);
@@ -633,7 +466,13 @@ const Candidates = () => {
         />
       )}
       {/* Skill Ranking Modal */}
-      <SkillRankingModal />
+      {selectedDriveForRanking && (
+        <SkillRankingModal
+          drive={selectedDriveForRanking}
+          isOpen={showSkillRanking}
+          onClose={() => setShowSkillRanking(false)}
+        />
+      )}
     </RecruiterLayout>
   );
 };

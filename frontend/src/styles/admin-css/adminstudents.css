@@ -1,20 +1,33 @@
-/* AdminStudents.css - Table View */
-@import './AdminShared.css';
+/* =========================================================
+   ADMIN STUDENTS PAGE - SPECIFIC STYLES
+   Student-inspired design with admin colors
+   ========================================================= */
+
+
 
 .admin-students-wrapper {
   padding: 1.5rem;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  min-height: 100vh;
 }
 
 .admin-students-search {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin: 1.5rem 0;
   padding: 0.75rem 1rem;
   background: white;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 12px;
   max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.admin-students-search:focus-within {
+  box-shadow: 0 4px 12px rgba(33, 15, 55, 0.1);
+  border-color: #210f37;
 }
 
 .admin-students-search input {
@@ -23,6 +36,7 @@
   outline: none;
   font-size: 0.95rem;
   color: #374151;
+  font-weight: 500;
 }
 
 .admin-students-search input::placeholder {
@@ -31,266 +45,342 @@
 
 .admin-students-table-wrapper {
   background: white;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  overflow-x: auto; /* allow horizontal scroll on small screens */
+}
+
+.admin-students-table-wrapper:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
 }
 
 .admin-students-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* fixed layout for controlled column widths */
 }
+
+/* Column widths */
+.admin-students-table th:nth-child(1),
+.admin-students-table td:nth-child(1) { width: 14%; white-space: normal; } /* Name */
+.admin-students-table th:nth-child(2),
+.admin-students-table td:nth-child(2) { width: 23%; white-space: normal; } /* Email */
+.admin-students-table th:nth-child(3),
+.admin-students-table td:nth-child(3) { width: 9%;  } /* Roll No */
+.admin-students-table th:nth-child(4),
+.admin-students-table td:nth-child(4) { width: 10%; } /* Branch */
+.admin-students-table th:nth-child(5),
+.admin-students-table td:nth-child(5) { width: 8%;  } /* CGPA */
+.admin-students-table th:nth-child(6),
+.admin-students-table td:nth-child(6) { width: 12%; } /* Applications */
+.admin-students-table th:nth-child(7),
+.admin-students-table td:nth-child(7) { width: 11%; } /* Status */
+.admin-students-table th:nth-child(8),
+.admin-students-table td:nth-child(8) { width: 14%; } /* Actions */
 
 .admin-students-table thead {
-  background: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
+  background: linear-gradient(135deg, #210F37 0%, #2d1a4a 100%);
+  color: #ffffff;
+  border-bottom: none;
 }
 
+
 .admin-students-table th {
-  padding: 1rem;
+  padding: 0.85rem 0.75rem;
   text-align: left;
-  font-weight: 600;
-  color: #374151;
-  font-size: 0.9rem;
+  font-weight: 700;
+  color: white;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .admin-students-table td {
-  padding: 1rem;
+  padding: 0.85rem 0.75rem;
   border-bottom: 1px solid #f3f4f6;
   color: #6b7280;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+    border-bottom: 1px solid #e5e7eb;
+
 }
 
-.admin-students-table tbody tr:hover {
+/* .admin-students-table tbody tr:hover {
   background: #f9fafb;
-}
+  transition: all 0.2s ease;
+} */
 
 .admin-student-name {
   font-weight: 600;
   color: #1f2937;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+ white-space: normal;  /* add this */
+  word-break: break-word;
 }
 
 .admin-student-email {
   color: #6b7280;
-  font-size: 0.9rem;
-}
-
-.admin-app-count {
-  display: inline-block;
-  padding: 0.35rem 0.75rem;
-  background: #dbeafe;
-  color: #1e40af;
-  border-radius: 6px;
-  font-weight: 500;
   font-size: 0.85rem;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.admin-status-badge {
-  display: inline-block;
-  padding: 0.35rem 0.75rem;
-  border-radius: 6px;
-  font-weight: 500;
-  font-size: 0.85rem;
-  color: white;
-}
-
+/* Action buttons — always in a single row */
 .admin-action-buttons {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
-.admin-view-btn,
-.admin-block-btn,
-.admin-delete-btn,
-.admin-unblock-btn {
-  padding: 0.5rem 0.75rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
+.admin-action-buttons button {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
-  font-weight: 500;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.admin-action-buttons button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
 }
 
 .admin-view-btn {
-  background: #e0e7ff;
-  color: #4f46e5;
+  background: #e0f2fe;
+  color: #0369a1;
 }
 
 .admin-view-btn:hover {
-  background: #c7d2fe;
+  background: #bae6fd;
 }
 
 .admin-block-btn {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #fef9c3;
+  color: #b45309;
 }
 
 .admin-block-btn:hover {
-  background: #fecaca;
-}
-
-.admin-delete-btn {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-.admin-delete-btn:hover {
-  background: #fecaca;
+  background: #fde68a;
 }
 
 .admin-unblock-btn {
   background: #dcfce7;
-  color: #16a34a;
+  color: #15803d;
 }
 
 .admin-unblock-btn:hover {
   background: #bbf7d0;
 }
 
-/* Modal Styles */
-.admin-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
+.admin-delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.admin-delete-btn:hover {
+  background: #fecaca;
+}
+
+/* Status badge */
+.admin-status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+}
+
+/* App count badge */
+.admin-app-count {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  background: #ede9fe;
+  color: #5b21b6;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
-.admin-modal-content {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 600px;
+.admin-modal-reason-textarea {
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
-}
-
-.admin-modal-content h2 {
-  color: #1f2937;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.admin-modal-body {
-  margin: 1.5rem 0;
-  color: #6b7280;
-}
-
-.admin-detail-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.admin-detail-row label {
-  font-weight: 600;
+  min-height: 80px;
+  padding: 10px 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-family: 'Poppins', inherit;
+  font-size: 14px;
   color: #374151;
-}
-
-.admin-detail-row span {
-  color: #6b7280;
-}
-
-.admin-detail-row a {
-  color: #4f46e5;
-  text-decoration: none;
-}
-
-.admin-detail-row a:hover {
-  text-decoration: underline;
-}
-
-.admin-modal-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #f3f4f6;
-}
-
-.admin-cancel-btn,
-.admin-block-btn,
-.admin-delete-btn,
-.admin-unblock-btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
+  background: #fafbfc;
+  resize: vertical;
   transition: all 0.2s ease;
 }
 
-.admin-cancel-btn {
-  background: #f3f4f6;
-  color: #374151;
+.admin-modal-reason-textarea:focus {
+  outline: none;
+  border-color: #210f37;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(33, 15, 55, 0.1);
 }
 
-.admin-cancel-btn:hover {
-  background: #e5e7eb;
+/* ==================== ACTION MODAL HEADER ==================== */
+.admin-action-modal {
+  overflow: visible;
 }
 
-.admin-cancel-btn:disabled {
-  opacity: 0.5;
+.admin-details-modal {
+  overflow: visible;
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #210F37 0%, #2d1a4a 100%);
+  padding: 20px 24px;
+  border-radius: 12px 12px 0 0;
+  border-bottom: none;
+}
+
+.admin-modal-header h2 {
+  color: #ffffff !important;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.admin-modal-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-modal-close-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.admin-modal-close-btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-.admin-block-btn {
+.admin-modal-description {
+  color: #4b5563;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+}
+
+.admin-modal-actions-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0 0 12px 12px;
+}
+
+.admin-modal-cancel-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 1.5px solid #d1d5db;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-modal-cancel-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.admin-modal-cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-modal-action-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.admin-modal-action-btn--block {
   background: #f59e0b;
   color: white;
 }
 
-.admin-block-btn:hover {
+.admin-modal-action-btn--block:hover:not(:disabled) {
   background: #d97706;
 }
 
-.admin-block-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.admin-delete-btn {
+.admin-modal-action-btn--delete {
   background: #ef4444;
   color: white;
 }
 
-.admin-delete-btn:hover {
+.admin-modal-action-btn--delete:hover:not(:disabled) {
   background: #dc2626;
 }
 
-.admin-delete-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.admin-unblock-btn {
+.admin-modal-action-btn--unblock {
   background: #10b981;
   color: white;
 }
 
-.admin-unblock-btn:hover {
+.admin-modal-action-btn--unblock:hover:not(:disabled) {
   background: #059669;
 }
 
-.admin-unblock-btn:disabled {
-  opacity: 0.5;
+.admin-modal-action-btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -336,6 +426,13 @@
   gap: 0.8rem;
 }
 
+.admin-filter-buttons-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
   .admin-students-grid {
     grid-template-columns: 1fr;
@@ -344,41 +441,36 @@
   .admin-student-actions {
     grid-template-columns: 1fr;
   }
+
+  .admin-students-table {
+    table-layout: auto;
+  }
 }
 
-/* ==================== LOADING STATE ==================== */
-.admin-loading-container {
-  text-align: center;
-  padding: 40px;
-  color: #6b7280;
+.admin-students-table th,
+.admin-students-table td {
+  border-right: 1px solid #e5e7eb;
 }
 
-.admin-loading-container p {
-  margin: 0;
-  font-size: 1rem;
+/* Remove the last column's right border */
+.admin-students-table th:last-child,
+.admin-students-table td:last-child {
+  border-right: none;
+}
+.admin-students-table thead {
+  border-bottom: 2px solid #e5e7eb;
 }
 
-/* ==================== EMPTY STATE ==================== */
-.admin-empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #9ca3af;
+/* Alternating row colors */
+.admin-students-table tbody tr:nth-child(odd) {
+  background-color: #f3f4f6;
 }
 
-.admin-empty-state svg {
-  opacity: 0.5;
-  margin: 0 auto 10px;
-  display: block;
+.admin-students-table tbody tr:nth-child(even) {
+  background-color: #ffffff;
 }
 
-.admin-empty-state p {
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-/* ==================== BUTTONS CONTAINER ==================== */
-.admin-filter-buttons-container {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+/* Keep hover consistent */
+/* .admin-students-table tbody tr:hover {
+  background-color: #e5e7eb;
+} */

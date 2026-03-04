@@ -18,6 +18,7 @@ export function StudentProvider({ children }) {
   const [applications, setApplications] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [schedulesLoading, setSchedulesLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -172,9 +173,17 @@ export function StudentProvider({ children }) {
         throw new Error("No changes provided for profile update");
       }
 
+      // Get Firebase ID token for authentication
+      const idToken = await user.getIdToken();
+
       const res = await axios.put(
         `${API_BASE}/api/students/profile/${user.uid}`,
-        updatedData
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
       );
 
       const studentData = res.data?.data || res.data;
@@ -424,6 +433,8 @@ export function StudentProvider({ children }) {
         fetchSchedules,
         fetchAllSchedules,
         syncStudentSchedules,
+        searchQuery,
+        setSearchQuery,
       }}
     >
       {children}

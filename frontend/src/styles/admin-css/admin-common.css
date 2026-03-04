@@ -1,0 +1,771 @@
+/* =========================================================
+   ADMIN COMMON STYLES
+   Shared styles used across all admin pages
+   All general layouts, buttons, modals, and utilities
+   ========================================================= */
+
+/* ==================== PAGE WRAPPER ==================== */
+.admin-page-wrapper {
+  padding: 24px;
+  background: #f9fafb;
+  min-height: 100vh;
+}
+
+/* ==================== PAGE HEADER/BANNER ==================== */
+.admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.admin-page-header > div:first-child h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+}
+
+.admin-page-header > div:first-child p {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Student-style banner */
+.admin-banner {
+     background: linear-gradient(135deg, #210f37 0%, #5a2d82 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 10px 30px rgba(33, 15, 55, 0.2);
+}
+
+.admin-banner-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.admin-banner-text {
+  flex: 1;
+}
+
+.admin-banner h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.5rem 0;
+}
+
+.admin-banner p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.admin-banner-icon {
+  color: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+/* ==================== STATS GRID ==================== */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-stat-card {
+  background: white;
+  padding: 1.75rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.admin-stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #210f37, #5a2d82);
+  color: white;
+}
+
+.admin-stat-content h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.25rem 0;
+}
+
+.admin-stat-content p {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ==================== CARD GRID ==================== */
+.admin-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  border-left: 4px solid #210f37;
+}
+
+.admin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.admin-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #210f37, #5a2d82);
+  color: white;
+  font-size: 1.5rem;
+}
+
+.admin-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.admin-card-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0 0;
+}
+
+/* ==================== FILTER SECTION ==================== */
+.admin-filter-section {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-filter-btn {
+  padding: 0.625rem 1.25rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  color: #210f37;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-filter-btn:hover {
+  border-color: #210f37;
+  color: #210f37;
+  background: #f9fafb;
+}
+
+.admin-filter-btn.active {
+  background: white;
+  border-color: #210f37;
+  color: #210f37;
+  box-shadow: 0 2px 8px rgba(33, 15, 55, 0.1);
+}
+
+/* ==================== SEARCH BAR ==================== */
+.admin-search-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  max-width: 400px;
+}
+
+.admin-search-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+  color: #374151;
+}
+
+.admin-search-input input::placeholder {
+  color: #9ca3af;
+}
+
+.admin-search-input svg {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+/* ==================== MESSAGES/BANNERS ==================== */
+.admin-success-banner,
+.admin-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideInDown 0.3s ease-out;
+}
+
+.admin-success-banner {
+  background: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+.admin-error-banner {
+  background: #fee2e2;
+  color: #7f1d1d;
+  border-left: 4px solid #ef4444;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ==================== TABLES ==================== */
+.admin-table-wrapper {
+  background: white;
+  border-radius: 16px;
+  overflow: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* .admin-table thead {
+  background: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+} */
+
+.admin-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  font-size: 13px;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.admin-table td {
+  padding: 13px 16px;
+  color: #6b7280;
+}
+
+/* ==================== STATUS BADGE ==================== */
+/* .admin-status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: white;
+} */
+
+.admin-status-badge {
+     position: absolute;
+    top: 1.75rem;
+    right: 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    padding: 0.28rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+.admin-status-badge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  /* background-color: #16a34a; green dot */
+  flex-shrink: 0;
+  background: #22c55e;
+ box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+}
+
+.admin-status-badge--active {
+ background: #dcfce7;
+    color: #15803d;
+}
+
+.admin-status-badge--active::before {
+  background-color: #16a34a;
+}
+
+.admin-status-badge--blocked {
+  background-color: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
+.admin-status-badge--blocked::before {
+  background-color: #f59e0b;
+}
+
+.admin-status-badge--deleted {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.admin-status-badge--deleted::before {
+  background-color: #ef4444;
+}
+
+/* ==================== COUNTERS/BADGES ==================== */
+.admin-app-count,
+.admin-count-badge {
+  display: inline-block;
+  min-width: 24px;
+  padding: 4px 8px;
+  background: #dbeafe;
+  color: #0369a1;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* ==================== ACTION BUTTONS ==================== */
+.admin-action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-view-btn,
+.admin-block-btn,
+.admin-unblock-btn,
+.admin-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.admin-view-btn {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.admin-view-btn:hover {
+  background: #0369a1;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+}
+
+.admin-block-btn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.admin-block-btn:hover {
+  background: #f59e0b;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.admin-unblock-btn {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.admin-unblock-btn:hover {
+  background: #10b981;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.admin-delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.admin-delete-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* ==================== MODALS ==================== */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+  padding: 16px;
+}
+
+.admin-modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.admin-modal-content h2 {
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  padding: 24px 24px 0 24px;
+}
+
+.admin-modal-body {
+  padding: 20px 24px;
+}
+
+.admin-modal-body p {
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+}
+
+.admin-modal-body textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 8px;
+  margin-top: 15px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  font-family: inherit;
+  font-size: 13px;
+  color: #1f2937;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.admin-modal-body textarea:focus {
+  outline: none;
+  border-color: #210f37;
+  box-shadow: 0 0 0 3px rgba(33, 15, 55, 0.1);
+}
+
+.admin-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-modal-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.admin-cancel-btn {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.admin-cancel-btn:hover {
+  background: #d1d5db;
+}
+
+.admin-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-modal-actions .admin-block-btn {
+  background: #f59e0b;
+  color: white;
+}
+
+.admin-modal-actions .admin-block-btn:hover {
+  background: #d97706;
+}
+
+.admin-modal-actions .admin-block-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-modal-actions .admin-delete-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.admin-modal-actions .admin-delete-btn:hover {
+  background: #dc2626;
+}
+
+.admin-modal-actions .admin-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-modal-actions .admin-unblock-btn {
+  background: #10b981;
+  color: white;
+}
+
+.admin-modal-actions .admin-unblock-btn:hover {
+  background: #059669;
+}
+
+.admin-modal-actions .admin-unblock-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== DETAIL ROWS ==================== */
+.admin-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-detail-row label {
+  font-weight: 600;
+  color: #374151;
+  min-width: 150px;
+}
+
+.admin-detail-row span {
+  color: #6b7280;
+  text-align: right;
+  flex: 1;
+  word-break: break-word;
+}
+
+.admin-detail-row a {
+  color: #0369a1;
+  text-decoration: none;
+}
+
+.admin-detail-row a:hover {
+  text-decoration: underline;
+}
+
+.admin-detail-row:last-child {
+  border-bottom: none;
+}
+
+/* ==================== LOADING & EMPTY STATES ==================== */
+.admin-loading-container,
+.admin-empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+}
+
+.admin-loading-container {
+  color: #6b7280;
+}
+
+.admin-empty-state svg {
+  opacity: 0.5;
+  margin: 0 auto 10px;
+  display: block;
+}
+
+.admin-empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .admin-page-wrapper {
+    padding: 16px;
+  }
+
+  .admin-page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-page-header > div:first-child {
+    width: 100%;
+  }
+
+  .admin-table {
+    font-size: 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 12px;
+  }
+
+  .admin-modal-content {
+    max-width: 100%;
+    margin: 16px;
+  }
+
+  .admin-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .admin-modal-actions button {
+    width: 100%;
+  }
+
+  .admin-filter-section {
+    gap: 6px;
+  }
+
+  .admin-filter-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .admin-action-buttons {
+    gap: 4px;
+  }
+
+  .admin-view-btn,
+  .admin-block-btn,
+  .admin-unblock-btn,
+  .admin-delete-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-page-wrapper {
+    padding: 12px;
+  }
+
+  .admin-page-header > div:first-child h1 {
+    font-size: 20px;
+  }
+
+  .admin-detail-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .admin-detail-row label {
+    min-width: auto;
+  }
+
+  .admin-detail-row span {
+    text-align: left;
+  }
+}

@@ -1,11 +1,15 @@
-/* Companies Page Styles */
+/* ============================================================
+   Recruiter Companies Page Styles
+   recruitercompanies.css
+   ============================================================ */
 
+/* ── Add Company Button ────────────────────────────────────── */
 .recruiter-add-company-btn {
-  display: flex;
+  /* display: flex;
   align-items: center;
   gap: 0.6rem;
   padding: 0.9rem 1.6rem;
-  background: #4F1C51;
+  background:  #2563EB;
   color: white;
   border: none;
   border-radius: 12px;
@@ -13,25 +17,48 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap; */
+  padding: 0.625rem 1.25rem;
+    background: #FFF;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    color: #4F1C51;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .recruiter-add-company-btn:hover {
-  background: #3d1640;
+  background:  #ffff;
   transform: scale(1.05);
 }
 
+/* ── Companies Grid ────────────────────────────────────────── */
 .recruiter-companies-grid {
-  display: grid;
+  /* display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 1.5rem; */
+
+  display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
 }
 
+/* ── Company Card ──────────────────────────────────────────── */
 .recruiter-company-card {
-  background: white;
+  /* background: white;
   border-radius: 16px;
   padding: 1.9rem;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+  transition: all 0.3s ease; */
+  position: relative;
+  background: white;
+    border-radius: 14px;
+    padding: 1.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid #4F1C51;
 }
 
 .recruiter-company-card:hover {
@@ -39,13 +66,19 @@
   box-shadow: 0 10px 30px rgba(79, 28, 81, 0.2);
 }
 
+/* ── Card Header ───────────────────────────────────────────── */
 .recruiter-company-card-header {
-  display: flex;
+  /* display: flex;
   align-items: center;
   gap: 1.2rem;
   margin-bottom: 1.6rem;
   padding-bottom: 1.2rem;
-  border-bottom: 2px solid #f1f5f9;
+  border-bottom: 2px solid #f1f5f9; */
+
+  display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .recruiter-company-logo-xl {
@@ -59,6 +92,7 @@
   color: white;
   font-weight: 700;
   font-size: 1.8rem;
+  flex-shrink: 0;
 }
 
 .recruiter-company-title h3 {
@@ -68,11 +102,13 @@
   margin-bottom: 0.4rem;
 }
 
+/* ── Active / Inactive Badge ───────────────────────────────── */
 .recruiter-active-badge {
   padding: 0.3rem 0.9rem;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 600;
+  display: inline-block;
 }
 
 .recruiter-active-badge.active {
@@ -85,6 +121,7 @@
   color: #6b7280;
 }
 
+/* ── Company Stats ─────────────────────────────────────────── */
 .recruiter-company-stats {
   display: flex;
   flex-direction: column;
@@ -93,12 +130,15 @@
 }
 
 .recruiter-company-stat {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem;
   background: #f8fafc;
-  border-radius: 10px;
+  border-radius: 10px; */
+ display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .recruiter-stat-label {
@@ -110,9 +150,10 @@
 .recruiter-stat-value {
   color: #1f2937;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
+/* ── View Details Button ───────────────────────────────────── */
 .recruiter-company-details-btn {
   display: inline-flex;
   align-items: center;
@@ -120,7 +161,7 @@
   gap: 0.5rem;
   width: 100%;
   padding: 0.9rem;
-  background: #4F1C51;
+  background: #2563EB;
   color: white;
   border: none;
   border-radius: 10px;
@@ -131,11 +172,11 @@
 }
 
 .recruiter-company-details-btn:hover {
-  background: #3d1640;
+  background: #2563EB;
   transform: scale(1.02);
 }
 
-/* Empty state */
+/* ── Empty State ───────────────────────────────────────────── */
 .company-empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -158,54 +199,229 @@
   color: #9ca3af;
 }
 
-/* Company Details Modal */
+/* ── Company Details Modal ─────────────────────────────────── */
 .company-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgba(15, 10, 20, 0.65);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
+  padding: 1rem;
+  animation: cmo-fade-in 0.2s ease;
+}
+
+@keyframes cmo-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .company-modal-content {
-  background-color: white;
-  border-radius: 8px;
-  padding: 30px;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 88vh;
   overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(79, 28, 81, 0.18), 0 4px 16px rgba(0,0,0,0.12);
+  animation: cmo-slide-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  scrollbar-width: thin;
+  scrollbar-color: #e9d5f0 transparent;
+}
+
+.company-modal-content::-webkit-scrollbar { width: 5px; }
+.company-modal-content::-webkit-scrollbar-track { background: transparent; }
+.company-modal-content::-webkit-scrollbar-thumb { background: #e9d5f0; border-radius: 10px; }
+
+@keyframes cmo-slide-up {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .company-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  padding: 1rem;
+  border-bottom: 1px solid #f3e8f5;
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, #4F1C51 0%, #6b2870 100%);;
+  z-index: 10;
 }
 
 .company-modal-title {
   margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffff;
+  letter-spacing: -0.01em;
 }
 
 .company-modal-close-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1.5px solid #e9d5f0;
+  background: #faf5fc;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.company-modal-close-btn:hover {
+  background: #4F1C51;
+  border-color: #4F1C51;
+  color: #ffffff;
+    transform: rotate(90deg);
 }
 
 .company-modal-body {
-  display: grid;
-  gap: 15px;
+  padding: 1.5rem 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
+/* ── Modal Hero ── */
+.cmo-hero {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #faf5fc 0%, #f3e8f5 100%);
+  border-radius: 14px;
+  border: 1px solid #ead5f0;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.cmo-hero-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4F1C51, #7c3aed);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(79, 28, 81, 0.3);
+}
+
+.cmo-hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.cmo-hero-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1f2937;
+  letter-spacing: -0.02em;
+}
+
+.cmo-hero-status {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.28rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cmo-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.cmo-hero-status--active  { background: #dcfce7; color: #15803d; }
+.cmo-hero-status--active .cmo-status-dot  { background: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,0.25); }
+.cmo-hero-status--inactive { background: #f3f4f6; color: #4b5563; }
+.cmo-hero-status--inactive .cmo-status-dot { background: #9ca3af; }
+
+/* ── Modal Stats Grid ── */
+.cmo-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.cmo-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+
+.cmo-stat-card:hover { border-color: #e9d5f0; }
+
+.cmo-stat-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cmo-stat-value {
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.cmo-stat-value--blue   { color: #2563eb; }
+.cmo-stat-value--amber  { color: #d97706; }
+.cmo-stat-value--purple { color: #7c3aed; }
+
+/* ── Modal Info Row ── */
+.cmo-info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.cmo-info-row svg { color: #4F1C51; flex-shrink: 0; }
+
+.cmo-info-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.cmo-info-link:hover { text-decoration: underline; }
+
+/* ── Modal Status Row (keep old class working) ── */
 .company-modal-status-row {
   padding: 12px;
   background-color: #f3f4f6;
@@ -217,6 +433,7 @@
 
 .company-modal-status-label {
   font-weight: bold;
+  color: #1f2937;
 }
 
 .company-modal-status-value {
@@ -224,6 +441,7 @@
   font-weight: 500;
 }
 
+/* ── Modal Stat Blocks (keep old classes working) ── */
 .company-modal-stat-block {
   display: flex;
   flex-direction: column;
@@ -235,18 +453,11 @@
   margin-top: 5px;
 }
 
-.company-modal-stat-blue {
-  color: #0ea5e9;
-}
+.company-modal-stat-blue   { color: #0ea5e9; }
+.company-modal-stat-amber  { color: #f59e0b; }
+.company-modal-stat-purple { color: #8b5cf6; }
 
-.company-modal-stat-amber {
-  color: #f59e0b;
-}
-
-.company-modal-stat-purple {
-  color: #8b5cf6;
-}
-
+/* ── Modal Website / Size Rows (keep old classes working) ── */
 .company-modal-website-row {
   display: flex;
   align-items: center;
@@ -262,16 +473,123 @@
   gap: 10px;
 }
 
-.company-modal-icon {
-  color: #0ea5e9;
+.company-modal-icon { color: #0ea5e9; flex-shrink: 0; }
+
+.company-modal-link { color: #0ea5e9; text-decoration: none; }
+.company-modal-link:hover { text-decoration: underline; }
+
+/* ══════════════════════════════════════════════════════════════
+   NEW: Professional Company Card Header
+   Mirrors the rd-* / rcc-* pattern from Drives & Candidates.
+   Only these rco-* classes are new — nothing above is touched.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Wrapper */
+.rco-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.25rem;
 }
 
-.company-modal-link {
-  color: #0ea5e9;
-  text-decoration: none;
+/* Status pill — absolute top-right of the card */
+.rco-status-pill {
+  position: absolute;
+  top: 1.75rem;
+  right: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.28rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
-/* Responsive */
+.rco-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Active */
+.rco-pill--active {
+  background: #dcfce7;
+  color: #15803d;
+}
+.rco-pill--active .rco-status-dot {
+  background: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+}
+
+/* Inactive */
+.rco-pill--inactive {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+.rco-pill--inactive .rco-status-dot {
+  background: #9ca3af;
+}
+
+/* Avatar + name row — padding-right keeps text away from badge */
+.rco-identity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-right: 6rem;
+  width: 100%;
+}
+
+/* Avatar square */
+.rco-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4F1C51, #7c3aed);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Title block */
+.rco-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.rco-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.rco-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #6b7280;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .recruiter-companies-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -307,7 +625,6 @@
     width: 60px;
     height: 60px;
     font-size: 1.4rem;
-    flex-shrink: 0;
   }
 
   .recruiter-company-title h3 {
@@ -330,7 +647,6 @@
   }
 
   .recruiter-company-details-btn {
-    width: 100%;
     padding: 0.8rem;
     font-size: 0.9rem;
   }
@@ -348,6 +664,11 @@
     width: 100%;
     justify-content: center;
   }
+
+  .cmo-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .company-modal-content { border-radius: 16px; }
+  .company-modal-header { padding: 1.25rem 1.25rem 0.85rem; }
+  .company-modal-body { padding: 1.25rem; }
 }
 
 @media (max-width: 480px) {
@@ -386,8 +707,8 @@
   }
 
   .recruiter-company-stat {
-    display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 0.2rem;
   }
 
@@ -400,7 +721,6 @@
   }
 
   .recruiter-company-details-btn {
-    width: 100%;
     padding: 0.7rem;
     font-size: 0.8rem;
   }
@@ -421,4 +741,21 @@
     padding: 0.7rem 1.2rem;
     font-size: 0.85rem;
   }
+
+  .rco-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+
+  .rco-identity {
+    padding-right: 5rem;
+  }
+
+  .rco-name {
+    font-size: 0.95rem;
+  }
+
+  .cmo-stats-grid { grid-template-columns: 1fr 1fr; }
+  .rco-status-pill { top: 1rem; right: 1rem; }
 }

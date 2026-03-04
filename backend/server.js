@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const cron = require("node-cron");
 const cookieParser = require("cookie-parser");
+const http = require("http");
+const socketIo = require("socket.io");
 require("dotenv").config();
 const path = require("path");
 
@@ -167,7 +169,29 @@ mongoose
   .then(() => {
     console.log("✅ MongoDB connected");
 
-    app.listen(PORT, "0.0.0.0", () => {
+    // Create HTTP server for Socket.io
+    const server = http.createServer(app);
+
+    // Initialize Socket.io with CORS configuration
+    const io = socketIo(server, {
+      cors: {
+        origin: process.env.NODE_ENV === 'production' ? FRONTEND_URL : true,
+        credentials: true,
+        methods: ["GET", "POST"],
+      },
+      transports: ["websocket", "polling"],
+    });
+
+    // Initialize notification socket
+    try {
+      const notificationSocket = require("./utils/notificationSocket");
+      notificationSocket.initialize(io);
+      console.log("✅ Socket.io initialized with notifications\n");
+    } catch (err) {
+      console.warn("⚠️ Socket.io initialization error:", err.message);
+    }
+
+    server.listen(PORT, "0.0.0.0", () => {
       console.log("\n🚀 Server running");
       console.log(`📍 http://localhost:${PORT}`);
       console.log(`📍 Health: http://localhost:${PORT}/api/health\n`);
@@ -206,6 +230,9 @@ mongoose
         console.warn("⚠️ Notification scheduler error:", err.message);
       }
 
+      // Store server instance globally for graceful shutdown
+      global.server = server;
+
       /* =========================
          SETUP CRON JOB FOR JOB SCRAPING
       ========================= */
@@ -238,6 +265,11 @@ mongoose
 ========================= */
 process.on("SIGINT", async () => {
   console.log("\n🛑 Shutting down server...");
+  if (global.server) {
+    global.server.close(() => {
+      console.log("✅ Server closed");
+    });
+  }
   await mongoose.connection.close();
   console.log("✅ MongoDB disconnected");
   process.exit(0);

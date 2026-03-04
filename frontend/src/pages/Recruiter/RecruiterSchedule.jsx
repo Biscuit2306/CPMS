@@ -15,7 +15,8 @@ const Schedule = () => {
     createSchedule,
     updateSchedule,
     deleteSchedule,
-    addCandidatesToSchedule
+    addCandidatesToSchedule,
+    searchQuery
   } = useRecruiter();
   
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,15 @@ const Schedule = () => {
     const filteredSchedules = (schedules || []).filter(s => !s.isBlocked && s.status !== 'blocked');
     setDisplaySchedules(filteredSchedules);
   }, [schedules]);
+
+  // apply search filtering
+  const scheduleQuery = (searchQuery || '').trim().toLowerCase();
+  const filteredDisplaySchedules = scheduleQuery
+    ? displaySchedules.filter(s =>
+        (s.company || '').toLowerCase().includes(scheduleQuery) ||
+        (s.position || '').toLowerCase().includes(scheduleQuery)
+      )
+    : displaySchedules;
 
   const handleAddClick = () => {
     setFormData({
@@ -162,7 +172,7 @@ const Schedule = () => {
 
   return (
     <RecruiterLayout activeMenu={activeMenu} setActiveMenu={setActiveMenu}>
-      <div className="recruiter-dashboard-content">
+      {/* <div className="recruiter-dashboard-content"> */}
         <div className="recruiter-page-header">
           <div>
             <h1>Interview Schedule</h1>
@@ -179,9 +189,9 @@ const Schedule = () => {
 
         {schedulesLoading || loading ? (
           <p className="schedule-loading-text">Loading schedules...</p>
-        ) : displaySchedules.length > 0 ? (
+        ) : filteredDisplaySchedules.length > 0 ? (
           <div className="recruiter-schedule-grid">
-            {displaySchedules.map((schedule) => (
+            {filteredDisplaySchedules.map((schedule) => (
               <div
                 key={schedule._id}
                 className={`recruiter-schedule-card${schedule.isBlocked || schedule.isCancelled ? ' schedule-card-blocked' : ''}`}
@@ -265,19 +275,27 @@ const Schedule = () => {
         ) : (
           <div className="schedule-empty-state">
             <Calendar size={48} className="schedule-empty-icon" />
-            <h3 className="schedule-empty-title">No schedules yet</h3>
-            <p className="schedule-empty-subtitle">
-              Create your first interview schedule to get started
-            </p>
-            <button 
-              onClick={handleAddClick}
-              className="schedule-empty-create-btn"
-            >
-              Create Schedule
-            </button>
+            <h3 className="schedule-empty-title">
+              {scheduleQuery
+                ? `No schedules match "${searchQuery}"`
+                : 'No schedules yet'}
+            </h3>
+            {!scheduleQuery && (
+              <p className="schedule-empty-subtitle">
+                Create your first interview schedule to get started
+              </p>
+            )}
+            {!scheduleQuery && (
+              <button 
+                onClick={handleAddClick}
+                className="schedule-empty-create-btn"
+              >
+                Create Schedule
+              </button>
+            )}
           </div>
         )}
-      </div>
+      {/* </div> */}
 
       {showModal && (
         <div className="schedule-modal-overlay" onClick={(e) => e.currentTarget === e.target && setShowModal(false)}>

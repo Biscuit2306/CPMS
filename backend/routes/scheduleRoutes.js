@@ -257,14 +257,39 @@ router.put("/:scheduleId", async (req, res) => {
 ========================= */
 router.delete("/:scheduleId", async (req, res) => {
   try {
-    const schedule = await InterviewSchedule.findByIdAndUpdate(
-      req.params.scheduleId,
-      { status: "cancelled" },
-      { new: true }
-    );
-
+    const schedule = await InterviewSchedule.findById(req.params.scheduleId);
+    
     if (!schedule) {
       return res.status(404).json({ error: "Schedule not found" });
+    }
+
+    // Get candidates before deletion
+    const candidates = schedule.candidates || [];
+    const recruiter = await Recruiter.findOne({ firebaseUid: schedule.recruiterFirebaseUid });
+
+    // Update schedule status
+    schedule.status = "cancelled";
+    schedule.isDeleted = true;
+    schedule.deletedAt = new Date();
+    await schedule.save();
+
+    // 🔔 Send notifications to affected candidates and recruiter
+    try {
+      const NotificationManager = require("../utils/notificationManager");
+      const notifMgr = new NotificationManager();
+      
+      // Get student details for candidates
+      const studentIds = candidates.map(c => c.studentId);
+      const students = await Student.find({
+        firebaseUid: { $in: studentIds }
+      }).select("firebaseUid email fullName");
+      
+      if (recruiter) {
+        await notifMgr.adminDeletedSchedule(schedule, students, recruiter);
+        console.log("✅ Schedule cancellation notifications sent");
+      }
+    } catch (notifErr) {
+      console.warn("⚠️ Notification error (non-critical):", notifErr.message);
     }
 
     res.json({ success: true, message: "Schedule cancelled successfully" });
@@ -287,6 +312,7 @@ router.post("/:scheduleId/add-candidates", async (req, res) => {
 
     if (!schedule.candidates) schedule.candidates = [];
 
+    const newCandidates = [];
     for (const candidate of candidates) {
       if (!schedule.candidates.find((c) => c.studentId === candidate.studentId)) {
         schedule.candidates.push({
@@ -295,10 +321,32 @@ router.post("/:scheduleId/add-candidates", async (req, res) => {
           studentEmail: candidate.studentEmail,
           status: "scheduled",
         });
+        newCandidates.push(candidate);
       }
     }
 
     await schedule.save();
+
+    // 🔔 Send notifications to candidates about interview schedule
+    try {
+      const NotificationManager = require("../utils/notificationManager");
+      const notifMgr = new NotificationManager();
+      
+      const recruiter = await Recruiter.findOne({ firebaseUid: schedule.recruiterFirebaseUid });
+      
+      // Create student objects with firebaseUid from the student data
+      const studentsToNotify = await Student.find({
+        firebaseUid: { $in: newCandidates.map(c => c.studentId) }
+      }).select("firebaseUid email fullName");
+      
+      if (recruiter && studentsToNotify.length > 0) {
+        await notifMgr.interviewScheduleCreated(recruiter, schedule, studentsToNotify);
+        console.log("✅ Interview schedule notifications sent to candidates");
+      }
+    } catch (notifErr) {
+      console.warn("⚠️ Notification error (non-critical):", notifErr.message);
+    }
+
     res.json({ success: true, data: schedule, message: "Candidates added successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });

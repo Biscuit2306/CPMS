@@ -218,21 +218,25 @@ const ExternalJobs = () => {
         {/* Header */}
         <div className="external-jobs-header">
           <div className="external-jobs-header-content">
-            <h1>External Job Opportunities</h1>
-            <p>Discover jobs from leading companies across India</p>
+            <h1>{stats.totalJobs || 0} Jobs</h1>
+            <p>Search and apply to the latest job vacancies & openings in India</p>
           </div>
         </div>
 
-        {/* Advanced Filters */}
-        <ExternalJobsFilter 
-          onFilterChange={handleFilterChange}
-          jobTypes={jobTypes}
-          locations={locations}
-          totalJobs={stats.totalJobs || 0}
-        />
+        {/* Advanced Filters and results layout */}
+        <div className="external-jobs-main">
+          <div className="external-jobs-filter-sidebar">
+            <ExternalJobsFilter 
+              onFilterChange={handleFilterChange}
+              jobTypes={jobTypes}
+              locations={locations}
+              totalJobs={stats.totalJobs || 0}
+            />
+          </div>
 
-        {/* Jobs List */}
-        <div className="external-jobs-list">
+          {/* Jobs List wrapper */}
+          <div className="external-jobs-list-wrapper">
+            <div className="external-jobs-list">
           {loading ? (
             <div className="external-jobs-loading-container">
               <Loader size={40} className="external-jobs-spinner" />
@@ -330,8 +334,10 @@ const ExternalJobs = () => {
               <p>Try adjusting your filters or search criteria</p>
             </div>
           )}
-        </div>
-      </div>
+            </div> {/* end external-jobs-list */}
+          </div>   {/* end list-wrapper */}
+        </div>     {/* end main */}
+      </div>       {/* end container */}
     </StudentLayout>
   );
 };

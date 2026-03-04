@@ -9,7 +9,7 @@ import '../../styles/student-css/studentapplications.css';
 
 
 const StudentApplications = () => {
-  const { applications, loading, withdrawApplication, getDriveDetails } = useStudent();
+  const { applications, loading, withdrawApplication, getDriveDetails, searchQuery } = useStudent();
   const [appList, setAppList] = useState([]);
   const [selectedApp, setSelectedApp] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -120,6 +120,16 @@ const StudentApplications = () => {
     }
   };
 
+  // Filter applications based on search query
+  const filteredApplications = appList.filter(app => {
+    const query = searchQuery.toLowerCase();
+    return query === '' ||
+      (app.company || '').toLowerCase().includes(query) ||
+      (app.position || '').toLowerCase().includes(query) ||
+      (app.location || '').toLowerCase().includes(query) ||
+      (app.salary || '').toLowerCase().includes(query);
+  });
+
   if (loading) {
     return (
       <StudentLayout>
@@ -141,8 +151,8 @@ const StudentApplications = () => {
       </div>
 
       <div className="student-applications-grid">
-        {appList && appList.length > 0 ? (
-          appList.map((app, index) => (
+        {filteredApplications && filteredApplications.length > 0 ? (
+          filteredApplications.map((app, index) => (
             <div key={app._id || index} className="student-application-card" style={app.isBlocked || app.blockedDrive ? { opacity: 0.6, position: 'relative' } : {}}>
               {(app.isBlocked || app.blockedDrive) && (
                 <div style={{

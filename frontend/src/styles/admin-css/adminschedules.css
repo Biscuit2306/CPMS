@@ -1,72 +1,194 @@
+/* =========================================================
+   ADMIN SCHEDULES PAGE - SPECIFIC STYLES
+   ========================================================= */
+
+@import './admin-common.css';
+
 .admin-schedules-wrapper {
   padding: 30px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
   min-height: 100vh;
 }
 
 .admin-schedules-wrapper h1 {
-  color: #1f2937;
+  color: white;
   font-size: 32px;
   margin: 0;
   font-weight: 700;
 }
 
 .admin-schedules-wrapper p {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.85);
   margin: 10px 0 0 0;
 }
 
-/* Page Header */
+/* Page Header with Banner */
 .admin-schedules-page-header {
   margin-bottom: 30px;
+  background: linear-gradient(135deg, #210f37 0%, #5a2d82 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(33, 15, 55, 0.15);
+}
+
+.admin-schedules-page-header h1 {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
 }
 
 .admin-schedules-page-header p {
-  color: #6b7280;
-  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 0;
+  font-size: 1rem;
 }
 
-/* Filters and Search */
-.admin-schedules-filter-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 30px;
+/* =========================================================
+   FILTER BAR — flat row, no labels, equal height
+   Prefix: asf-
+   ========================================================= */
+
+.asf-filter-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  margin-bottom: 28px;
 }
 
-.admin-schedules-search-input {
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+/* Search wrapper — takes all remaining space */
+.asf-search-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.asf-search-icon {
+  position: absolute;
+  left: 13px;
+  color: #9ca3af;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.asf-search-input {
   width: 100%;
+  height: 42px;
+  padding: 10px 20px 10px 40px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  line-height: 1;
+  
 }
 
-.admin-schedules-status-select {
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+/* .asf-search-wrapper input{
+  background-color: #fff;
+  color: #210f37;
+
+} */
+
+.asf-search-input::placeholder {
+  color: #b0b7c3;
+  font-weight: 400;
+}
+
+.asf-search-input:hover {
+  background-color: #fff;
+  color:#210f37;
+}
+
+.asf-search-input:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* Select wrapper — fixed compact width */
+.asf-select-wrapper {
+  position: relative;
+  width: 175px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.asf-select-icon {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.asf-chevron-icon {
+  position: absolute;
+  right: 11px;
+  color: #9ca3af;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.asf-status-select {
+  width: 100%;
+  height: 42px;
+  padding: 0 30px 0 36px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
   font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  background: white;
+  appearance: none;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.asf-status-select:hover {
+  border-color: #c4b5e0;
+}
+
+.asf-status-select:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 /* Statistics Cards */
 .admin-schedules-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 30px;
 }
 
 .admin-schedules-stat-card {
-  padding: 15px;
-  background-color: #f3f4f6;
-  border-radius: 6px;
-  text-align: center;
+  padding: 1.75rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  border-left: 4px solid #210f37;
+}
+
+.admin-schedules-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .admin-schedules-stat-number {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
 .admin-schedules-stat-number--blue   { color: #0ea5e9; }
@@ -122,10 +244,10 @@
 }
 
 /* Table Head */
-.admin-schedules-thead-row {
+/* .admin-schedules-thead-row {
   background-color: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
-}
+} */
 
 .admin-schedules-th {
   padding: 12px 15px;
@@ -159,6 +281,7 @@
 .admin-schedules-td-primary {
   font-weight: 600;
   font-size: 14px;
+  color: #6b7280;
 }
 
 .admin-schedules-td-secondary {
@@ -177,7 +300,7 @@
   font-size: 14px;
 }
 
-/* Status badge (color set via inline style since it's dynamic) */
+/* Status badge */
 .admin-schedules-status-badge {
   display: flex;
   align-items: center;
@@ -213,12 +336,20 @@
   border: none;
   cursor: pointer;
   padding: 6px;
+  border-radius: 6px;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
+.admin-schedules-icon-btn:hover { transform: scale(1.1); }
+
 .admin-schedules-icon-btn--view   { color: #0ea5e9; }
+.admin-schedules-icon-btn--view:hover  { background: rgba(14, 165, 233, 0.08); }
 .admin-schedules-icon-btn--block  { color: #f59e0b; }
+.admin-schedules-icon-btn--block:hover { background: rgba(245, 158, 11, 0.08); }
 .admin-schedules-icon-btn--delete { color: #ef4444; }
+.admin-schedules-icon-btn--delete:hover { background: rgba(239, 68, 68, 0.08); }
 .admin-schedules-icon-btn--remove { color: #6b7280; }
+.admin-schedules-icon-btn--remove:hover { background: rgba(107, 114, 128, 0.08); }
 
 /* Blocked tag */
 .admin-schedules-blocked-tag {
@@ -233,10 +364,7 @@
 /* View Details Modal */
 .admin-details-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -262,9 +390,7 @@
   margin-bottom: 20px;
 }
 
-.admin-details-modal-title {
-  margin: 0;
-}
+.admin-details-modal-title { margin: 0; }
 
 .admin-details-modal-close-btn {
   background: none;
@@ -278,7 +404,6 @@
   gap: 15px;
 }
 
-/* Section headings with color variants */
 .admin-schedule-section-title {
   margin-top: 0;
   margin-bottom: 15px;
@@ -290,12 +415,8 @@
 .admin-schedule-section-title--green { color: #10b981; }
 .admin-schedule-section-title--pink  { color: #ec4899; }
 
-/* Bold value in info rows */
-.admin-schedule-info-value {
-  font-weight: bold;
-}
+.admin-schedule-info-value { font-weight: bold; }
 
-/* Candidates list inside details modal */
 .admin-details-candidates-list {
   max-height: 300px;
   overflow-y: auto;
@@ -318,11 +439,7 @@
   color: #6b7280;
 }
 
-/* Candidate status color variants */
-.admin-details-candidate-status {
-  font-weight: bold;
-}
-
+.admin-details-candidate-status { font-weight: bold; }
 .admin-details-candidate-status--attended  { color: #10b981; }
 .admin-details-candidate-status--passed    { color: #06b6d4; }
 .admin-details-candidate-status--failed    { color: #ef4444; }
@@ -333,22 +450,12 @@
   font-style: italic;
 }
 
-/* Action modal icon colors */
+/* Action modal */
 .admin-action-modal-icon--warning { color: #f59e0b; }
 .admin-action-modal-icon--danger  { color: #ef4444; }
+.admin-action-modal-warning { color: #ef4444; font-weight: bold; }
+.admin-action-modal-note    { color: #666; font-size: 13px; }
 
-/* Action modal text variants */
-.admin-action-modal-warning {
-  color: #ef4444;
-  font-weight: bold;
-}
-
-.admin-action-modal-note {
-  color: #666;
-  font-size: 13px;
-}
-
-/* Candidate radio list inside action modal */
 .admin-action-candidate-list {
   margin-top: 8px;
   display: flex;
@@ -363,8 +470,7 @@
   cursor: pointer;
 }
 
-/* ─── Existing classes kept intact below ─── */
-
+/* Existing section styles */
 .admin-schedule-section {
   background: #f9fafb;
   padding: 15px;
@@ -386,9 +492,7 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.admin-schedule-info-row:last-child {
-  border-bottom: none;
-}
+.admin-schedule-info-row:last-child { border-bottom: none; }
 
 .admin-schedule-info-row span {
   font-size: 14px;
@@ -400,41 +504,27 @@
   font-weight: 500;
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-  .admin-schedules-wrapper {
-    padding: 15px;
-  }
+  .admin-schedules-wrapper { padding: 15px; }
+  .admin-schedules-wrapper h1 { font-size: 24px; }
 
-  .admin-schedules-wrapper h1 {
-    font-size: 24px;
-  }
+  .asf-filter-bar { flex-direction: column; }
+  .asf-select-wrapper { width: 100%; }
 
-  table {
-    font-size: 12px !important;
-  }
-
-  table th,
-  table td {
-    padding: 8px 10px !important;
-  }
+  table { font-size: 12px !important; }
+  table th, table td { padding: 8px 10px !important; }
 }
 
 /* Table Styling */
-table thead th {
+/* .admin-schedules-table thead th {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-}
+} */
 
-table tbody tr:hover {
-  background-color: #f3f4f6 !important;
-}
+table tbody td { color: #374151; }
 
-table tbody td {
-  color: #374151;
-}
-
-/* Status Badge Styling */
+/* Status Badge */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -445,65 +535,10 @@ table tbody td {
   font-weight: 600;
 }
 
-.status-scheduled {
-  background-color: #dbeafe;
-  color: #0284c7;
-}
-
-.status-ongoing {
-  background-color: #fef3c7;
-  color: #f59e0b;
-}
-
-.status-completed {
-  background-color: #dcfce7;
-  color: #22c55e;
-}
-
-.status-cancelled {
-  background-color: #fee2e2;
-  color: #dc2626;
-}
-
-/* Filter and Search Box */
-input[type="text"],
-select {
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-input[type="text"]:focus,
-select:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  border-color: #667eea;
-}
-
-/* Statistics Cards */
-.stat-card {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.stat-card-value {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.stat-card-label {
-  font-size: 14px;
-  color: #6b7280;
-}
+.status-scheduled { background-color: #dbeafe; color: #0284c7; }
+.status-ongoing   { background-color: #fef3c7; color: #f59e0b; }
+.status-completed { background-color: #dcfce7; color: #22c55e; }
+.status-cancelled { background-color: #fee2e2; color: #dc2626; }
 
 /* Action Buttons */
 .admin-action-btn {
@@ -527,53 +562,22 @@ select:focus {
   transform: translateY(-1px);
 }
 
-.admin-action-btn.warning {
-  background-color: #f59e0b;
-}
-
+.admin-action-btn.warning { background-color: #f59e0b; }
 .admin-action-btn.warning:hover {
   background-color: #d97706;
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
-.admin-action-btn.danger {
-  background-color: #ef4444;
-}
-
+.admin-action-btn.danger { background-color: #ef4444; }
 .admin-action-btn.danger:hover {
   background-color: #dc2626;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* Schedule Status Overlay */
-.admin-schedule-blocked {
-  position: relative;
-  opacity: 0.7;
-}
-
-.admin-schedule-blocked::after {
-  content: 'BLOCKED';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-15deg);
-  background-color: #f59e0b;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-weight: 700;
-  font-size: 18px;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
 /* Modal Overlay */
 .admin-action-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -592,29 +596,27 @@ select:focus {
 }
 
 .admin-action-modal-header {
-  padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+    background: linear-gradient(135deg, #210f37 0%, #5a2d82 100%);
+    color: #fff;
+    padding: 1rem;
+    /* border-radius: 20px 20px 0 0; */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 17px;
+    font-weight: 700;
+    gap: 0.5rem;
 }
 
 .admin-action-modal-header h2 {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: #1f2937;
+  color: #fff;
 }
 
-.admin-action-modal-body {
-  padding: 20px;
-}
-
-.admin-action-modal-body p {
-  color: #4b5563;
-  margin: 8px 0;
-  font-size: 14px;
-}
+.admin-action-modal-body { padding: 20px; }
+.admin-action-modal-body p { color: #4b5563; margin: 8px 0; font-size: 14px; }
 
 .admin-action-modal-body .schedule-info {
   background-color: #f9fafb;
@@ -622,6 +624,7 @@ select:focus {
   border-radius: 6px;
   margin: 12px 0;
   font-size: 13px;
+  color:#6b7280;
 }
 
 .admin-action-modal-body label {
@@ -668,25 +671,13 @@ select:focus {
   font-size: 14px;
 }
 
-.admin-action-modal-footer .btn-cancel {
-  background-color: #e5e7eb;
-  color: #374151;
-}
-
-.admin-action-modal-footer .btn-cancel:hover {
-  background-color: #d1d5db;
-}
-
-.admin-action-modal-footer .btn-confirm {
-  background-color: #ef4444;
-  color: white;
-}
-
+.admin-action-modal-footer .btn-cancel { background-color: #e5e7eb; color: #374151; }
+.admin-action-modal-footer .btn-cancel:hover { background-color: #d1d5db; }
+.admin-action-modal-footer .btn-confirm { background-color: #10B981; color: white; }
 .admin-action-modal-footer .btn-confirm:hover {
-  background-color: #dc2626;
+  background-color: #10B981;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
-
 .admin-action-modal-footer .btn-confirm:disabled {
   background-color: #9ca3af;
   cursor: not-allowed;
@@ -732,4 +723,294 @@ select:focus {
 @keyframes slideInDown {
   from { transform: translateY(-10px); opacity: 0; }
   to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* =========================================================
+/* =========================================================
+   SDM — Schedule Details Modal — same data, Drive Details style
+   ========================================================= */
+
+.sdm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.sdm-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 560px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(33,15,55,0.2);
+  animation: slideInUp 0.28s ease;
+}
+
+/* Header */
+.sdm-header {
+  background: linear-gradient(135deg, #210f37 0%, #5a2d82 100%);
+  color: #fff;
+  padding: 1rem;
+  /* border-radius: 20px 20px 0 0; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.sdm-close {
+width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1.5px solid #e9d5f0;
+    background: #faf5fc;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+.sdm-close:hover { background:purple;color:white; border-color:puple; transform: rotate(90deg); }
+
+/* Body padding */
+.sdm-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+
+/* Each section card */
+.sdm-section {
+  background: #f8f5ff;
+  border-radius: 14px;
+  padding: 16px 18px;
+  border: 1px solid #ede9fe;
+}
+
+.sdm-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.sdm-section-title--blue  { color: #0284c7; }
+.sdm-section-title--green { color: #16a34a; }
+.sdm-section-title--pink  { color: #db2777; }
+
+/* Info rows inside each section */
+.sdm-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ede9fe;
+  font-size: 14px;
+}
+.sdm-info-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.sdm-info-label { color: #6b7280; font-weight: 500; }
+.sdm-info-value { font-weight: 700; color: #1f2937; }
+
+/* Candidates list */
+.sdm-candidates-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+
+.sdm-candidate-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid #ede9fe;
+}
+
+.sdm-candidate-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5a2d82, #210f37);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sdm-candidate-info { flex: 1; }
+.sdm-candidate-name  { font-size: 14px; font-weight: 600; color: #1f2937; }
+.sdm-candidate-email { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+.sdm-candidate-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: capitalize;
+}
+.sdm-candidate-status--scheduled { background: #dbeafe; color: #0284c7; }
+.sdm-candidate-status--attended  { background: #dcfce7; color: #16a34a; }
+.sdm-candidate-status--passed    { background: #cffafe; color: #0891b2; }
+.sdm-candidate-status--failed    { background: #fee2e2; color: #dc2626; }
+
+.sdm-no-candidates {
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 13px;
+  text-align: center;
+  padding: 10px 0 0;
+}  
+ /*FIX: FILTER BAR — override dark-blue hover from global styles
+   ========================================================= */
+
+.asf-search-input:hover,
+.asf-search-input:active {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border-color: #c4b5e0 !important;
+}
+
+.asf-search-input:focus {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1) !important;
+}
+
+.asf-status-select:hover,
+.asf-status-select:active {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border-color: #c4b5e0 !important;
+}
+
+.asf-status-select:focus {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1) !important;
+}
+
+/* dropdown options */
+.asf-status-select option {
+  background-color: #ffffff;
+  color: #1f2937;
+}
+
+/* =========================================================
+   FIX: TABLE HEAD — white text on dark purple bg
+   ========================================================= */
+
+.admin-schedules-table thead {
+  background: linear-gradient(135deg, #210f37 0%, #5a2d82 100%);
+}
+
+.admin-schedules-table thead th {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 14px 15px;
+  letter-spacing: 0.4px;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+/* =========================================================
+   FIX: TABLE BODY BORDERS — subtle, professional
+   ========================================================= */
+
+.admin-schedules-table td {
+  border: 1px solid #f0f0f5 !important;
+  color: #374151;
+}
+
+/* =========================================================
+   FIX: ACTION ICON BUTTONS — polished pill style
+   ========================================================= */
+
+.admin-schedules-action-group {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Base reset for all icon buttons */
+.admin-schedules-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease;
+  background-color: transparent;
+}
+
+/* View — blue */
+.admin-schedules-icon-btn--view {
+  color: #0ea5e9;
+  background-color: #e0f2fe;
+}
+.admin-schedules-icon-btn--view:hover {
+  background-color: #bae6fd;
+  box-shadow: 0 2px 8px rgba(14,165,233,0.25);
+  transform: translateY(-1px);
+}
+
+/* Block — amber */
+.admin-schedules-icon-btn--block {
+  color: #d97706;
+  background-color: #fef3c7;
+}
+.admin-schedules-icon-btn--block:hover {
+  background-color: #fde68a;
+  box-shadow: 0 2px 8px rgba(245,158,11,0.25);
+  transform: translateY(-1px);
+}
+
+/* Delete — red */
+.admin-schedules-icon-btn--delete {
+  color: #ef4444;
+  background-color: #fee2e2;
+}
+.admin-schedules-icon-btn--delete:hover {
+  background-color: #fecaca;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.25);
+  transform: translateY(-1px);
+}
+
+/* Remove candidate — gray */
+.admin-schedules-icon-btn--remove {
+  color: #6b7280;
+  background-color: #f3f4f6;
+}
+.admin-schedules-icon-btn--remove:hover {
+  background-color: #e5e7eb;
+  box-shadow: 0 2px 8px rgba(107,114,128,0.2);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   FIX: TABLE ROW HOVER — clean, no dark blue
+   ========================================================= */
+
+.admin-schedules-tbody-row:hover {
+  background-color: #faf8ff !important;
+}
+
+/* =========================================================
+   FIX: STAT CARDS — left border matches theme
+   ========================================================= */
+
+.admin-schedules-stat-card {
+  border-left: 4px solid #5a2d82;
 }

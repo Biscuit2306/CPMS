@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { initializeSocket, disconnectSocket } from "./utils/socketService";
+import NotificationDisplay from "./components/NotificationDisplay";
 
 /* ================= PROVIDERS ================= */
 import { StudentProvider } from "./context/StudentContext";
@@ -64,9 +66,36 @@ import ProjectEvaluator from "./pages/ProjectEvaluator";
 import InterviewFeature from "./pages/InterviewFeature";
 
 function App() {
+  useEffect(() => {
+    // Initialize Socket.io connection when app mounts
+    const initSocket = async () => {
+      try {
+        // Get user ID from localStorage or from auth context
+        const authData = localStorage.getItem('auth');
+        const userId = authData ? JSON.parse(authData).id || JSON.parse(authData).uid : 'anonymous';
+        
+        // Initialize Socket.io connection with a small delay to ensure DOM is ready
+        setTimeout(() => {
+          initializeSocket(userId);
+          console.log('🚀 Socket.io initialized for user:', userId);
+        }, 500);
+      } catch (err) {
+        console.error('⚠️ Error initializing Socket.io:', err);
+      }
+    };
+
+    initSocket();
+    
+    // Cleanup on unmount
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
+
   return (
     <BrowserRouter>
       <NotificationProvider>
+        <NotificationDisplay />
         <Routes>
           {/* =================== PUBLIC ROUTES =================== */}
           <Route path="/" element={<Home />} />

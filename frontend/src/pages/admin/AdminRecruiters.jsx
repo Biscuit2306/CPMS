@@ -6,9 +6,8 @@ import '../../styles/admin-css/adminrecruiters.css';
 import axios from 'axios';
 
 const Recruiters = () => {
-  const { recruiters, statsLoading, fetchRecruiters, admin } = useAdmin();
+  const { recruiters, statsLoading, fetchRecruiters, admin, searchQuery } = useAdmin();
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('active'); // all, active, blocked, deleted
   const [actionModal, setActionModal] = useState({
     isOpen: false,
@@ -38,15 +37,15 @@ const Recruiters = () => {
     // else: all (no status filter)
 
     // Filter by search term
-    if (searchTerm) {
+    if (searchQuery) {
       filtered = filtered.filter(r => 
-        r.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        r.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        r.companyName?.toLowerCase().includes(searchTerm.toLowerCase())
+        r.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.companyName?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
     setFilteredRecruiters(filtered);
-  }, [searchTerm, recruiters, filterStatus]);
+  }, [searchQuery, recruiters, filterStatus]);
 
   const getActiveDrives = (recruiter) => {
     return (recruiter.jobDrives || []).filter(drive =>
@@ -106,52 +105,20 @@ const Recruiters = () => {
 
   return (
     <AdminLayout>
-      <div className="admin-page-header">
-        <div>
-          <h1>Recruiter Management</h1>
-          <p>Manage recruitment officers and their drives ({filteredRecruiters.length} recruiters)</p>
-        </div>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <input 
-            type="text" 
-            placeholder="Search recruiters..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '6px',
-              border: '1px solid #e5e7eb',
-              width: '200px'
-            }}
-          />
-          <div className="admin-filter-section">
-            <button 
-              className={`admin-filter-btn ${filterStatus === 'active' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('active')}
-            >
-              Active
-            </button>
-            <button 
-              className={`admin-filter-btn ${filterStatus === 'blocked' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('blocked')}
-            >
-              Blocked
-            </button>
-            <button 
-              className={`admin-filter-btn ${filterStatus === 'deleted' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('deleted')}
-            >
-              Deleted
-            </button>
-            <button 
-              className={`admin-filter-btn ${filterStatus === 'all' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('all')}
-            >
-              All
-            </button>
+      {/* Banner with Title */}
+      <div className="admin-banner">
+        <div className="admin-banner-content">
+          <div className="admin-banner-text">
+            <h1>Recruiter Management</h1>
+            <p>Manage recruitment officers and their drives ({filteredRecruiters.length} recruiters)</p>
+          </div>
+          <div className="admin-banner-icon">
+            <Building2 size={80} />
           </div>
         </div>
       </div>
+
+
 
       {/* Messages */}
       {successMessage && (
@@ -169,9 +136,9 @@ const Recruiters = () => {
       )}
 
       {statsLoading ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>Loading recruiters...</div>
+        <div className="admin-loading-container">Loading recruiters...</div>
       ) : filteredRecruiters.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>No recruiters found</div>
+        <div className="admin-empty-state">No recruiters found</div>
       ) : (
         <div className="admin-recruiters-grid">
           {filteredRecruiters.map((recruiter) => {
@@ -185,10 +152,7 @@ const Recruiters = () => {
                   <div className="admin-recruiter-info">
                     <h3>{recruiter.fullName || 'N/A'}</h3>
                     <p className="admin-recruiter-role">{recruiter.designation || 'Recruiter'}</p>
-                    <span 
-                      className={`admin-status-badge`}
-                      style={{ backgroundColor: status.color, color: 'white' }}
-                    >
+                    <span className={`admin-status-badge admin-status-badge--${status.label.toLowerCase()}`}>
                       {status.label}
                     </span>
                   </div>
@@ -293,7 +257,7 @@ const Recruiters = () => {
               </div>
               <div className="admin-detail-row">
                 <label>Status:</label>
-                <span style={{ color: getStatusDisplay(selectedRecruiter).color }}>
+                <span className={`admin-status-badge admin-status-badge--${getStatusDisplay(selectedRecruiter).label.toLowerCase()}`}>
                   {getStatusDisplay(selectedRecruiter).label}
                 </span>
               </div>
@@ -355,15 +319,7 @@ const Recruiters = () => {
                   placeholder="Reason for this action (optional)"
                   value={actionModal.reason}
                   onChange={(e) => setActionModal({ ...actionModal, reason: e.target.value })}
-                  style={{
-                    width: '100%',
-                    minHeight: '80px',
-                    padding: '8px',
-                    marginTop: '15px',
-                    borderRadius: '6px',
-                    border: '1px solid #e5e7eb',
-                    fontFamily: 'inherit',
-                  }}
+                  className="admin-modal-reason-textarea"
                 />
               )}
             </div>

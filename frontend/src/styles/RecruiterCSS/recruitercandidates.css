@@ -1,7 +1,11 @@
-/* Candidates Page Styles */
+/* ============================================================
+   Candidates Page Styles
+   recruitercandidates.css
+   ============================================================ */
 
+/* ── Export Button ─────────────────────────────────────────── */
 .recruiter-export-btn {
-  display: flex;
+  /* display: flex;
   align-items: center;
   gap: 0.6rem;
   padding: 0.9rem 1.6rem;
@@ -13,7 +17,17 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  white-space: nowrap;
+  white-space: nowrap; */
+
+  padding: 0.625rem 1.25rem;
+    background: #FFF;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    color: #4F1C51;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .recruiter-export-btn:hover {
@@ -21,19 +35,91 @@
   transform: scale(1.05);
 }
 
-/* Candidates Grid */
+/* ── Refresh Button ────────────────────────────────────────── */
+.rc-refresh-btn {
+  padding: 10px 16px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.rc-refresh-btn--disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ── Drive Filter Bar ──────────────────────────────────────── */
+.rc-drive-filter-bar {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rc-drive-filter-btn {
+  /* padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease; */
+  padding: 8px 16px;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 5px;
+    background-color: rgb(2, 132, 199);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.rc-drive-filter-btn--active {
+  /* background-color: #0ea5e9;
+  color: white;
+  border-color: #0ea5e9; */
+  padding: 8px 16px;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 5px;
+    background-color: rgb(2, 132, 199);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.rc-drive-filter-btn:hover:not(.rc-drive-filter-btn--active) {
+  background-color:rgb(2, 132, 199) ;
+}
+
+/* ── Candidates Grid ───────────────────────────────────────── */
 .recruiter-candidates-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
 }
 
+/* ── Candidate Card ────────────────────────────────────────── */
 .recruiter-candidate-card {
-  background: white;
+  /* background: white;
   border-radius: 16px;
   padding: 1.9rem;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+  transition: all 0.3s ease; */
+      background: white;
+    border-radius: 14px;
+    padding: 1.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid #4F1C51;
 }
 
 .recruiter-candidate-card:hover {
@@ -42,12 +128,16 @@
 }
 
 .recruiter-candidate-header {
-  display: flex;
+  /* display: flex;
   align-items: center;
   gap: 1.2rem;
   margin-bottom: 1.6rem;
   padding-bottom: 1.2rem;
-  border-bottom: 2px solid #f1f5f9;
+  border-bottom: 2px solid #f1f5f9; */
+      display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .recruiter-candidate-avatar-large {
@@ -61,10 +151,11 @@
   color: white;
   font-weight: 700;
   font-size: 1.3rem;
+  flex-shrink: 0;
 }
 
 .recruiter-candidate-info h3 {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1f2937;
   margin-bottom: 0.3rem;
@@ -72,7 +163,7 @@
 
 .recruiter-candidate-info p {
   color: #64748b;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
@@ -82,7 +173,7 @@
   background: #dcfce7;
   color: #166534;
   border-radius: 12px;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
@@ -90,7 +181,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
-  margin-bottom: 1.6rem;
+  /* margin-bottom: 1.6rem; */
 }
 
 .recruiter-candidate-row {
@@ -98,7 +189,7 @@
   align-items: center;
   gap: 0.8rem;
   color: #64748b;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .recruiter-candidate-row svg {
@@ -106,14 +197,153 @@
   flex-shrink: 0;
 }
 
+/* clickable drive name shown on cards */
+.rc-drive-name-btn {
+  background: transparent;
+  border: none;
+  color: #4F1C51;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+/* AI ranking button placed near filter bar */
+.rc-ai-rank-btn {
+  padding: 8px 16px;
+  margin-left: auto;
+  border-radius: 5px;
+  border: none;
+  background: #4F1C51;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.rc-ai-rank-btn:hover {
+  background: #6d2c66;
+  transform: scale(1.05);
+}
+
+.rc-ai-rank-btn:active {
+  transform: scale(0.98);
+}
+
 .recruiter-label {
   font-weight: 600;
   color: #475569;
 }
 
+/* ── Status Badge ──────────────────────────────────────────── */
+.rc-status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.rc-status--applied {
+  color: #10B981;
+  background-color: rgba(14, 165, 233, 0.12);
+}
+
+.rc-status--shortlisted {
+  color: #10b981;
+  background-color: rgba(16, 185, 129, 0.12);
+}
+
+.rc-status--interview {
+  color: #f59e0b;
+  background-color: rgba(245, 158, 11, 0.12);
+}
+
+.rc-status--selected {
+  color: #8b5cf6;
+  background-color: rgba(139, 92, 246, 0.12);
+}
+
+.rc-status--rejected {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.12);
+}
+
+/* ── Card Links Section ────────────────────────────────────── */
+.rc-card-links-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.rc-card-links-label {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+.rc-card-links-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rc-card-link-btn {
+  padding: 6px 12px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #0ea5e9;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s ease;
+}
+
+.rc-card-link-btn:hover {
+  background-color: #e0f2fe;
+  border-color: #0ea5e9;
+}
+
+.rc-card-link-btn--anchor {
+  /* anchor-specific reset — inherits base rc-card-link-btn */
+  line-height: 1.4;
+}
+
+/* ── Card Actions Row ──────────────────────────────────────── */
+.rc-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.rc-card-status-select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: white;
+  color: #1f2937;
+}
+
+.rc-card-status-select:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: #4F1C51;
+}
+
+/* ── Candidate Actions (grid layout base) ──────────────────── */
 .recruiter-candidate-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
   gap: 0.8rem;
 }
 
@@ -158,7 +388,441 @@
   transform: scale(1.02);
 }
 
-/* Responsive */
+/* ── Empty State ───────────────────────────────────────────── */
+.rc-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+/* ── Modal Overlay ─────────────────────────────────────────── */
+.rc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.rc-modal-overlay--dark {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.rc-modal-overlay--padded {
+  padding: 10px;
+}
+
+/* ── Candidate Detail Modal ────────────────────────────────── */
+.rc-modal-box {
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.rc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rc-modal-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.rc-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+  line-height: 1;
+  padding: 0;
+}
+
+.rc-modal-close-btn:hover {
+  color: #1f2937;
+}
+
+.rc-modal-body {
+  display: grid;
+  gap: 15px;
+}
+
+.rc-modal-resume-row {
+  padding: 12px;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rc-modal-resume-btn {
+  color: #0ea5e9;
+  font-weight: 500;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.rc-modal-resume-btn:hover {
+  text-decoration: underline;
+}
+
+.rc-modal-link {
+  color: #0ea5e9;
+  text-decoration: none;
+}
+
+.rc-modal-link:hover {
+  text-decoration: underline;
+}
+
+.rc-modal-status-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.rc-modal-status-label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.rc-modal-status-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: white;
+  color: #1f2937;
+}
+
+.rc-modal-status-select:focus {
+  outline: none;
+  border-color: #4F1C51;
+}
+
+/* ── Resume Not Available Box ──────────────────────────────── */
+.rc-resume-empty-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.rc-resume-empty-title {
+  margin: 0 0 10px 0;
+  color: #ef4444;
+  font-size: 1.2rem;
+}
+
+.rc-resume-empty-desc {
+  margin: 0 0 20px 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.rc-resume-empty-close-btn {
+  padding: 10px 24px;
+  background-color: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.rc-resume-empty-close-btn:hover {
+  background-color: #0284c7;
+}
+
+/* ── Resume Viewer Modal ───────────────────────────────────── */
+.rc-resume-viewer-box {
+  background-color: white;
+  border-radius: 12px;
+  width: 95vw;
+  height: 95vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.rc-resume-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  flex-shrink: 0;
+}
+
+.rc-resume-viewer-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.rc-resume-viewer-close-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  color: #6b7280;
+  font-weight: bold;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.rc-resume-viewer-close-btn:hover {
+  color: #1f2937;
+}
+
+.rc-resume-iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+}
+
+.rc-resume-img-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px;
+  background-color: #ffffff;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rc-resume-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.rc-resume-viewer-footer {
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.rc-resume-footer-close-btn {
+  padding: 10px 20px;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.rc-resume-footer-close-btn:hover {
+  background-color: #4b5563;
+}
+
+.rc-resume-footer-download-btn {
+  padding: 10px 20px;
+  background-color: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s ease;
+}
+
+.rc-resume-footer-download-btn:hover {
+  background-color: #0284c7;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NEW: Professional Candidate Card Header
+   Mirrors the drive card rd-* pattern.
+   Only these rcc-* classes are new — nothing above is touched.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Wrapper — relative so status pill can sit absolute top-right */
+.rcc-card-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+/* Status pill — absolute top-right */
+.rcc-status-pill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.28rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.rcc-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Applied */
+.rcc-pill--applied {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0369a1;
+}
+.rcc-pill--applied .rcc-status-dot {
+  background: #0ea5e9;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.25);
+}
+
+/* Shortlisted */
+.rcc-pill--shortlisted {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+.rcc-pill--shortlisted .rcc-status-dot {
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+}
+
+/* Interview Scheduled */
+.rcc-pill--interview {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+.rcc-pill--interview .rcc-status-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+}
+
+/* Selected */
+.rcc-pill--selected {
+  background: rgba(139, 92, 246, 0.12);
+  color: #6d28d9;
+}
+.rcc-pill--selected .rcc-status-dot {
+  background: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
+}
+
+/* Rejected */
+.rcc-pill--rejected {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+}
+.rcc-pill--rejected .rcc-status-dot {
+  background: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+}
+
+/* Avatar + title row — padding-right leaves space for the pill */
+.rcc-identity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-right: 6.5rem;
+  width: 100%;
+}
+
+/* Avatar square */
+.rcc-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4F1C51, #7c3aed);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  letter-spacing: -1px;
+}
+
+/* Title block */
+.rcc-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.rcc-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.rcc-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #6b7280;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .recruiter-candidates-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -198,7 +862,6 @@
     width: 56px;
     height: 56px;
     font-size: 1.1rem;
-    flex-shrink: 0;
   }
 
   .recruiter-candidate-info h3 {
@@ -244,6 +907,12 @@
   .recruiter-export-btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .rc-resume-viewer-box {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
   }
 }
 
@@ -319,5 +988,28 @@
   .recruiter-export-btn {
     padding: 0.7rem 1.2rem;
     font-size: 0.85rem;
+  }
+
+  .rc-drive-filter-bar {
+    gap: 6px;
+  }
+
+  .rc-drive-filter-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .rcc-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 1rem;
+  }
+
+  .rcc-identity {
+    padding-right: 5.5rem;
+  }
+
+  .rcc-name {
+    font-size: 0.95rem;
   }
 }

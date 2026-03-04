@@ -6,9 +6,8 @@ import '../../styles/admin-css/admincompanies.css';
 import axios from 'axios';
 
 const Companies = () => {
-  const { recruiters, statsLoading, fetchRecruiters, admin } = useAdmin();
+  const { recruiters, statsLoading, fetchRecruiters, admin, searchQuery } = useAdmin();
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('active'); // all, active, blocked, deleted
   const [actionModal, setActionModal] = useState({
     isOpen: false,
@@ -37,14 +36,14 @@ const Companies = () => {
     }
 
     // Filter by search term
-    if (searchTerm) {
+    if (searchQuery) {
       filtered = filtered.filter(r => 
-        r.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        r.email?.toLowerCase().includes(searchTerm.toLowerCase())
+        r.companyName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.email?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
     setFilteredRecruiters(filtered);
-  }, [searchTerm, recruiters, filterStatus]);
+  }, [searchQuery, recruiters, filterStatus]);
 
   const getTotalHires = (recruiter) => {
     const drives = (recruiter.jobDrives || []).filter(drive =>
@@ -118,52 +117,20 @@ const Companies = () => {
 
   return (
     <AdminLayout>
-      <div className="admin-page-header">
-        <div>
-          <h1>Company Management</h1>
-          <p>Manage partner companies and recruiters ({filteredRecruiters.length} companies)</p>
-        </div>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <input 
-            type="text" 
-            placeholder="Search companies..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '6px',
-              border: '1px solid #e5e7eb',
-              width: '200px'
-            }}
-          />
-          <div className="admin-filter-section">
-            <button 
-              className={`admin-filter-btn ${filterStatus === 'active' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('active')}
-            >
-              Active
-            </button>
-            <button 
-              className={`admin-filter-btn ${filterStatus === 'blocked' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('blocked')}
-            >
-              Blocked
-            </button>
-            <button 
-              className={`admin-filter-btn ${filterStatus === 'deleted' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('deleted')}
-            >
-              Deleted
-            </button>
-            <button 
-              className={`admin-filter-btn ${filterStatus === 'all' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('all')}
-            >
-              All
-            </button>
+      {/* Banner with Title */}
+      <div className="admin-banner">
+        <div className="admin-banner-content">
+          <div className="admin-banner-text">
+            <h1>Company Management</h1>
+            <p>Manage partner companies and recruiters ({filteredRecruiters.length} companies)</p>
+          </div>
+          <div className="admin-banner-icon">
+            <Building2 size={80} />
           </div>
         </div>
       </div>
+
+
 
       {/* Messages */}
       {successMessage && (
@@ -181,9 +148,9 @@ const Companies = () => {
       )}
 
       {statsLoading ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>Loading companies...</div>
+        <div className="admin-loading-container">Loading companies...</div>
       ) : filteredRecruiters.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>No companies found</div>
+        <div className="admin-empty-state">No companies found</div>
       ) : (
         <div className="admin-companies-grid">
           {filteredRecruiters.map((recruiter) => {
@@ -197,10 +164,7 @@ const Companies = () => {
                   <div className="admin-company-info">
                     <h3>{recruiter.companyName || recruiter.fullName}</h3>
                     <p>{recruiter.designation || 'Recruiter'}</p>
-                    <span 
-                      className="admin-status-badge"
-                      style={{ backgroundColor: status.color, color: 'white' }}
-                    >
+                    <span className={`admin-status-badge admin-status-badge--${status.label.toLowerCase()}`}>
                       {status.label}
                     </span>
                   </div>
@@ -305,7 +269,7 @@ const Companies = () => {
               </div>
               <div className="admin-detail-row">
                 <label>Status:</label>
-                <span style={{ color: getStatusDisplay(selectedCompany).color }}>
+                <span className={`admin-status-badge admin-status-badge--${getStatusDisplay(selectedCompany).label.toLowerCase()}`}>
                   {getStatusDisplay(selectedCompany).label}
                 </span>
               </div>
@@ -371,15 +335,7 @@ const Companies = () => {
                   placeholder="Reason for this action (optional)"
                   value={actionModal.reason}
                   onChange={(e) => setActionModal({ ...actionModal, reason: e.target.value })}
-                  style={{
-                    width: '100%',
-                    minHeight: '80px',
-                    padding: '8px',
-                    marginTop: '15px',
-                    borderRadius: '6px',
-                    border: '1px solid #e5e7eb',
-                    fontFamily: 'inherit',
-                  }}
+                  className="admin-modal-reason-textarea"
                 />
               )}
             </div>

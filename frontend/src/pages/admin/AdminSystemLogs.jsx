@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Download, CheckCircle, Activity, AlertCircle, RefreshCw, Filter } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
+import { useAdmin } from '../../context/AdminContext';
 import '../../styles/admin-css/adminsystemlogs.css';
 import axios from 'axios';
 
 const AdminSystemLogs = () => {
+  const { admin } = useAdmin();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all'); // all, success, info, warning
   const [filteredLogs, setFilteredLogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [refreshInterval, setRefreshInterval] = useState(null);
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-  // Fetch activity logs from backend
+  // Auto-refresh logs every 5 seconds
   useEffect(() => {
     fetchLogs();
+    const interval = setInterval(() => {
+      fetchLogs();
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchLogs = async () => {
@@ -95,7 +102,21 @@ const AdminSystemLogs = () => {
 
   return (
     <AdminLayout>
-      <div className="admin-page-header">
+      {/* Banner with Title */}
+      <div className="admin-banner">
+        <div className="admin-banner-content">
+          <div className="admin-banner-text">
+            <h1>System Activity Logs</h1>
+            <p>Real-time system activities and events ({filteredLogs.length} logs)</p>
+          </div>
+          <div className="admin-banner-icon">
+            <Activity size={80} />
+          </div>
+        </div>
+      </div>
+
+      {/* Header - removed, content moved to banner */}
+      <div className="admin-page-header" style={{display: 'none'}}>
         <div>
           <h1>System Activity Logs</h1>
           <p>Real-time system activities and events ({filteredLogs.length} logs)</p>
@@ -121,28 +142,37 @@ const AdminSystemLogs = () => {
         <div className="admin-filter-group">
           <Filter size={18} />
           <button 
-            className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
+            className={`filter-btn filter-btn-all ${filterType === 'all' ? 'active' : ''}`}
             onClick={() => setFilterType('all')}
           >
             All
           </button>
           <button 
-            className={`filter-btn ${filterType === 'success' ? 'active' : ''}`}
+            className={`filter-btn filter-btn-success ${filterType === 'success' ? 'active' : ''}`}
             onClick={() => setFilterType('success')}
           >
             Success
           </button>
           <button 
-            className={`filter-btn ${filterType === 'info' ? 'active' : ''}`}
+            className={`filter-btn filter-btn-info ${filterType === 'info' ? 'active' : ''}`}
             onClick={() => setFilterType('info')}
           >
             Info
           </button>
           <button 
-            className={`filter-btn ${filterType === 'warning' ? 'active' : ''}`}
+            className={`filter-btn filter-btn-warning ${filterType === 'warning' ? 'active' : ''}`}
             onClick={() => setFilterType('warning')}
           >
             Warning
+          </button>
+          <button 
+            className="admin-refresh-btn"
+            onClick={fetchLogs}
+            disabled={loading}
+            style={{ marginLeft: 'auto' }}
+          >
+            <RefreshCw size={16} style={{ animation: loading ? 'spin 1s linear infinite' : 'none' }} />
+            Refresh
           </button>
         </div>
 
@@ -180,6 +210,17 @@ const AdminSystemLogs = () => {
                 </div>
                 <p className="admin-log-details">{log.details}</p>
                 <span className="admin-log-user">By: {log.user}</span>
+              </div>
+              <div className="admin-log-actions">
+                {log.type === 'success' && (
+                  <button className="admin-log-btn admin-log-btn-success">✓ View</button>
+                )}
+                {log.type === 'info' && (
+                  <button className="admin-log-btn admin-log-btn-info">ℹ Info</button>
+                )}
+                {log.type === 'warning' && (
+                  <button className="admin-log-btn admin-log-btn-warning">⚠ Alert</button>
+                )}
               </div>
             </div>
           ))

@@ -19,11 +19,13 @@ import StudentLayout from "../../components/StudentLayout";
 import AchievementModal from "../../components/AchievementModal";
 import InterviewFeature from "../InterviewFeature";
 import ProjectEvaluator from "../ProjectEvaluator";
+import { useStudent } from "../../context/StudentContext";
 import achievementsService from "../../services/achievementsService";
 import "../../styles/student-css/studentdashboard.css";
 import "../../styles/student-css/studentachievements.css";
 
 const StudentAchievements = () => {
+  const { searchQuery } = useStudent();
   const [achievements, setAchievements] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAchievement, setSelectedAchievement] = useState(null);
@@ -148,6 +150,13 @@ const StudentAchievements = () => {
     return categoryConfig[category] || categoryConfig.Other;
   };
 
+  const query = searchQuery.toLowerCase();
+  const filteredAchievements = achievements.filter(a =>
+    query === '' ||
+    (a.title || '').toLowerCase().includes(query) ||
+    (a.category || '').toLowerCase().includes(query)
+  );
+
   const formatDate = (dateString) => {
     try {
       const date = new Date(dateString);
@@ -169,8 +178,8 @@ const StudentAchievements = () => {
           <div>
             <h1>My Achievements</h1>
             <p>
-              {achievements.length > 0
-                ? `You have ${achievements.length} achievement${achievements.length !== 1 ? "s" : ""}`
+              {filteredAchievements.length > 0
+                ? `You have ${filteredAchievements.length} achievement${filteredAchievements.length !== 1 ? "s" : ""}`
                 : "Start building your achievement portfolio"}
             </p>
           </div>
@@ -220,9 +229,9 @@ const StudentAchievements = () => {
         )}
 
         {/* Achievements Grid */}
-        {!isLoading && achievements.length > 0 && (
+        {!isLoading && filteredAchievements.length > 0 && (
           <div className="student-achievements-grid">
-            {achievements.map((achievement) => {
+            {filteredAchievements.map((achievement) => {
               const config = getAchievementConfig(achievement.category);
               const IconComponent = config.icon;
 
@@ -318,7 +327,12 @@ const StudentAchievements = () => {
             })}
           </div>
         )}
-      </div>
+
+        {!isLoading && filteredAchievements.length === 0 && achievements.length > 0 && (
+          <div className="achievement-no-results">
+            <p>No achievements match your search.</p>
+          </div>
+        )}\n      </div>
 
       {/* Achievement Modal */}
       <AchievementModal

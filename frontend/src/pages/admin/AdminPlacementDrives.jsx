@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { DollarSign, Calendar, Users, CheckCircle, UserCheck, Eye, Settings, Trash2, Lock, AlertCircle } from 'lucide-react';
+import { DollarSign, Calendar, Users, CheckCircle, UserCheck, Eye, Settings, Trash2, Lock, AlertCircle, Briefcase } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
 import { useAdmin } from '../../context/AdminContext';
 import '../../styles/admin-css/adminplacementdrives.css';
 import axios from 'axios';
 
 const PlacementDrives = () => {
-  const { admin, fetchJobDrives, jobDrives, statsLoading } = useAdmin();
-  const [filterCategory, setFilterCategory] = useState('all');
+  const { admin, fetchJobDrives, jobDrives, statsLoading, searchQuery } = useAdmin();
   const [filteredDrives, setFilteredDrives] = useState([]);
+  const [selectedDrive, setSelectedDrive] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [actionModal, setActionModal] = useState({
     isOpen: false,
     drive: null,
@@ -22,22 +23,20 @@ const PlacementDrives = () => {
   const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
   useEffect(() => {
-    const visibleDrives = jobDrives.filter(drive =>
-      !drive?.isDeleted && drive?.status !== 'deleted' && !drive?.isBlocked && drive?.status !== 'blocked'
-    );
-
-    let filtered = visibleDrives;
-    if (filterCategory !== 'all') {
-      if (filterCategory === 'blocked') {
-        // show blocked drives when requested
-        filtered = jobDrives.filter(drive => drive?.isBlocked || drive?.status === 'blocked');
-      } else {
-        filtered = visibleDrives.filter(drive => (drive.status || 'active').toLowerCase() === filterCategory);
-      }
+    // Show all non-deleted drives
+    let filtered = jobDrives.filter(drive => !drive?.isDeleted && drive?.status !== 'deleted');
+    
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter(drive =>
+        drive.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        drive.recruiterName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        drive.position?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
-
+    
     setFilteredDrives(filtered);
-  }, [filterCategory, jobDrives]);
+  }, [jobDrives, searchQuery]);
 
   const handleAction = async () => {
     if (!actionModal.drive || !actionModal.action) return;
@@ -67,15 +66,11 @@ const PlacementDrives = () => {
         const actionText = actionModal.action === 'block' ? 'blocked' : 'deleted';
         setSuccessMessage(`Job drive ${actionText} successfully. All applicants have been notified.`);
         setTimeout(() => setSuccessMessage(''), 4000);
-        setActionModal({ isOpen: false, drive: null, action: null, reason: '' });
-        // Refresh job drives list from backend (this updates `jobDrives` which drives `filteredDrives` via useEffect)
+        
+        // Refresh job drives list from backend
         await fetchJobDrives();
-        // Also update local UI immediately in case backend endpoints return inconsistent sources
-        if (actionModal.action === 'delete') {
-          setFilteredDrives(prev => prev.filter(d => String(d._id) !== String(actionModal.drive._id)));
-        } else if (actionModal.action === 'block') {
-          setFilteredDrives(prev => prev.map(d => String(d._id) === String(actionModal.drive._id) ? { ...d, isBlocked: true, status: 'blocked' } : d));
-        }
+        
+        setActionModal({ isOpen: false, drive: null, action: null, reason: '' });
       } else if (response.data.success && response.data.modifiedCount === 0) {
         setErrorMessage(`Failed: modifiedCount is 0. Database may not have matched the drive.`);
       }
@@ -110,31 +105,26 @@ const PlacementDrives = () => {
 
   return (
     <AdminLayout>
-      <div className="admin-page-header">
+      {/* Banner with Title */}
+      <div className="admin-banner">
+        <div className="admin-banner-content">
+          <div className="admin-banner-text">
+            <h1>Placement Drives</h1>
+            <p>Monitor and manage all recruitment drives ({filteredDrives.length} drives)</p>
+          </div>
+          <div className="admin-banner-icon">
+            <Briefcase size={80} />
+          </div>
+        </div>
+      </div>
+
+      {/* Header - removed, content moved to banner */}
+      {/* <div className="admin-page-header admin-page-header--hidden">
         <div>
           <h1>Placement Drives</h1>
           <p>Monitor and manage all recruitment drives ({filteredDrives.length} drives)</p>
         </div>
-        <div className="admin-header-actions">
-          <div className="admin-filter-section">
-            <button className={`admin-filter-btn ${filterCategory === 'all' ? 'active' : ''}`} onClick={() => setFilterCategory('all')}>
-              All Drives
-            </button>
-            <button className={`admin-filter-btn ${filterCategory === 'active' ? 'active' : ''}`} onClick={() => setFilterCategory('active')}>
-              Active
-            </button>
-            <button className={`admin-filter-btn ${filterCategory === 'scheduled' ? 'active' : ''}`} onClick={() => setFilterCategory('scheduled')}>
-              Scheduled
-            </button>
-            <button className={`admin-filter-btn ${filterCategory === 'completed' ? 'active' : ''}`} onClick={() => setFilterCategory('completed')}>
-              Completed
-            </button>
-            <button className={`admin-filter-btn ${filterCategory === 'blocked' ? 'active' : ''}`} onClick={() => setFilterCategory('blocked')}>
-              Blocked
-            </button>
-          </div>
-        </div>
-      </div>
+      </div> */}
 
       {/* Messages */}
       {successMessage && (
@@ -152,9 +142,9 @@ const PlacementDrives = () => {
       )}
 
       {statsLoading || loading ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>Loading drives...</div>
+        <div className="admin-loading-container">Loading drives...</div>
       ) : filteredDrives.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>No drives found</div>
+        <div className="admin-empty-state">No drives found</div>
       ) : (
         <div className="admin-drives-grid">
           {filteredDrives.map((drive) => (
@@ -220,7 +210,13 @@ const PlacementDrives = () => {
 
               {!drive.isBlocked && !drive.isDeleted && (
                 <div className="admin-drive-actions">
-                  <button className="admin-view-btn">
+                  <button 
+                    className="admin-view-btn"
+                    onClick={() => {
+                      setSelectedDrive(drive);
+                      setShowDetailsModal(true);
+                    }}
+                  >
                     <Eye size={16} />
                     View Details
                   </button>
@@ -259,6 +255,80 @@ const PlacementDrives = () => {
         </div>
       )}
 
+      {/* Details Modal */}
+      {showDetailsModal && selectedDrive && (
+        <div className="admin-modal-overlay" onClick={() => setShowDetailsModal(false)}>
+          <div
+            className="admin-modal-content admin-modal-content--lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="admin-modal-header">
+              <h2>Placement Drive Details</h2>
+              <button
+                className="admin-modal-close"
+                onClick={() => setShowDetailsModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="admin-modal-body">
+              <div className="admin-detail-row">
+                <strong>Company:</strong>
+                <span>{selectedDrive.company || selectedDrive.recruiterName}</span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Position:</strong>
+                <span>{selectedDrive.position}</span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Salary:</strong>
+                <span>{selectedDrive.salary || 'N/A'}</span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Date:</strong>
+                <span>{new Date(selectedDrive.date).toLocaleDateString()}</span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Status:</strong>
+                <span className={`admin-status-badge admin-status-badge--${selectedDrive.status || 'active'}`}>
+                  {selectedDrive.status === 'active' ? 'Active' : selectedDrive.status === 'scheduled' ? 'Scheduled' : 'Completed'}
+                </span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Qualifications Required:</strong>
+                <span>{selectedDrive.qualificationsRequired || 'N/A'}</span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Total Applicants:</strong>
+                <span>{selectedDrive.applications?.length || 0}</span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Selected:</strong>
+                <span>{selectedDrive.applications?.filter(a => a.applicationStatus === 'selected').length || 0}</span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Rejected:</strong>
+                <span>{selectedDrive.applications?.filter(a => a.applicationStatus === 'rejected').length || 0}</span>
+              </div>
+              <div className="admin-detail-row">
+                <strong>Description:</strong>
+                <span>{selectedDrive.description || 'N/A'}</span>
+              </div>
+            </div>
+
+            <div className="admin-modal-footer">
+              <button
+                className="admin-btn-secondary"
+                onClick={() => setShowDetailsModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Action Modal */}
       {actionModal.isOpen && (
         <div className="admin-modal-overlay" onClick={() => setActionModal({ ...actionModal, isOpen: false })}>
@@ -268,9 +338,9 @@ const PlacementDrives = () => {
           >
             <div className="admin-modal-header">
               {actionModal.action === 'block' ? (
-                <Lock size={24} style={{ color: '#f59e0b' }} />
+                <Lock size={24} className="admin-modal-icon admin-modal-icon--warning" />
               ) : (
-                <Trash2 size={24} style={{ color: '#ef4444' }} />
+                <Trash2 size={24} className="admin-modal-icon admin-modal-icon--danger" />
               )}
               <h3>
                 {actionModal.action === 'block' ? 'Block Job Drive' : 'Delete Job Drive'}
@@ -302,7 +372,7 @@ const PlacementDrives = () => {
                     })
                   }
                   placeholder={`Explain why you're ${actionModal.action}ing this drive...`}
-                  style={{ height: '100px' }}
+                  className="admin-modal-textarea"
                 />
               </div>
             </div>

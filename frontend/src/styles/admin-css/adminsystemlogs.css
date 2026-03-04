@@ -1,138 +1,73 @@
 /* SystemLogs.css */
-@import './AdminShared.css';
+@import './admin-common.css';
 
-.admin-logs-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
+/* =========================================================
+   FILTER BAR — unified, clean, professional
+   ========================================================= */
 
-.admin-log-card {
-  background: white;
-  border-radius: 16px;
-  padding: 1.6rem;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-  display: flex;
-  gap: 1.2rem;
-  transition: all 0.3s ease;
-  border-left: 4px solid transparent;
-}
-
-.admin-log-card:hover {
-  transform: translateX(5px);
-  box-shadow: 0 4px 20px rgba(33, 15, 55, 0.15);
-}
-
-.admin-log-card.admin-log-success {
-  border-left-color: #166534;
-}
-
-.admin-log-card.admin-log-info {
-  border-left-color: #1e40af;
-}
-
-.admin-log-card.admin-log-warning {
-  border-left-color: #92400e;
-}
-
-.admin-log-icon {
-  width: 54px;
-  height: 54px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.admin-log-icon-success {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.admin-log-icon-info {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.admin-log-icon-warning {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.admin-log-content {
-  flex: 1;
-}
-
-.admin-log-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.admin-log-header h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.admin-log-time {
-  color: #94a3b8;
-  font-size: 0.85rem;
-}
-
-.admin-log-details {
-  color: #64748b;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-.admin-log-user {
-  color: #210F37;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-@media (max-width: 768px) {
-  .admin-log-card {
-    flex-direction: column;
-  }
-
-  .admin-log-icon {
-    width: 48px;
-    height: 48px;
-  }
-}
-
-/* Filter and Search Styles */
 .admin-logs-filters {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   margin: 1.5rem 0;
-  padding: 1rem;
+  padding: 1rem 1.25rem;
   background: white;
-  border-radius: 8px;
+  border-radius: 16px;
   align-items: center;
   flex-wrap: wrap;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
 }
 
 .admin-filter-group {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.6rem;
   align-items: center;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
+/* Search bar — force white always */
+.admin-search-logs {
+  width: 260px;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  color: #1f2937 !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  -webkit-text-fill-color: #1f2937 !important;
+}
+
+.admin-search-logs::placeholder {
+  color: #9ca3af;
+  -webkit-text-fill-color: #9ca3af;
+}
+
+.admin-search-logs:hover {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border-color: #c4b5e0;
+}
+
+.admin-search-logs:focus {
+  outline: none;
+  border-color: #5a2d82;
+  box-shadow: 0 0 0 3px rgba(90, 45, 130, 0.1);
+  background: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+/* Filter buttons */
 .filter-btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid #e5e7eb;
+  padding: 0.5rem 1.1rem;
+  border: 1.5px solid #e5e7eb;
   background: white;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.82rem;
   color: #6b7280;
   transition: all 0.2s ease;
 }
@@ -142,92 +77,258 @@
   background: #f9fafb;
 }
 
-.filter-btn.active {
-  background: #210F37;
+.filter-btn.filter-btn-all {
+  background: #f3f0fa;
+  color: #5a2d82;
+  border-color: #d8c8f0;
+}
+.filter-btn.filter-btn-all:hover,
+.filter-btn.filter-btn-all.active {
+  background: linear-gradient(135deg, #210f37, #5a2d82);
   color: white;
-  border-color: #210F37;
+  border-color: #210f37;
+  box-shadow: 0 3px 10px rgba(33,15,55,0.2);
 }
 
-.admin-search-logs {
-  flex: 1;
-  min-width: 200px;
-  padding: 0.5rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  color: #374151;
+.filter-btn.filter-btn-success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+.filter-btn.filter-btn-success:hover,
+.filter-btn.filter-btn-success.active {
+  background: #22c55e;
+  color: white;
+  border-color: #22c55e;
+  box-shadow: 0 3px 10px rgba(34,197,94,0.25);
 }
 
-.admin-search-logs::placeholder {
-  color: #9ca3af;
+.filter-btn.filter-btn-info {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+}
+.filter-btn.filter-btn-info:hover,
+.filter-btn.filter-btn-info.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+  box-shadow: 0 3px 10px rgba(59,130,246,0.25);
 }
 
-.admin-search-logs:focus {
-  outline: none;
-  border-color: #210F37;
-  box-shadow: 0 0 0 3px rgba(33, 15, 55, 0.1);
+.filter-btn.filter-btn-warning {
+  background: #fff1f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+.filter-btn.filter-btn-warning:hover,
+.filter-btn.filter-btn-warning.active {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+  box-shadow: 0 3px 10px rgba(239,68,68,0.25);
 }
 
-/* Refresh Button */
-.admin-header-actions {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
+/* Refresh button */
 .admin-refresh-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  border: 1px solid #e5e7eb;
+  gap: 0.45rem;
+  padding: 0.5rem 1.1rem;
+  border: 1.5px solid #e5e7eb;
   background: white;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.82rem;
   color: #374151;
   transition: all 0.2s ease;
 }
-
-.admin-refresh-btn:hover {
+.admin-refresh-btn:hover:not(:disabled) {
   background: #f9fafb;
-  border-color: #d1d5db;
+  border-color: #5a2d82;
+  color: #5a2d82;
 }
-
 .admin-refresh-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* Export button */
 .admin-export-btn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  background: #210F37;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #210f37, #5a2d82);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.85rem;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(33,15,55,0.15);
+}
+.admin-export-btn:hover {
+  box-shadow: 0 6px 18px rgba(33,15,55,0.25);
+  transform: translateY(-1px);
 }
 
-.admin-export-btn:hover {
-  background: #3a1a5c;
+/* =========================================================
+   LOG CARDS
+   ========================================================= */
+
+.admin-logs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
 }
+
+.admin-log-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.admin-log-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(33,15,55,0.1);
+}
+
+.admin-log-card.admin-log-success { border-left-color: #22c55e; }
+.admin-log-card.admin-log-info    { border-left-color: #3b82f6; }
+.admin-log-card.admin-log-warning { border-left-color: #ef4444; }
+
+.admin-log-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-log-icon-success { background: #dcfce7; color: #16a34a; }
+.admin-log-icon-info    { background: #dbeafe; color: #2563eb; }
+.admin-log-icon-warning { background: #fee2e2; color: #dc2626; }
+
+.admin-log-content { flex: 1; min-width: 0; }
+
+.admin-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.admin-log-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-log-time {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.admin-log-details {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+
+.admin-log-user {
+  color: #5a2d82;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Log action buttons */
+.admin-log-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.admin-log-btn {
+  padding: 0.45rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.admin-log-btn-success {
+  background: #dcfce7 !important;
+  color: #16a34a !important;
+}
+.admin-log-btn-success:hover {
+  background: #22c55e !important;
+  color: white !important;
+  box-shadow: 0 3px 10px rgba(34,197,94,0.25);
+}
+
+.admin-log-btn-info {
+  background: #dbeafe !important;
+  color: #2563eb !important;
+}
+.admin-log-btn-info:hover {
+  background: #3b82f6 !important;
+  color: white !important;
+  box-shadow: 0 3px 10px rgba(59,130,246,0.25);
+}
+
+.admin-log-btn-warning {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+.admin-log-btn-warning:hover {
+  background: #ef4444 !important;
+  color: white !important;
+  box-shadow: 0 3px 10px rgba(239,68,68,0.25);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 768px) {
   .admin-logs-filters {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
-
   .admin-search-logs {
     width: 100%;
   }
-
   .admin-filter-group {
     flex-wrap: wrap;
+  }
+  .admin-log-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .admin-log-actions {
+    width: 100%;
+    margin-top: 0.5rem;
   }
 }

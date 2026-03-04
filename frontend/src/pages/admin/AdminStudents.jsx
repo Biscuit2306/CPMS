@@ -6,8 +6,7 @@ import '../../styles/admin-css/adminstudents.css';
 import axios from 'axios';
 
 const AdminStudents = () => {
-  const { admin, students, fetchStudents, statsLoading } = useAdmin();
-  const [searchTerm, setSearchTerm] = useState('');
+  const { admin, students, fetchStudents, statsLoading, searchQuery } = useAdmin();
   const [filterStatus, setFilterStatus] = useState('active'); // all, active, blocked, deleted
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,17 +36,17 @@ const AdminStudents = () => {
     }
 
     // Filter by search term
-    if (searchTerm) {
+    if (searchQuery) {
       filtered = filtered.filter(s =>
-        s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.rollNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.branch?.toLowerCase().includes(searchTerm.toLowerCase())
+        s.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.rollNo?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.branch?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     setFilteredStudents(filtered);
-  }, [searchTerm, students, filterStatus]);
+  }, [searchQuery, students, filterStatus]);
 
   const getStatusDisplay = (student) => {
     if (student.isDeleted) return { label: 'Deleted', color: '#ef4444' };
@@ -105,9 +104,22 @@ const AdminStudents = () => {
 
   return (
     <AdminLayout>
-      <div className="admin-students-wrapper">
-        {/* Header */}
-        <div className="admin-page-header">
+     
+        {/* Banner with Title */}
+        <div className="admin-banner">
+          <div className="admin-banner-content">
+            <div className="admin-banner-text">
+              <h1>Student Management</h1>
+              <p>Manage all students ({filteredStudents.length} students)</p>
+            </div>
+            <div className="admin-banner-icon">
+              <Users size={80} />
+            </div>
+          </div>
+        </div>
+
+        {/* Header - removed, content moved to banner */}
+        <div className="admin-page-header" style={{display: 'none'}}>
           <div>
             <h1>Student Management</h1>
             <p>Manage all students ({filteredStudents.length} students)</p>
@@ -157,17 +169,6 @@ const AdminStudents = () => {
           </div>
         )}
 
-        {/* Search */}
-        <div className="admin-students-search">
-          <Search size={18} />
-          <input
-            type="text"
-            placeholder="Search by name, email, roll number, or branch..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
         {/* Students Table */}
         {statsLoading || loading ? (
           <div className="admin-loading-container">Loading students...</div>
@@ -179,7 +180,7 @@ const AdminStudents = () => {
         ) : (
           <div className="admin-students-table-wrapper">
             <table className="admin-students-table">
-              <thead>
+              <thead className="admin-students-table-head">
                 <tr>
                   <th>Student Name</th>
                   <th>Email</th>
@@ -232,7 +233,7 @@ const AdminStudents = () => {
                             }}
                             title="View details"
                           >
-                            <Eye size={16} />
+                            <Eye size={20} />
                           </button>
                           {!student.isDeleted && (
                             <>
@@ -242,7 +243,7 @@ const AdminStudents = () => {
                                   onClick={() => openActionModal(student, 'unblock')}
                                   title="Unblock student"
                                 >
-                                  <UnlockIcon size={16} />
+                                  <UnlockIcon size={20} />
                                 </button>
                               ) : (
                                 <button 
@@ -250,7 +251,7 @@ const AdminStudents = () => {
                                   onClick={() => openActionModal(student, 'block')}
                                   title="Block student"
                                 >
-                                  <Lock size={16} />
+                                  <Lock size={20} />
                                 </button>
                               )}
                               <button
@@ -258,7 +259,7 @@ const AdminStudents = () => {
                                 onClick={() => openActionModal(student, 'delete')}
                                 title="Delete account"
                               >
-                                <Trash2 size={16} />
+                                <Trash2 size={20} />
                               </button>
                             </>
                           )}
@@ -275,8 +276,19 @@ const AdminStudents = () => {
         {/* Details Modal */}
         {showDetailsModal && selectedStudent && (
           <div className="admin-modal-overlay" onClick={() => setShowDetailsModal(false)}>
-            <div className="admin-modal-content" onClick={(e) => e.stopPropagation()}>
-              <h2>Student Details</h2>
+            <div className="admin-modal-content admin-details-modal" onClick={(e) => e.stopPropagation()}>
+              {/* Modal Header */}
+              <div className="admin-modal-header">
+                <h2>Student Details</h2>
+                <button 
+                  className="admin-modal-close-btn"
+                  onClick={() => setShowDetailsModal(false)}
+                >
+                  ✕
+                </button>
+              </div>
+              
+              {/* Modal Body */}
               <div className="admin-modal-body">
                 <div className="admin-detail-row">
                   <label>Full Name:</label>
@@ -361,8 +373,10 @@ const AdminStudents = () => {
                   </>
                 )}
               </div>
-              <div className="admin-modal-actions">
-                <button className="admin-cancel-btn" onClick={() => setShowDetailsModal(false)}>
+              
+              {/* Modal Actions */}
+              <div className="admin-modal-actions admin-modal-actions-footer">
+                <button className="admin-modal-cancel-btn" onClick={() => setShowDetailsModal(false)}>
                   Close
                 </button>
               </div>
@@ -373,14 +387,26 @@ const AdminStudents = () => {
         {/* Action Modal */}
         {actionModal.isOpen && actionModal.student && (
           <div className="admin-modal-overlay" onClick={() => setActionModal({ isOpen: false, student: null, action: null, reason: '' })}>
-            <div className="admin-modal-content" onClick={(e) => e.stopPropagation()}>
-              <h2>
-                {actionModal.action === 'block' && 'Block Student Account'}
-                {actionModal.action === 'delete' && 'Delete Student Account'}
-                {actionModal.action === 'unblock' && 'Unblock Student Account'}
-              </h2>
+            <div className="admin-modal-content admin-action-modal" onClick={(e) => e.stopPropagation()}>
+              {/* Modal Header */}
+              <div className="admin-modal-header">
+                <h2>
+                  {actionModal.action === 'block' && 'Block Student Account'}
+                  {actionModal.action === 'delete' && 'Delete Student Account'}
+                  {actionModal.action === 'unblock' && 'Unblock Student Account'}
+                </h2>
+                <button 
+                  className="admin-modal-close-btn"
+                  onClick={() => setActionModal({ isOpen: false, student: null, action: null, reason: '' })}
+                  disabled={loading}
+                >
+                  ✕
+                </button>
+              </div>
+              
+              {/* Modal Body */}
               <div className="admin-modal-body">
-                <p>
+                <p className="admin-modal-description">
                   {actionModal.action === 'block' && `Are you sure you want to block ${actionModal.student.fullName}? They will not be able to access their account or apply for any positions.`}
                   {actionModal.action === 'delete' && `Are you sure you want to DELETE ${actionModal.student.fullName}'s account? This action cannot be undone. They will also be removed from all interview schedules.`}
                   {actionModal.action === 'unblock' && `Are you sure you want to unblock ${actionModal.student.fullName}? They will be able to access their account again.`}
@@ -390,28 +416,22 @@ const AdminStudents = () => {
                     placeholder="Reason for this action (optional)"
                     value={actionModal.reason}
                     onChange={(e) => setActionModal({ ...actionModal, reason: e.target.value })}
-                    style={{
-                      width: '100%',
-                      minHeight: '80px',
-                      padding: '8px',
-                      marginTop: '15px',
-                      borderRadius: '6px',
-                      border: '1px solid #e5e7eb',
-                      fontFamily: 'inherit',
-                    }}
+                    className="admin-modal-reason-textarea"
                   />
                 )}
               </div>
-              <div className="admin-modal-actions">
+              
+              {/* Modal Actions */}
+              <div className="admin-modal-actions admin-modal-actions-footer">
                 <button 
-                  className="admin-cancel-btn" 
+                  className="admin-modal-cancel-btn" 
                   onClick={() => setActionModal({ isOpen: false, student: null, action: null, reason: '' })}
                   disabled={loading}
                 >
                   Cancel
                 </button>
                 <button 
-                  className={`admin-${actionModal.action}-btn`}
+                  className={`admin-modal-action-btn admin-modal-action-btn--${actionModal.action}`}
                   onClick={handleAction}
                   disabled={loading}
                 >
@@ -425,7 +445,7 @@ const AdminStudents = () => {
             </div>
           </div>
         )}
-      </div>
+   
     </AdminLayout>
   );
 };

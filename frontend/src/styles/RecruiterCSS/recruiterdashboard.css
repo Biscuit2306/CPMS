@@ -3,9 +3,6 @@
 /* Dashboard Content Wrapper */
 .recruiter-dashboard-content {
   padding: 1rem;
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 /* Welcome Banner */

@@ -1,22 +1,31 @@
 /* Schedule Page Styles */
 
 .recruiter-add-schedule-btn {
-  display: flex;
+  /* display: flex;
   align-items: center;
   gap: 0.6rem;
   padding: 0.9rem 1.6rem;
-  background: #4F1C51;
+  background:  #2563EB;
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease; */
+  padding: 0.625rem 1.25rem;
+    background: #FFF;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    color: #4F1C51;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .recruiter-add-schedule-btn:hover {
-  background: #3d1640;
+  background:  #ffff;
   transform: scale(1.05);
 }
 
@@ -115,20 +124,20 @@
 }
 
 .recruiter-schedule-company h3 {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1f2937;
 }
 
 .recruiter-schedule-type {
   color: #64748b;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 /* Position text under interview type */
 .schedule-position-text {
   display: block;
-  font-size: 12px;
+  font-size: 0.9rem;
   color: #666;
   margin-top: 2px;
 }
@@ -191,7 +200,7 @@
   align-items: center;
   gap: 0.8rem;
   color: #64748b;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 .recruiter-schedule-info svg {
@@ -248,9 +257,9 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.8rem;
-  background: #faf5fb;
-  color: #4F1C51;
-  border: 2px solid #4F1C51;
+  background: #3B82F6;
+  color: #ffff;
+  border: 2px solid #3B82F6;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.9rem;
@@ -259,7 +268,7 @@
 }
 
 .recruiter-edit-schedule-btn:hover {
-  background: white;
+  background: #3B82F6;
 }
 
 /* Delete button override */
@@ -497,7 +506,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.8rem;
-  background: #4F1C51;
+  background: #EF4444;
   color: white;
   border: none;
   border-radius: 10px;
@@ -508,7 +517,7 @@
 }
 
 .recruiter-notify-btn:hover {
-  background: #3d1640;
+  background: #EF4444;
   transform: scale(1.02);
 }
 

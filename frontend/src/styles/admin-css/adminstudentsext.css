@@ -1,19 +1,30 @@
 /* AdminStudentsExtended.css - Additional inline style refactoring */
 
+@import './admin-common.css';
+
 /* ==================== TEXTAREA STYLED ==================== */
 .admin-textarea-reason {
   width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #cbd5e1;
-  min-height: 60px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  min-height: 80px;
   font-family: inherit;
   resize: vertical;
   font-size: 0.95rem;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  color: #374151;
+}
+
+.admin-textarea-reason:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .admin-textarea-reason:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #210F37;
+  box-shadow: 0 4px 12px rgba(33, 15, 55, 0.1);background: white;
 }

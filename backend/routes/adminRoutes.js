@@ -244,6 +244,16 @@ router.delete("/drives/:recruiterId/:driveId", async (req, res) => {
       return res.status(404).json({ success: false, message: 'Drive not found for recruiter' });
     }
 
+    // Get the drive details and affected students before deletion
+    const drive = diagnostic.jobDrives[0];
+    const recruiter = await Recruiter.findById(recruiterId);
+    
+    // Get all students with applications for this drive
+    const affectedStudents = await Student.find({
+      'applications.driveId': driveId,
+      'applications.applicationStatus': { $in: ['pending', 'shortlisted', 'interview'] }
+    }).select("firebaseUid email fullName");
+
     const result = await Recruiter.updateOne(
       { _id: recruiterId, 'jobDrives._id': driveObjectId },
       {
@@ -254,6 +264,18 @@ router.delete("/drives/:recruiterId/:driveId", async (req, res) => {
         }
       }
     );
+
+    // 🔔 Send deletion notifications
+    if (result.modifiedCount === 1) {
+      try {
+        const NotificationManager = require("../utils/notificationManager");
+        const notifMgr = new NotificationManager();
+        await notifMgr.adminDeletedJobDrive(drive, recruiter, affectedStudents);
+        console.log("✅ Job drive deletion notifications sent");
+      } catch (notifErr) {
+        console.warn("⚠️ Notification error (non-critical):", notifErr.message);
+      }
+    }
 
     return res.json({
       success: result.modifiedCount === 1,
@@ -281,6 +303,17 @@ router.delete("/students/:studentId", async (req, res) => {
     }
 
     console.log('✅ Student deleted:', student._id);
+
+    // 🔔 Send deletion notification
+    try {
+      const NotificationManager = require("../utils/notificationManager");
+      const notifMgr = new NotificationManager();
+      await notifMgr.adminDeletedUser(student, "student");
+      console.log("✅ Student deletion notifications sent");
+    } catch (notifErr) {
+      console.warn("⚠️ Notification error (non-critical):", notifErr.message);
+    }
+
     res.json({
       success: true,
       message: 'Student deleted successfully',
@@ -307,6 +340,17 @@ router.delete("/recruiters/:recruiterId", async (req, res) => {
     }
 
     console.log('✅ Recruiter deleted:', recruiter._id);
+
+    // 🔔 Send deletion notification
+    try {
+      const NotificationManager = require("../utils/notificationManager");
+      const notifMgr = new NotificationManager();
+      await notifMgr.adminDeletedUser(recruiter, "recruiter");
+      console.log("✅ Recruiter deletion notifications sent");
+    } catch (notifErr) {
+      console.warn("⚠️ Notification error (non-critical):", notifErr.message);
+    }
+
     res.json({
       success: true,
       message: 'Recruiter deleted successfully',
