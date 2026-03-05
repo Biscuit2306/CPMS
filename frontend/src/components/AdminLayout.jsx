@@ -7,6 +7,7 @@ import { auth } from '../firebase';
 import { useAdmin } from '../context/AdminContext';
 import { useNotification } from '../context/NotificationContext';
 import { NotificationCenter } from './Notifications';
+import RiskManagementModal from './RiskManagementModal';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
@@ -15,7 +16,7 @@ const AdminLayout = ({ children }) => {
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { admin } = useAdmin();
+  const { admin, searchQuery, setSearchQuery } = useAdmin();
   const { unreadCount, fetchUnreadCount } = useNotification();
 
   // Compute admin name using useMemo instead of useState + useEffect
@@ -133,7 +134,12 @@ const AdminLayout = ({ children }) => {
             </button>
             <div className="admin-search-bar">
               <Search size={20} />
-              <input type="text" placeholder="Search students, recruiters, companies..." />
+              <input 
+                type="text" 
+                placeholder="Search students, recruiters, companies..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
 
@@ -141,7 +147,6 @@ const AdminLayout = ({ children }) => {
             <button 
               className="admin-notification-btn"
               onClick={() => setNotificationCenterOpen(!notificationCenterOpen)}
-              style={{ position: 'relative' }}
             >
               <Mail size={20} />
               {unreadCount > 0 && <span className="admin-notification-badge">{unreadCount}</span>}
@@ -150,10 +155,16 @@ const AdminLayout = ({ children }) => {
               <NotificationCenter firebaseUid={admin.firebaseUid} isOpen={true} onClose={() => setNotificationCenterOpen(false)} />
             )}
             <div className="admin-user-profile">
-              <img 
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${adminName}`} 
-                alt={adminName} 
-              />
+              {admin?.profilePhoto ? (
+                <img 
+                  src={admin.profilePhoto.startsWith('http') || admin.profilePhoto.startsWith('data:')
+                    ? admin.profilePhoto
+                    : `${API_BASE}${admin.profilePhoto}`} 
+                  alt={adminName} 
+                />
+              ) : (
+                <div className="initial-avatar">{(adminName || 'A')[0].toUpperCase()}</div>
+              )}
               <div className="admin-user-info">
                 <span className="admin-user-name">{adminName}</span>
               </div>
@@ -164,6 +175,9 @@ const AdminLayout = ({ children }) => {
         <div className="admin-dashboard-content admin-scope">
           {children}
         </div>
+
+        {/* AI Risk Management System */}
+        <RiskManagementModal />
       </main>
     </div>
   );

@@ -8,6 +8,7 @@ import { useStudent } from '../context/StudentContext';
 import { useNotification } from '../context/NotificationContext';
 import { NotificationCenter } from './Notifications';
 import Chatbot from './Chatbot';
+import getAvatarUrl from '../utils/avatar';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
@@ -16,7 +17,7 @@ const StudentLayout = ({ children }) => {
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { student } = useStudent();
+  const { student, searchQuery, setSearchQuery } = useStudent();
   const { unreadCount, fetchUnreadCount } = useNotification();
 
   const menuItems = [
@@ -117,7 +118,12 @@ const StudentLayout = ({ children }) => {
             </button>
             <div className="student-search-bar">
               <Search size={20} />
-              <input type="text" placeholder="Search companies, drives, applications..." />
+              <input 
+                type="text" 
+                placeholder="Search companies, drives, applications..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
 
@@ -134,10 +140,16 @@ const StudentLayout = ({ children }) => {
               <NotificationCenter firebaseUid={student.firebaseUid} isOpen={true} onClose={() => setNotificationCenterOpen(false)} />
             )}
             <div className="student-user-profile">
-              <img 
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student?.fullName || 'User'}`} 
-                alt={student?.fullName || 'User'} 
-              />
+              {student?.profilePhoto ? (
+                <img
+                  src={student.profilePhoto.startsWith('http') || student.profilePhoto.startsWith('data:')
+                    ? student.profilePhoto
+                    : `${API_BASE}${student.profilePhoto}`}
+                  alt={student?.fullName || 'User'}
+                />
+              ) : (
+                <div className="initial-avatar">{(student?.fullName || student?.email || 'U')[0].toUpperCase()}</div>
+              )}
               <div className="student-user-info">
                 <span className="student-user-name">{student?.fullName || 'Student'}</span>
                 <span className="student-user-year">{student?.year || 'N/A'} - {student?.branch || 'N/A'}</span>

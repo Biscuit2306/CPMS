@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, Search, Bell, Users, LogOut,LayoutDashboard,Briefcase,Calendar,Building2,Settings} from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Menu, X, Search, Bell, Users, LogOut, LayoutDashboard, Briefcase, Calendar, Building2, Settings } from 'lucide-react';
 import '../styles/RecruiterCSS/recruiterLayout.css';
 import axios from 'axios';
 import { auth } from '../firebase';
 import { useRecruiter } from '../context/RecruiterContext';
 import { useNotification } from '../context/NotificationContext';
 import { NotificationCenter } from './Notifications';
+import getAvatarUrl from '../utils/avatar';
+
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
@@ -15,7 +17,7 @@ const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) =
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const [recruiterName, setRecruiterName] = useState('Recruiter');
   const navigate = useNavigate();
-  const { recruiter } = useRecruiter();
+  const { recruiter, searchQuery, setSearchQuery } = useRecruiter();
   const { unreadCount, fetchUnreadCount } = useNotification();
 
   useEffect(() => {
@@ -29,7 +31,13 @@ const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) =
     }
   }, [recruiter]);
 
-  // Fetch notification count on mount
+  // whenever the route changes we clear the global search term so that
+  // the next page begins with an empty input.
+  const location = useLocation();
+  useEffect(() => {
+    setSearchQuery('');
+  }, [location.pathname]);
+
   useEffect(() => {
     if (recruiter?.firebaseUid) {
       fetchUnreadCount(recruiter.firebaseUid);
@@ -41,33 +49,24 @@ const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) =
       const user = auth.currentUser;
       if (user) {
         const idToken = await user.getIdToken();
-        
-        // ✅ Call backend logout to clear trusted device token
         try {
           await axios.post(
             `${API_BASE}/api/auth/logout`,
             { role: 'recruiter' },
             {
-              headers: {
-                Authorization: `Bearer ${idToken}`,
-              },
-              withCredentials: true, // ✅ Include cookies
+              headers: { Authorization: `Bearer ${idToken}` },
+              withCredentials: true,
             }
           );
         } catch (logoutErr) {
           console.warn("Backend logout failed:", logoutErr.message);
-          // Continue with Firebase logout even if backend fails
         }
       }
-
       await auth.signOut();
-      
-      // ✅ Clear session data
       localStorage.removeItem("userRole");
       localStorage.removeItem("userData");
       localStorage.removeItem("twoFactorVerified");
       localStorage.removeItem("twoFactorVerifiedAt");
-      
       navigate('/');
     } catch (error) {
       console.error("Logout failed:", error);
@@ -76,16 +75,18 @@ const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) =
   };
 
   const menuItems = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/recruiter' },
-    { id: 'drives', icon: Briefcase, label: 'Drives', path: '/recruiter/drives' },
-    { id: 'candidates', icon: Users, label: 'Candidates', path: '/recruiter/candidates' },
-    { id: 'schedule', icon: Calendar, label: 'Schedule', path: '/recruiter/schedule' },
-    { id: 'companies', icon: Building2, label: 'Companies', path: '/recruiter/companies' },
-    { id: 'profile', icon: Settings, label: 'Profile', path: '/recruiter/profile' }
+    { id: 'dashboard',  icon: LayoutDashboard, label: 'Dashboard',  path: '/recruiter' },
+    { id: 'drives',     icon: Briefcase,       label: 'Drives',     path: '/recruiter/drives' },
+    { id: 'candidates', icon: Users,           label: 'Candidates', path: '/recruiter/candidates' },
+    { id: 'schedule',   icon: Calendar,        label: 'Schedule',   path: '/recruiter/schedule' },
+    { id: 'companies',  icon: Building2,       label: 'Companies',  path: '/recruiter/companies' },
+    { id: 'profile',    icon: Settings,        label: 'Profile',    path: '/recruiter/profile' },
   ];
 
   return (
     <div className="recruiter-dashboard-wrapper">
+
+      {/* Sidebar — fixed, unchanged */}
       <aside className={`nav-sidebar ${sidebarOpen ? 'nav-sidebar-open' : 'nav-sidebar-closed'}`}>
         <div className="nav-sidebar-content">
           <div className="nav-sidebar-header">
@@ -117,46 +118,65 @@ const RecruiterLayout = ({ activeMenu, setActiveMenu, userProfile, children }) =
         </div>
       </aside>
 
-      {/* Top Navbar */}
-      <nav className={`nav-topbar ${sidebarOpen ? 'nav-topbar-expanded' : 'nav-topbar-full'}`}>
-        <div className="nav-topbar-left">
-          <button className="nav-menu-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
-            {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-          <div className="nav-search-bar">
-            <Search size={20} />
-            <input type="text" placeholder="Search candidates, companies, drives..." />
-          </div>
-        </div>
+      {/* Main — topbar INSIDE main, then children. Matches StudentLayout exactly. */}
+      <main className={`recruiter-main-content ${sidebarOpen ? 'recruiter-content-expanded' : 'recruiter-content-full'}`}>
 
-        <div className="nav-topbar-right">
-          <button 
-            className="nav-notification-btn"
-            onClick={() => setNotificationCenterOpen(!notificationCenterOpen)}
-            style={{ position: 'relative' }}
-          >
-            <Bell size={20} />
-            {unreadCount > 0 && <span className="nav-notification-badge">{unreadCount}</span>}
-          </button>
-          {notificationCenterOpen && recruiter?.firebaseUid && (
-            <NotificationCenter firebaseUid={recruiter.firebaseUid} isOpen={true} onClose={() => setNotificationCenterOpen(false)} />
-          )}
-          <div className="nav-user-profile">
-            <img 
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${recruiterName}`} 
-              alt={recruiterName} 
-            />
-            <div className="nav-user-info">
-              <span className="nav-user-name">{recruiterName}</span>
+        <nav className="nav-topbar">
+          <div className="nav-topbar-left">
+            <button className="nav-menu-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
+              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+            <div className="nav-search-bar">
+              <Search size={20} />
+              <input
+                type="text"
+                placeholder="Search candidates, companies, drives..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
-        </div>
-      </nav>
 
-      <main className={`recruiter-main-content ${sidebarOpen ? 'recruiter-content-expanded' : 'recruiter-content-full'}`}>
-        {children}
+          <div className="nav-topbar-right">
+            <button
+              className="nav-notification-btn"
+              onClick={() => setNotificationCenterOpen(!notificationCenterOpen)}
+            >
+              <Bell size={20} />
+              {unreadCount > 0 && <span className="nav-notification-badge">{unreadCount}</span>}
+            </button>
+            {notificationCenterOpen && recruiter?.firebaseUid && (
+              <NotificationCenter
+                firebaseUid={recruiter.firebaseUid}
+                isOpen={true}
+                onClose={() => setNotificationCenterOpen(false)}
+              />
+            )}
+            <div className="nav-user-profile">
+              {recruiter?.profilePhoto ? (
+                <img
+                  src={recruiter.profilePhoto.startsWith('http') || recruiter.profilePhoto.startsWith('data:')
+                    ? recruiter.profilePhoto
+                    : `${API_BASE}${recruiter.profilePhoto}`}
+                  alt={recruiterName}
+                />
+              ) : (
+                <div className="initial-avatar">{(recruiterName || recruiter?.email || 'R')[0].toUpperCase()}</div>
+              )}
+              <div className="nav-user-info">
+                <span className="nav-user-name">{recruiterName}</span>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div className="recruiter-dashboard-content">
+          {children}
+        </div>
+
       </main>
     </div>
-)};
+  );
+};
 
 export default RecruiterLayout;
