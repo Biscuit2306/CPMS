@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { initializeSocket, disconnectSocket } from "./utils/socketService";
 import NotificationDisplay from "./components/NotificationDisplay";
@@ -65,30 +67,23 @@ import AdminSchedules from "./pages/admin/AdminSchedules";
 import ProjectEvaluator from "./pages/ProjectEvaluator";
 import InterviewFeature from "./pages/InterviewFeature";
 
+
 function App() {
   useEffect(() => {
-    // Initialize Socket.io connection when app mounts
-    const initSocket = async () => {
-      try {
-        // Get user ID from localStorage or from auth context
-        const authData = localStorage.getItem('auth');
-        const userId = authData ? JSON.parse(authData).id || JSON.parse(authData).uid : 'anonymous';
-        
-        // Initialize Socket.io connection with a small delay to ensure DOM is ready
-        setTimeout(() => {
-          initializeSocket(userId);
-          console.log('🚀 Socket.io initialized for user:', userId);
-        }, 500);
-      } catch (err) {
-        console.error('⚠️ Error initializing Socket.io:', err);
+    // Listen for Firebase auth state and connect socket with real UID
+    let unsubscribe;
+    unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && user.uid) {
+        initializeSocket(user.uid);
+        console.log('🚀 Socket.io initialized for user:', user.uid);
+      } else {
+        disconnectSocket();
       }
-    };
-
-    initSocket();
-    
+    });
     // Cleanup on unmount
     return () => {
       disconnectSocket();
+      if (unsubscribe) unsubscribe();
     };
   }, []);
 

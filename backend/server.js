@@ -186,6 +186,7 @@ mongoose
     try {
       const notificationSocket = require("./utils/notificationSocket");
       notificationSocket.initialize(io);
+      global.notificationSocket = notificationSocket;
       console.log("✅ Socket.io initialized with notifications\n");
     } catch (err) {
       console.warn("⚠️ Socket.io initialization error:", err.message);

@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import StudentLayout from "../../components/StudentLayout";
 import ExternalJobsFilter from "../../components/ExternalJobsFilter";
+import InterviewFeature from "../InterviewFeature";
+import ProjectEvaluator from "../ProjectEvaluator";
 import { useStudent } from "../../context/StudentContext";
 import "../../styles/student-css/externaljobs.css";
 
@@ -218,7 +220,7 @@ const ExternalJobs = () => {
         {/* Header */}
         <div className="external-jobs-header">
           <div className="external-jobs-header-content">
-            <h1>{stats.totalJobs || 0} Jobs</h1>
+            <h1> External Jobs</h1>
             <p>Search and apply to the latest job vacancies & openings in India</p>
           </div>
         </div>
@@ -338,6 +340,9 @@ const ExternalJobs = () => {
           </div>   {/* end list-wrapper */}
         </div>     {/* end main */}
       </div>       {/* end container */}
+
+      <InterviewFeature />
+      <ProjectEvaluator />
     </StudentLayout>
   );
 };

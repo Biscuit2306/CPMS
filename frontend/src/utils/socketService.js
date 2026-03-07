@@ -4,7 +4,7 @@ let socket = null;
 let connectionAttempts = 0;
 const MAX_RECONNECTION_ATTEMPTS = 5;
 
-export const initializeSocket = (userId) => {
+export const initializeSocket = (firebaseUid) => {
   if (socket && socket.connected) {
     console.log('✅ Socket.io already connected, reusing connection');
     return socket;
@@ -22,7 +22,7 @@ export const initializeSocket = (userId) => {
   try {
     socket = io(SOCKET_URL, {
       auth: {
-        userId: userId || 'anonymous',
+        firebaseUid: firebaseUid || 'anonymous',
       },
       transports: ['websocket', 'polling'],
       reconnection: true,
@@ -31,7 +31,7 @@ export const initializeSocket = (userId) => {
       reconnectionAttempts: 5,
       timeout: 10000,
       query: {
-        userId: userId || 'anonymous',
+        firebaseUid: firebaseUid || 'anonymous',
       },
     });
 
@@ -39,6 +39,11 @@ export const initializeSocket = (userId) => {
     socket.on('connect', () => {
       console.log('✅ Socket.io connected:', socket.id);
       connectionAttempts = 0; // Reset on successful connection
+      // Join personal notification room after connecting
+      if (firebaseUid) {
+        socket.emit('join-notifications', firebaseUid);
+        console.log('🔔 Joined notification room for:', firebaseUid);
+      }
     });
 
     socket.on('disconnect', (reason) => {
@@ -59,6 +64,11 @@ export const initializeSocket = (userId) => {
 
     socket.on('reconnect', () => {
       console.log('✅ Socket.io reconnected successfully');
+      // Re-join notification room after reconnect
+      if (firebaseUid) {
+        socket.emit('join-notifications', firebaseUid);
+        console.log('🔔 Re-joined notification room for:', firebaseUid);
+      }
     });
 
     // Notification events

@@ -51,12 +51,14 @@
   align-items: center;
   gap: 1.25rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 2px solid transparent;
   transition: all 0.3s ease;
 }
 
 .student-stat-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #7c3aed;
 }
 
 .student-stat-icon {
@@ -96,12 +98,17 @@
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 2px solid transparent;
   transition: all 0.3s ease;
 }
 
-.student-card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
+  .student-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    /* No border on outer card hover */
+  }
+
+.student-drive-item:hover,
+
 
 .student-card-header {
   display: flex;
@@ -179,10 +186,11 @@
   transition: all 0.3s ease;
 }
 
-.student-drive-item:hover {
-  background: #f3f4f6;
-  transform: translateX(4px);
-}
+  .student-drive-item:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+    border: 2px solid #7c3aed;
+  }
 
 .student-drive-icon {
   width: 50px;
@@ -264,9 +272,13 @@
   transition: all 0.3s ease;
 }
 
-.student-application-item:hover {
-  background: #f3f4f6;
-}
+  .student-application-item:hover {
+    background: #f3f4f6;
+    border: 2px solid #7c3aed;
+  }
+  .schedule-row:hover {
+    border: 2px solid #7c3aed;
+  }
 
 .student-app-company {
   display: flex;

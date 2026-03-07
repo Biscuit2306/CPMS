@@ -21,6 +21,7 @@ const StudentDashboard = () => {
   const [upcomingDrives, setUpcomingDrives] = useState([]);
   const [appliedCompanies, setAppliedCompanies] = useState([]);
   const [upcomingSchedules, setUpcomingSchedules] = useState([]);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   // derived filtered arrays based on search
   const query = searchQuery.toLowerCase();
@@ -41,39 +42,67 @@ const StudentDashboard = () => {
     (s.position || '').toLowerCase().includes(query)
   );
 
-  // Fetch stats when component mounts
+  // Fetch stats when component mounts and when student data changes
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setStatsLoading(true);
         const res = await axios.get(`${API_BASE}/api/admin/stats`);
+        
         if (res.data.success) {
+          // Calculate job offers from actual student applications
+          const jobOffers = student?.applications?.filter(
+            app => app.applicationStatus === 'selected' || app.applicationStatus === 'placed'
+          ).length || 0;
+
           setStats({
             companiesRegistered: res.data.data.partnerCompanies || 0,
             studentsPlaced: res.data.data.totalStudents || 0,
             placementRate: res.data.data.placementRate || 0,
-            jobOffers: student?.applications?.filter(app => app.applicationStatus === 'selected').length || 0
+            jobOffers: jobOffers
           });
         }
       } catch (err) {
-        console.log('Failed to fetch stats, using default values:', err.message);
+        console.error('Failed to fetch stats:', err.message);
+        
+        // Fallback: Calculate from student data
+        const jobOffers = student?.applications?.filter(
+          app => app.applicationStatus === 'selected' || app.applicationStatus === 'placed'
+        ).length || 0;
+
         setStats({
           companiesRegistered: 0,
           studentsPlaced: 0,
           placementRate: 0,
-          jobOffers: student?.applications?.filter(app => app.applicationStatus === 'selected').length || 0
+          jobOffers: jobOffers
         });
+      } finally {
+        setStatsLoading(false);
       }
     };
-    fetchStats();
+
+    if (student) {
+      fetchStats();
+    }
   }, [student]);
 
-  // Process drives data with enrichment
+  // Process drives data with enrichment - Real-time updates
   useEffect(() => {
     const processDrives = async () => {
+      if (!jobDrives || jobDrives.length === 0) {
+        setUpcomingDrives([]);
+        return;
+      }
+
       // Filter upcoming drives (active ones with deadline in future)
       const filtered = jobDrives
         .filter(d => d.status === 'active' && new Date(d.applicationDeadline) > new Date())
         .slice(0, 3);
+
+      if (filtered.length === 0) {
+        setUpcomingDrives([]);
+        return;
+      }
 
       // Enrich drives with complete details
       const enriched = await Promise.all(
@@ -114,15 +143,11 @@ const StudentDashboard = () => {
     processDrives();
   }, [jobDrives, getDriveDetails]);
 
-  // Process applications and schedules
+  // Process applications and schedules - Update when data changes
   useEffect(() => {
-    // ⚠️ REMOVED: syncStudentSchedules() was auto-triggering infinite loop
-    // It was being called every render, causing state updates, which triggered re-render
-    // If manual sync is needed, add a button instead
-
     // Get applications for this student with enrichment
     const enrichApps = async () => {
-      if (student && student.applications) {
+      if (student && student.applications && student.applications.length > 0) {
         const enriched = await Promise.all(
           student.applications.map(async (app) => {
             try {
@@ -149,36 +174,25 @@ const StudentDashboard = () => {
 
         const applied = enriched.map(app => ({
           company: app.company || app.companyName || 'Unknown',
-          status: app.applicationStatus === 'selected' ? 'Placed' : 
+          status: app.applicationStatus === 'selected' || app.applicationStatus === 'placed' ? 'Placed' : 
                   app.applicationStatus === 'rejected' ? 'Rejected' : 'Applied',
           date: app.applicationDate ? new Date(app.applicationDate).toLocaleDateString() : 
                 app.appliedAt ? new Date(app.appliedAt).toLocaleDateString() : 'N/A'
         }));
         setAppliedCompanies(applied);
+      } else {
+        setAppliedCompanies([]);
       }
     };
 
     enrichApps();
+  }, [student?.applications, getDriveDetails]);
 
-    // Get upcoming schedules for this student
-    if (schedules && schedules.length > 0 && student?.firebaseUid) {
-      console.log("📅 Processing schedules for dashboard");
-      console.log("Total schedules available:", schedules.length);
-      console.log("Student UID:", student.firebaseUid);
-      
-      // Filter for schedules where student is a candidate
-      const mySchedules = schedules
-        .filter(s => {
-          // Check if this schedule has candidates and student is one of them
-          if (!s.candidates || !Array.isArray(s.candidates)) {
-            console.log("⚠️ Schedule has no candidates array:", s.company);
-            return false;
-          }
-          
-          const isCandidate = s.candidates.some(c => c.studentId === student.firebaseUid);
-          console.log(`Schedule ${s.company}: student is candidate?`, isCandidate);
-          return isCandidate;
-        })
+  // Process and display upcoming schedules - Real-time updates
+  useEffect(() => {
+    if (schedules && schedules.length > 0) {
+      // Show all schedules (up to 3)
+      const allSchedules = schedules
         .map(s => ({
           company: s.company || 'Company',
           position: s.position || 'Position',
@@ -188,18 +202,11 @@ const StudentDashboard = () => {
           venue: s.venue || 'TBD'
         }))
         .slice(0, 3);
-      
-      console.log("📅 Filtered schedules for display:", mySchedules.length);
-      setUpcomingSchedules(mySchedules);
+      setUpcomingSchedules(allSchedules);
     } else {
-      console.log("ℹ️ No schedules to process", {
-        hasSchedules: schedules && schedules.length > 0,
-        schedulesCount: schedules?.length,
-        hasStudent: !!student,
-        hasUID: !!student?.firebaseUid
-      });
+      setUpcomingSchedules([]);
     }
-  }, [student, schedules]);
+  }, [schedules]);
 
   const placementStats = [
     { icon: Building2, label: 'Companies Registered', value: stats.companiesRegistered.toString(), color: '#7c3aed' },
@@ -207,6 +214,16 @@ const StudentDashboard = () => {
     { icon: TrendingUp, label: 'Placement Rate', value: `${stats.placementRate}%`, color: '#10b981' },
     { icon: Briefcase, label: 'Job Offers', value: stats.jobOffers.toString(), color: '#f59e0b' }
   ];
+
+  // Refresh all data
+  const handleRefreshData = async () => {
+    try {
+      // Manually sync schedules
+      await syncStudentSchedules();
+    } catch (err) {
+      console.error("Error refreshing data:", err);
+    }
+  };
 
   return (
     <StudentLayout>
@@ -229,7 +246,7 @@ const StudentDashboard = () => {
               <stat.icon size={24} />
             </div>
             <div className="student-stat-content">
-              <h3>{stat.value}</h3>
+              <h3>{statsLoading ? '...' : stat.value}</h3>
               <p>{stat.label}</p>
             </div>
           </div>
@@ -299,22 +316,25 @@ const StudentDashboard = () => {
           <h2>Upcoming Interview Schedules</h2>
           <Link to="/student/schedule" className="student-see-all">See all</Link>
         </div>
-        <div className="student-schedules-list">
+        <div className="student-schedules-list" style={{ padding: '0', margin: '0', background: '#f9fafb', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
           {filteredUpcomingSchedules.length === 0 ? (
             <div className="empty-message">
               <Calendar size={20} className="dashboard-schedule-icon" />
               <p>No upcoming schedules</p>
             </div>
           ) : (
-            upcomingSchedules.map((schedule, index) => (
-              <div key={index} className="student-schedule-row">
-                <Calendar size={20} className="dashboard-schedule-icon" />
-                <div className="schedule-info-text">
-                  <h4>{schedule.company} - {schedule.type}</h4>
-                  <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
-                    {schedule.date} at {schedule.time} • {schedule.venue}
-                  </p>
+            filteredUpcomingSchedules.map((schedule, index) => (
+              <div key={index} className="student-application-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem', background: '#f9fafb', borderRadius: '12px', marginBottom: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div className="student-company-logo" style={{ width: '50px', height: '50px', background: 'linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.25rem', fontWeight: '700' }}>
+                    <Calendar size={24} />
+                  </div>
+                  <div className="student-app-details">
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#1f2937', marginBottom: '0.25rem' }}>{schedule.company}</h3>
+                    <p className="student-app-date" style={{ fontSize: '0.85rem', color: '#6b7280' }}>{schedule.date} at {schedule.time} • {schedule.venue}</p>
+                  </div>
                 </div>
+                <span className="student-status-badge student-status-interview-scheduled" style={{ padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: '600', background: '#dbeafe', color: '#1e40af', whiteSpace: 'nowrap' }}>{schedule.type}</span>
               </div>
             ))
           )}

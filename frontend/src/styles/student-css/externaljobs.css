@@ -6,6 +6,7 @@
   border-radius: 20px;
   padding: 2rem;
   margin-bottom: 1rem;
+  margin-top: 0;
   box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
 }
 
@@ -15,21 +16,20 @@
   flex-direction: column;
   gap: 1.5rem;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  margin: 0;
+  padding: 0;
 }
 
 .external-jobs-main {
   display: flex;
   flex-direction: row;
-  gap: 2.5rem;
+  gap: 1.5rem;
   align-items: flex-start;
   width: 100%;
 }
 
 .external-jobs-filter-sidebar {
-  flex: 0 0 360px;
+  flex: 0 0 300px;
   min-width: 0;
   position: sticky;
   top: 80px;
@@ -64,6 +64,7 @@
   flex: 1;
   min-width: 0;
   width: 100%;
+  padding: 0;
 }
 
 /* stack vertically on narrow screens */
@@ -99,7 +100,7 @@
   background: white;
   border-radius: 16px;
   border: 1px solid #e5e7eb;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }
@@ -286,6 +287,7 @@
   flex-direction: column;
   gap: 1.5rem;
   width: 100%;
+  padding: 0;
 }
 
 .external-jobs-results-info {
@@ -300,9 +302,9 @@
 /* ==================== JOB CARD ==================== */
 .external-jobs-card {
   background: white;
-  border-radius: 12px;
-  padding: 1.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-left: 5px solid #7c3aed;
   display: flex;
@@ -312,8 +314,8 @@
 }
 
 .external-jobs-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(124, 58, 237, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   border-left-color: #6d28d9;
 }
 
@@ -561,10 +563,6 @@
 
 /* Tablet screens (1024px and below) - sidebar becomes full width */
 @media (max-width: 1024px) {
-  .external-jobs-container {
-    padding: 0 0.75rem;
-  }
-
   .external-jobs-main {
     gap: 1.5rem;
   }
@@ -581,7 +579,6 @@
 /* Small tablets and landscape phones */
 @media (max-width: 768px) {
   .external-jobs-container {
-    max-width: 100%;
     gap: 1rem;
   }
 
@@ -655,10 +652,6 @@
 
 /* Mobile phones (480px and below) */
 @media (max-width: 480px) {
-  .external-jobs-container {
-    padding: 0 0.5rem;
-  }
-
   .external-jobs-header {
     padding: 1.25rem;
     margin-bottom: 0.5rem;

@@ -1,7 +1,25 @@
+
 const express = require("express");
 const router = express.Router();
 const Recruiter = require("../models/Recruiter");
 const Student = require("../models/Student");
+const { rankCandidatesBySkills } = require("../services/skillRankingService");
+// Rank candidates for a job drive
+router.post("/rank-candidates/:id", async (req, res) => {
+  try {
+    const driveId = req.params.id;
+    const { candidateIds, jobDescription } = req.body;
+    if (!Array.isArray(candidateIds) || candidateIds.length === 0) {
+      return res.status(400).json({ success: false, error: "candidateIds array is required" });
+    }
+    // Optionally: Validate driveId exists, if needed
+    const ranked = await rankCandidatesBySkills(candidateIds, jobDescription || "");
+    res.json({ success: true, data: ranked });
+  } catch (err) {
+    console.error("/rank-candidates error:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // Get recruiter dashboard with jobs
 router.get("/dashboard/:uid", async (req, res) => {

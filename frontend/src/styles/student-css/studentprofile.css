@@ -175,7 +175,7 @@
 .student-profile-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.75rem;
   padding: 0 0 1rem 0;
   margin-bottom: 1rem;
   border-bottom: 1.5px solid var(--sp-border);
@@ -1341,4 +1341,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #1f2937;
+}
+
+.hidden-input {
+  display: none !important;
 }

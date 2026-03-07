@@ -41,7 +41,7 @@ Reply exactly:
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "mistralai/mistral-7b-instruct",
+        model: "openrouter/auto",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: message }
@@ -60,7 +60,15 @@ Reply exactly:
     });
 
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "AI failed" });
+    console.error("Chat Error:", err);
+    console.error("Error Response:", err.response?.data);
+    
+    if (err.response) {
+      res.status(err.response.status || 500).json({ 
+        error: err.response.data?.error || "AI service error" 
+      });
+    } else {
+      res.status(500).json({ error: err.message || "AI failed" });
+    }
   }
 };

@@ -36,11 +36,31 @@ const ProjectEvaluator = () => {
     setResult(null);
     setError("");
 
+    // Frontend validation for required fields (non-empty, trimmed)
+    const requiredFields = ["title", "domain", "description", "techStack"];
+    for (let field of requiredFields) {
+      if (!formData[field] || formData[field].trim() === "") {
+        setError("Please fill in all required fields.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Prepare trimmed data
+    const payload = {
+      ...formData,
+      title: formData.title.trim(),
+      domain: formData.domain.trim(),
+      description: formData.description.trim(),
+      techStack: formData.techStack.trim(),
+      repoUrl: formData.repoUrl ? formData.repoUrl.trim() : ""
+    };
+
     try {
       const res = await fetch(`${API_BASE}/api/projects/evaluate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();

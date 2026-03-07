@@ -90,6 +90,7 @@ router.post("/applications/:uid", async (req, res) => {
     const blocked = checkAccountStatus(student, "apply for positions");
     if (blocked) return res.status(403).json(blocked);
 
+    // Add application to student
     const updatedStudent = await Student.findOneAndUpdate(
       { firebaseUid: req.params.uid },
       { $push: { applications: req.body } },
@@ -98,6 +99,44 @@ router.post("/applications/:uid", async (req, res) => {
 
     if (!updatedStudent) {
       return res.status(404).json({ error: "Student not found" });
+    }
+
+    // --- Notification Logic ---
+    try {
+      // Get job drive and recruiter
+      const JobDrive = require("../models/JobDrive");
+      const Recruiter = require("../models/Recruiter");
+      const jobDrive = await JobDrive.findById(req.body.driveId);
+      let recruiter = null;
+      if (jobDrive && jobDrive.recruiterId) {
+        recruiter = await Recruiter.findOne({ firebaseUid: jobDrive.recruiterId }) || await Recruiter.findById(jobDrive.recruiterId);
+      }
+
+      // Notification events
+      const notificationEvents = require("../utils/notificationEvents");
+      const notificationSocket = require("../utils/notificationSocket");
+
+      // Emit event for student (application submitted)
+      if (student && jobDrive && recruiter) {
+        notificationEvents.emit("student:application-submitted", student, jobDrive, recruiter);
+        // Real-time notification for student
+        notificationSocket.notifyUser(student.firebaseUid, {
+          title: "✅ Application Submitted",
+          message: `Your application for ${jobDrive.position} at ${recruiter.companyName} has been submitted!`,
+          type: "success",
+          actionUrl: `/student/applications`,
+        });
+        // Real-time notification for recruiter
+        notificationEvents.emit("recruiter:application-received", recruiter, jobDrive, student);
+        notificationSocket.notifyUser(recruiter.firebaseUid, {
+          title: "📥 New Application Received",
+          message: `${student.fullName || student.email} applied for ${jobDrive.position}.`,
+          type: "info",
+          actionUrl: `/recruiter/candidates`,
+        });
+      }
+    } catch (notifErr) {
+      console.warn("⚠️ Notification error (non-critical):", notifErr.message);
     }
 
     res.json(updatedStudent.applications);

@@ -20,6 +20,7 @@ const NotificationSchema = new mongoose.Schema(
       enum: [
         "job_drive_blocked",
         "job_drive_deleted",
+        "job_drive_created",
         "interview_cancelled",
         "interview_blocked",
         "interview_deleted",
