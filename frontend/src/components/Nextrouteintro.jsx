@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "../styles/NextRouteIntro.css";
+import "../styles/nextrouteintro.css";
 
 // NextRoute Logo PNG
 const LOGO = "/logo (1).png";
