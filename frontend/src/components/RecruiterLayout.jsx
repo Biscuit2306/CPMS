@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Search, Bell, Users, LogOut, LayoutDashboard, Briefcase, Calendar, Building2, Settings } from 'lucide-react';
-import '../styles/RecruiterCSS/recruiterLayout.css';
+import '../styles/RecruiterCSS/recruiterlayout.css';
 import axios from 'axios';
 import { auth } from '../firebase';
 import { useRecruiter } from '../context/RecruiterContext';
