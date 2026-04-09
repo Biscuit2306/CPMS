@@ -206,7 +206,7 @@ const Candidates = () => {
     // Convert relative path to full URL
     let fullResumeUrl = resumeUrl;
     if (resumeUrl && !resumeUrl.startsWith('http')) {
-      const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://cpms-xtz8.onrender.com";
       fullResumeUrl = `${API_BASE}${resumeUrl}`;
     }
 

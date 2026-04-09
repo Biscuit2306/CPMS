@@ -80,7 +80,7 @@ const Profile = () => {
               <img
                 src={profileData.profilePhoto.startsWith('http') || profileData.profilePhoto.startsWith('data:')
                   ? profileData.profilePhoto
-                  : `http://localhost:5000${profileData.profilePhoto}`}
+                  : `https://cpms-xtz8.onrender.com${profileData.profilePhoto}`}
                 alt="Profile"
               />
             ) : (

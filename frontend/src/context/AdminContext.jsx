@@ -3,7 +3,7 @@ import axios from "axios";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://cpms-xtz8.onrender.com";
 const AdminContext = createContext(null);
 
 /* =========================

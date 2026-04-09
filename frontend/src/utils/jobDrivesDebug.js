@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://cpms-xtz8.onrender.com';
 
 export async function testJobDrivesAPI() {
   console.log('🔍 Testing Job Drives API...\n');

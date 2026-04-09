@@ -17,7 +17,7 @@ export default function Chatbot() {
     setInput("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://cpms-xtz8.onrender.com'}/api/chat`, {
         message: input
       });
 

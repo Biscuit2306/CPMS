@@ -3,7 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { useEffect, useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://cpms-xtz8.onrender.com";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const [loading, setLoading] = useState(true);

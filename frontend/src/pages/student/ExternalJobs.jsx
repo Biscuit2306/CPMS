@@ -21,7 +21,7 @@ import "../../styles/student-css/externaljobs.css";
 const ExternalJobs = () => {
   const { student } = useStudent();
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://cpms-xtz8.onrender.com";
 
   // States
   const [jobs, setJobs] = useState([]);

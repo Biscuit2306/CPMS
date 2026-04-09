@@ -294,12 +294,12 @@ const StudentAchievements = () => {
                     {achievement.certificateImage && (
                       <div className="achievement-certificate">
                         <img
-                          src={`http://localhost:5000${achievement.certificateImage}`}
+                          src={`https://cpms-xtz8.onrender.com${achievement.certificateImage}`}
                           alt="Certificate"
                           className="certificate-image"
                         />
                         <a
-                          href={`http://localhost:5000${achievement.certificateImage}`}
+                          href={`https://cpms-xtz8.onrender.com${achievement.certificateImage}`}
                           download
                           className="download-btn"
                           title="Download certificate"

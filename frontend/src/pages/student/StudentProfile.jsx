@@ -30,7 +30,7 @@ const StudentProfile = () => {
   const { student, updateStudent, loading, error } = useStudent();
 
   const BACKEND_URL =
-    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+    import.meta.env.VITE_BACKEND_URL || "https://cpms-xtz8.onrender.com";
 
   const [editMode, setEditMode] = useState(false);
   const [profileData, setProfileData] = useState(null);
@@ -120,7 +120,7 @@ const StudentProfile = () => {
             <img
               src={profileData.profilePhoto.startsWith('http') || profileData.profilePhoto.startsWith('data:')
                 ? profileData.profilePhoto
-                : `http://localhost:5000${profileData.profilePhoto}`}
+                : `https://cpms-xtz8.onrender.com${profileData.profilePhoto}`}
               alt="Profile"
             />
           ) : (

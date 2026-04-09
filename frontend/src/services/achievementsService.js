@@ -1,6 +1,6 @@
 // API service for achievements management
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}/api` : "https://cpms-xtz8.onrender.com/api";
 
 export const achievementsService = {
   /**

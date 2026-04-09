@@ -4,7 +4,7 @@
  * @param {string} apiBase - The API base URL
  * @returns {string} The complete URL for the avatar image
  */
-const getAvatarUrl = (photoPath, apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000") => {
+const getAvatarUrl = (photoPath, apiBase = import.meta.env.VITE_API_BASE_URL || "https://cpms-xtz8.onrender.com") => {
   if (!photoPath) {
     return null;
   }

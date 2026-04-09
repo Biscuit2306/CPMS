@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FolderKanban, X, Send, CheckCircle, AlertCircle, TrendingUp, Award, Loader, History, Trash2, Star } from 'lucide-react';
 import '../styles/projectevaluator.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://cpms-xtz8.onrender.com";
 
 const ProjectEvaluator = () => {
   const [isOpen, setIsOpen] = useState(false);

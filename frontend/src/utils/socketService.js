@@ -17,7 +17,7 @@ export const initializeSocket = (firebaseUid) => {
   }
 
   // Determine socket URL based on environment
-  const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+  const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://cpms-xtz8.onrender.com';
 
   try {
     socket = io(SOCKET_URL, {

@@ -3,7 +3,7 @@ import { MessageSquare, X, Send, CheckCircle, AlertCircle, TrendingUp, Award, Lo
 import { auth } from '../firebase';
 import '../styles/interviewfeature.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://cpms-xtz8.onrender.com";
 
 const InterviewFeature = () => {
   const [isOpen, setIsOpen] = useState(false);
