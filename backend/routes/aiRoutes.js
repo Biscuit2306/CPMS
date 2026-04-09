@@ -7,6 +7,39 @@ const router = express.Router();
 const GEMINI_URL =
   "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
 
+// Helper function to call Gemini API with fallback key
+async function callGeminiAPI(prompt) {
+  let primaryKey = process.env.GEMINI_API_KEY;
+  let backupKey = process.env.GEMINI_API_KEY_BACKUP;
+  
+  // Try with primary key
+  try {
+    const response = await axios.post(
+      GEMINI_URL,
+      { contents: [{ parts: [{ text: prompt }] }] },
+      { params: { key: primaryKey } }
+    );
+    return response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+  } catch (primaryError) {
+    // If primary key fails with auth/quota error and backup exists, try backup
+    if ((primaryError.response?.status === 401 || primaryError.response?.status === 403 || primaryError.response?.status === 429) && backupKey) {
+      console.log(`🔄 Primary key failed (${primaryError.response?.status}). Trying backup key...`);
+      try {
+        const response = await axios.post(
+          GEMINI_URL,
+          { contents: [{ parts: [{ text: prompt }] }] },
+          { params: { key: backupKey } }
+        );
+        return response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+      } catch (backupError) {
+        console.error("❌ Backup key also failed:", backupError.response?.data || backupError.message);
+        throw backupError;
+      }
+    }
+    throw primaryError;
+  }
+}
+
 /* =========================
    START INTERVIEW
    POST /api/ai/start
@@ -49,13 +82,7 @@ Ask question number 1.
 
     let question;
     try {
-      const response = await axios.post(
-        GEMINI_URL,
-        { contents: [{ parts: [{ text: prompt }] }] },
-        { params: { key: process.env.GEMINI_API_KEY } }
-      );
-
-      question = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+      question = await callGeminiAPI(prompt);
     } catch (apiError) {
       console.error("❌ Gemini API failed:", apiError.response?.data || apiError.message);
       question = "Explain the concept of closures in JavaScript."; // fallback question
@@ -130,13 +157,7 @@ Ask question number ${session.currentQuestionNumber}.
 
     let nextQuestion;
     try {
-      const response = await axios.post(
-        GEMINI_URL,
-        { contents: [{ parts: [{ text: prompt }] }] },
-        { params: { key: process.env.GEMINI_API_KEY } }
-      );
-
-      nextQuestion = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+      nextQuestion = await callGeminiAPI(prompt);
     } catch (apiError) {
       console.error("❌ Gemini API failed:", apiError.response?.data || apiError.message);
       nextQuestion = `Please explain a concept related to ${session.techStack[0]}.`; // fallback
@@ -185,16 +206,7 @@ Return ONLY valid JSON in this format:
 
     let feedbackText;
     try {
-      const response = await axios.post(
-        GEMINI_URL,
-        { contents: [{ parts: [{ text: prompt }] }] },
-        {
-          params: { key: process.env.GEMINI_API_KEY },
-          headers: { "Content-Type": "application/json" }
-        }
-      );
-
-      feedbackText = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      feedbackText = await callGeminiAPI(prompt) || "";
     } catch (apiError) {
       console.error("❌ Gemini API failed:", apiError.response?.data || apiError.message);
       feedbackText = "";

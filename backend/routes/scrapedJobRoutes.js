@@ -4,6 +4,7 @@ const {
   getJobsForStudents,
   markJobViewed,
   toggleSaveJob,
+  fetchAndStoreJobsFromRapidAPI,
 } = require("../services/scrapedJobsService");
 
 /**
@@ -43,6 +44,109 @@ router.get("/", async (req, res) => {
     }
   } catch (error) {
     console.error("Error in GET /scraped-jobs:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scraped-jobs/stats
+ * Get job statistics
+ * MUST be before /:jobId route to prevent 'stats' being treated as jobId
+ */
+router.get("/stats", async (req, res) => {
+  try {
+    const ScrapedJob = require("../models/ScrapedJob");
+
+    const stats = {
+      totalJobs: await ScrapedJob.countDocuments({ status: "active", isExpired: false }),
+      byJobType: await ScrapedJob.aggregate([
+        {
+          $match: { status: "active", isExpired: false },
+        },
+        {
+          $group: {
+            _id: "$jobType",
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+      byLocation: await ScrapedJob.aggregate([
+        {
+          $match: { status: "active", isExpired: false },
+        },
+        {
+          $group: {
+            _id: "$location",
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { count: -1 },
+        },
+        {
+          $limit: 10,
+        },
+      ]),
+      topCompanies: await ScrapedJob.aggregate([
+        {
+          $match: { status: "active", isExpired: false },
+        },
+        {
+          $group: {
+            _id: "$company",
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { count: -1 },
+        },
+        {
+          $limit: 10,
+        },
+      ]),
+    };
+
+    res.json({
+      success: true,
+      stats: stats,
+    });
+  } catch (error) {
+    console.error("Error fetching stats:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scraped-jobs/student/:studentFirebaseUid/saved
+ * Get all saved jobs for a student
+ * MUST be before /:jobId route to prevent 'student' being treated as jobId
+ */
+router.get("/student/:studentFirebaseUid/saved", async (req, res) => {
+  try {
+    const { studentFirebaseUid } = req.params;
+
+    const ScrapedJob = require("../models/ScrapedJob");
+    const savedJobs = await ScrapedJob.find({
+      savedByStudents: studentFirebaseUid,
+      status: "active",
+      isExpired: false,
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.json({
+      success: true,
+      count: savedJobs.length,
+      jobs: savedJobs,
+    });
+  } catch (error) {
+    console.error("Error fetching saved jobs:", error);
     res.status(500).json({
       success: false,
       error: error.message,
@@ -114,99 +218,15 @@ router.post("/:jobId/save", async (req, res) => {
 });
 
 /**
- * GET /api/scraped-jobs/student/:studentFirebaseUid/saved
- * Get all saved jobs for a student
+ * POST /api/scraped-jobs/admin/trigger-fetch
+ * Manually trigger RapidAPI job fetch (for admin/testing)
  */
-router.get("/student/:studentFirebaseUid/saved", async (req, res) => {
+router.post("/admin/trigger-fetch", async (req, res) => {
   try {
-    const { studentFirebaseUid } = req.params;
-
-    const ScrapedJob = require("../models/ScrapedJob");
-    const savedJobs = await ScrapedJob.find({
-      savedByStudents: studentFirebaseUid,
-      status: "active",
-      isExpired: false,
-    })
-      .sort({ createdAt: -1 })
-      .lean();
-
-    res.json({
-      success: true,
-      count: savedJobs.length,
-      jobs: savedJobs,
-    });
+    const result = await fetchAndStoreJobsFromRapidAPI();
+    res.json(result);
   } catch (error) {
-    console.error("Error fetching saved jobs:", error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-/**
- * GET /api/scraped-jobs/stats
- * Get job statistics
- */
-router.get("/stats", async (req, res) => {
-  try {
-    const ScrapedJob = require("../models/ScrapedJob");
-
-    const stats = {
-      totalJobs: await ScrapedJob.countDocuments({ status: "active", isExpired: false }),
-      byJobType: await ScrapedJob.aggregate([
-        {
-          $match: { status: "active", isExpired: false },
-        },
-        {
-          $group: {
-            _id: "$jobType",
-            count: { $sum: 1 },
-          },
-        },
-      ]),
-      byLocation: await ScrapedJob.aggregate([
-        {
-          $match: { status: "active", isExpired: false },
-        },
-        {
-          $group: {
-            _id: "$location",
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $sort: { count: -1 },
-        },
-        {
-          $limit: 10,
-        },
-      ]),
-      topCompanies: await ScrapedJob.aggregate([
-        {
-          $match: { status: "active", isExpired: false },
-        },
-        {
-          $group: {
-            _id: "$company",
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $sort: { count: -1 },
-        },
-        {
-          $limit: 10,
-        },
-      ]),
-    };
-
-    res.json({
-      success: true,
-      stats: stats,
-    });
-  } catch (error) {
-    console.error("Error fetching stats:", error);
+    console.error("Error triggering job fetch:", error);
     res.status(500).json({
       success: false,
       error: error.message,

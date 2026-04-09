@@ -59,7 +59,17 @@ const analyzeStudentResume = async (req, res) => {
       return res.status(400).json({ error: "No resume uploaded yet" });
 
     const filePath = path.join(__dirname, "..", student.resume.replace(/^\//, ""));
-    const resumeText = await extractTextFromPDF(filePath);
+    
+    let resumeText;
+    try {
+      resumeText = await extractTextFromPDF(filePath);
+    } catch (pdfErr) {
+      console.error("❌ PDF Extract Error:", pdfErr.message);
+      return res.status(500).json({ 
+        error: "Failed to extract resume text", 
+        details: pdfErr.message 
+      });
+    }
 
     if (!resumeText || resumeText.trim().length < 50) {
       return res.status(400).json({ error: "Resume text could not be extracted properly" });
@@ -69,27 +79,15 @@ const analyzeStudentResume = async (req, res) => {
     const openRouterResponse = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        models: [
-          "meta-llama/llama-3.3-8b-instruct:free",
-          "google/gemma-3-27b-it:free",
-          "mistralai/mistral-small-3.1-24b-instruct:free"
-        ],
-        route: "fallback",
-        temperature: 0.2,
+        model: "openrouter/auto",  // ✅ Auto-select best available model
+        temperature: 0.3,
         messages: [
           {
             role: "system",
-            content: `
-You are a professional ATS Resume Reviewer for SOFTWARE ENGINEERING internships and entry-level roles.
+            content: `You are a professional ATS Resume Reviewer for SOFTWARE ENGINEERING internships and entry-level roles.
 
-IMPORTANT RULES:
-- Return ONLY valid JSON (no markdown, no explanations, no backticks).
-- Do NOT invent skills, projects, or experience.
-- Be highly specific and resume-based.
-- Avoid generic advice like "improve formatting".
-- Suggestions must be actionable and detailed.
+IMPORTANT: Return ONLY valid JSON with NO markdown, NO explanations, NO code blocks.
 
-OUTPUT FORMAT (EXACT KEYS ONLY):
 {
   "atsScore": number (0-100),
   "missingKeywords": string[],
@@ -97,25 +95,11 @@ OUTPUT FORMAT (EXACT KEYS ONLY):
   "improvements": string[],
   "suggestedProjects": string[],
   "suggestedBulletPoints": string[]
-}
-
-QUALITY RULES:
-- missingKeywords must contain REAL ATS keywords (skills/tools/frameworks) that are missing.
-- weakSections must mention specific sections like: Projects, Skills, Experience, Education, Summary.
-- improvements must be written like: "Fix: ... | Why: ... | Example: ..."
-- suggestedProjects must include title + tech stack + 1-line reason.
-- suggestedBulletPoints must be rewritten strong bullets with metrics.
-
-ATS SCORING GUIDELINE:
-- 90-100: strong projects + metrics + keywords + clean structure
-- 70-89: good but missing keywords or metrics
-- 50-69: average; weak bullets, weak projects, missing core skills
-- <50: incomplete, unclear, or very weak
-`
+}`
           },
           {
             role: "user",
-            content: `Analyze this resume text carefully and return ONLY the JSON output:\n\n${resumeText}`
+            content: `Analyze this resume and return ONLY JSON:\n\n${resumeText}`
           }
         ]
       },
@@ -123,7 +107,7 @@ ATS SCORING GUIDELINE:
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "http://localhost:3000",       // ✅ required by OpenRouter
+          "HTTP-Referer": "http://localhost:3000",
           "X-Title": "Student Placement Dashboard"
         }
       }

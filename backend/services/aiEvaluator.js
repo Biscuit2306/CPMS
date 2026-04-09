@@ -1,10 +1,16 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require("axios");
 
 if (!process.env.GEMINI_API_KEY) {
   throw new Error("GEMINI_API_KEY is missing");
 }
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const GEMINI_URL =
+  "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second initial delay
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function evaluateProjectAI(prompt) {
   try {
@@ -12,11 +18,7 @@ async function evaluateProjectAI(prompt) {
       throw new Error("Invalid prompt - must be a string");
     }
 
-    console.log("🔍 Starting AI evaluation with Gemini 2.5 Flash...");
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-    });
+    console.log("🔍 Starting AI evaluation with Gemini 2.5 Flash via REST API...");
 
     // Enhanced prompt with stricter validation
     const enhancedPrompt = `${prompt}
@@ -73,12 +75,53 @@ Return ONLY valid JSON (no markdown, no explanation):
   "interviewReadiness": "assessment"
 }`;
 
-    const result = await model.generateContent(enhancedPrompt);
-    const response = await result.response;
-    const text = response.text();
+    let text;
+    let attempt = 0;
+    let currentKey = process.env.GEMINI_API_KEY;
+    let keyFailures = 0;
+
+    // Retry logic for 503 errors and fallback to backup key on auth failures
+    while (attempt < MAX_RETRIES) {
+      try {
+        console.log(`📤 Sending request to AI (attempt ${attempt + 1}/${MAX_RETRIES})...`);
+        
+        const response = await axios.post(
+          GEMINI_URL,
+          { contents: [{ parts: [{ text: enhancedPrompt }] }] },
+          { params: { key: currentKey } }
+        );
+
+        text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) break; // Success - exit retry loop
+      } catch (apiError) {
+        attempt++;
+        const statusCode = apiError.response?.status;
+        
+        // Try backup key on auth/quota errors (401, 403, 429)
+        if ((statusCode === 401 || statusCode === 403 || statusCode === 429) && keyFailures === 0 && process.env.GEMINI_API_KEY_BACKUP) {
+          keyFailures++;
+          currentKey = process.env.GEMINI_API_KEY_BACKUP;
+          console.log(`🔄 Primary key failed (${statusCode}). Switching to backup key...`);
+          attempt--; // Don't count this as a retry
+          continue;
+        }
+        
+        // Retry on 503 (Service Unavailable)
+        if (statusCode === 503 && attempt < MAX_RETRIES) {
+          const delayMs = RETRY_DELAY * Math.pow(2, attempt - 1); // Exponential backoff
+          console.log(`⏳ API temporarily unavailable (503). Retrying in ${delayMs}ms...`);
+          await sleep(delayMs);
+          continue;
+        }
+        
+        // Other errors - throw immediately
+        console.error("❌ Gemini API failed:", apiError.response?.data || apiError.message);
+        throw apiError;
+      }
+    }
 
     if (!text) {
-      throw new Error("Empty AI response");
+      throw new Error("Empty AI response after retries");
     }
 
     // Clean up the response

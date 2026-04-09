@@ -240,15 +240,21 @@ mongoose
       if (process.env.RAPID_API_KEY) {
         console.log("✅ RapidAPI job scraping is enabled");
 
-        // Schedule job fetch every 6 hours (0 */6 * * * means every 6 hours)
-        cron.schedule("0 */6 * * *", () => {
+        // Fetch jobs on startup (initial load)
+        console.log("\n🚀 Initial job fetch on server startup...");
+        fetchAndStoreJobsFromRapidAPI().catch((err) => {
+          console.error("❌ Initial fetch failed:", err.message);
+        });
+
+        // Schedule job fetch every 2 hours (0 */2 * * * = more frequent than before)
+        cron.schedule("0 */2 * * *", () => {
           console.log("\n⏰ Cron job triggered - Fetching jobs from RapidAPI...");
           fetchAndStoreJobsFromRapidAPI().catch((err) => {
             console.error("❌ Cron fetch failed:", err.message);
           });
         });
 
-        console.log("⏱️  Next job scrape will run at the scheduled time\n");
+        console.log("⏱️  Jobs will be refreshed every 2 hours\n");
       } else {
         console.log(
           "⚠️  RAPID_API_KEY not set - Job scraping disabled\n"
