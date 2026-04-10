@@ -29,6 +29,7 @@ const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:3000",
   "https://cpms-fluo5ldlf-gideons-projects-fbe6c8cb.vercel.app",
+  "https://cpms-kxq31w0f0-gideons-projects-fbe6c8cb.vercel.app",
   FRONTEND_URL
 ].filter(Boolean);
 
