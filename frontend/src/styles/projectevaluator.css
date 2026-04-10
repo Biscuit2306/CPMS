@@ -143,10 +143,16 @@
   border: 2px solid #e5e7eb;
   border-radius: 10px;
   font-size: 1rem;
-  color: #1f2937;
+  color: #000000;
+  background: white !important;
   font-family: inherit;
   transition: all 0.3s ease;
   width: 100%;
+}
+
+.project-eval-input::placeholder,
+.project-eval-textarea::placeholder {
+  color: #9ca3af;
 }
 
 .project-eval-input:focus,
@@ -154,6 +160,8 @@
   outline: none;
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  background: white !important;
+  color: #000000;
 }
 
 .project-eval-textarea {

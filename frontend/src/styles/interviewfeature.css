@@ -165,16 +165,22 @@
   border: 2px solid #e5e7eb;
   border-radius: 10px;
   font-size: 1rem;
-  color: #1f2937;
-  background: white;
+  color: #000000 !important;
+  background: white !important;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.interview-select::placeholder {
+  color: #9ca3af;
 }
 
 .interview-select:focus {
   outline: none;
   border-color: #7c3aed;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  background: white !important;
+  color: #000000 !important;
 }
 
 /* Level Buttons */
@@ -353,21 +359,29 @@
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   font-size: 1rem;
-  color: #1f2937;
+  color: #000000;
+  background: white !important;
   font-family: inherit;
   resize: vertical;
   transition: all 0.3s ease;
+}
+
+.interview-answer-textarea::placeholder {
+  color: #9ca3af;
 }
 
 .interview-answer-textarea:focus {
   outline: none;
   border-color: #7c3aed;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  background: white !important;
+  color: #000000;
 }
 
 .interview-answer-textarea:disabled {
-  background: #f9fafb;
+  background: white !important;
   cursor: not-allowed;
+  color: #6b7280;
 }
 
 /* Submit Button */
